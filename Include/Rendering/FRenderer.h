@@ -10,11 +10,6 @@
 #include "Resource/FAsset.h"
 #include "Rendering/FVertex.h"
 
-typedef enum ERenderAPI
-{
-    E_RENDER_API_OPENGL = 0,
-    E_RENDER_API_VULKAN,
-} ERenderAPI;
 
 typedef struct FRenderOptions
 {
@@ -39,14 +34,7 @@ typedef struct FMesh FMesh;
 typedef struct FMaterial FMaterial;
 typedef struct FMaterialInstance FMaterialInstance;
 
-typedef struct FTextureCreateOptions
-{
-    FInt32 width;
-    FInt32 height;
-    FInt32 mipLevels;
-    ETextureFormat format;
-    const char* pImageData;
-} FTextureCreateOptions;
+
 
 typedef union FMeshCreateOptions
 {
@@ -73,8 +61,9 @@ typedef struct FRenderer
     FRenderDevice* pRenderDevice;
 
     void (*pRenderDeviceDestroy)(FRenderDevice** ppRenderDevice);
-    FTexture* (*pTextureCreate)(FRenderDevice* pRenderDevice, const FTextureCreateOptions* pOptions);
-    void (*pTextureDestroy)(FRenderDevice* pRenderDevice, FTexture** ppTexture);
+    
+    
+
     FMesh* (*pMeshCreate)(FRenderDevice* pRenderDevice, const FMeshCreateOptions* pOptions);
     void (*pMeshDestroy)(FRenderDevice* pRenderDevice, FMesh** ppMesh);
     FMaterial* (*pMaterialCreate)(FRenderDevice* pRenderDevice, const FMaterialCreateOptions* pOptions);
@@ -95,9 +84,6 @@ typedef struct FRenderer
 FRenderer* FRendererCreate(const FRenderOptions* pOptions);
 void FRendererDestroy(FRenderer** ppRenderDevice);
 void FRendererSetOptions(FRenderer* pOptions);
-
-FTexture* FTextureCreate(FRenderer* pRenderDevice, const FTextureCreateOptions* pOptions);
-void FTextureDestroy(FRenderer* pRenderDevice, FTexture** ppTexture);
 
 FMesh* FMeshCreate(FRenderer* pRenderDevice, const FMeshCreateOptions* pOptions);
 void FMeshDestroy(FRenderer* pRenderDevice, FMesh** ppMesh);

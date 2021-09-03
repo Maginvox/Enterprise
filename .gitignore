@@ -1,0 +1,4 @@
+/build/*
+/ThirdParty/Steamworks/*
+/ThirdParty/EpicOnlineServices/*
+/Tests/Example/Logs/*

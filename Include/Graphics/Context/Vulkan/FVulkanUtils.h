@@ -2,7 +2,7 @@
 #define __FVULKAN_UTILS_H__
 
 #include <vulkan/vulkan.h>
-#include "Rendering/FRenderer.h"
+#include "Graphics/Vulkan/FRenderDeviceVulkan.h"
 
 static inline VkFormat ETextureFormatToVkFormat(ETextureFormat format)
 {

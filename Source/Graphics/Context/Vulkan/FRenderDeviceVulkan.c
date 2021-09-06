@@ -1,7 +1,7 @@
 #include "Core/FLog.h"
 #include "Core/FMemory.h"
-#include "Rendering/Vulkan/FVulkanUtils.h"
-#include "Rendering/Vulkan/FRenderDeviceVulkan.h"
+#include "Graphics/Vulkan/FVulkanUtils.h"
+#include "Graphics/Vulkan/FRenderDeviceVulkan.h"
 
 #include <SDL_vulkan.h>
 

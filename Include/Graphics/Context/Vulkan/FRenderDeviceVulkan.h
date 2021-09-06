@@ -4,7 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <vk_mem_alloc.h>
 
-#include "Rendering/FRenderer.h"
+#include "Graphics/FRenderAPI.h"
 
 /* Vulkan structures */
 typedef struct FBufferVulkan
@@ -14,7 +14,7 @@ typedef struct FBufferVulkan
 } FBufferVulkan;
 
 /* RenderDevice functions and structure  */
-typedef struct FRenderDeviceVulkan
+typedef struct FRenderAPIVulkan
 {
     VkInstance instance;
     PFN_vkCreateDebugUtilsMessengerEXT CreateDebugUtilsMessenger;

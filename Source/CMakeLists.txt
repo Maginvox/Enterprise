@@ -44,20 +44,8 @@ else()
 		"Networking/FOnlineServiceNull.c")
 endif()
 
-# Add the Rendering sources
-list (APPEND EnterpriseSources
-	"Rendering/FRenderer.c")
-
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-	list (APPEND EnterpriseSources
-		"Rendering/D3D12/FRenderDeviceD3D12.c")
-endif()
-
-if (Vulkan_FOUND)
-	list (APPEND EnterpriseSources
-		# Add the vulkan sources
-		"Rendering/Vulkan/FRenderDeviceVulkan.c")
-endif()
+# Add the Graphics sources
+add_subdirectory(Graphics)
 
 # Add the Resource sources
 list (APPEND EnterpriseSources

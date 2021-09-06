@@ -52,7 +52,11 @@
         "vulkan.h": "c",
         "fpackage.h": "c",
         "fpackagemanager.h": "c",
-        "farray.h": "c"
+        "farray.h": "c",
+        "frenderapi.h": "c",
+        "fimage.h": "c",
+        "frenderpass.h": "c",
+        "frendercontext_impl.h": "c"
     },
     "cmake.configureOnOpen": true
 }

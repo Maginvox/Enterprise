@@ -41,7 +41,7 @@ void FLogShutdown()
 {
     if(pLogFile != NULL)
     {
-        FFileClose(pLogFile);
+        FFileClose(&pLogFile);
     }
 }
 

@@ -38,10 +38,10 @@ typedef struct FRenderPassCreateInfo
 
 typedef struct FRenderPass FRenderPass;
 
-typedef FRenderPass* (*PFN_FRenderPassCreate)(const FRenderPassCreateInfo* pInfo);
-typedef void (*PFN_FRenderPassDestroy)(FRenderPass** ppRenderPass);
+typedef FRenderPass* (*PFN_FRenderPassCreate)(FRenderContext* pContext, const FRenderPassCreateInfo* pInfo);
+typedef void (*PFN_FRenderPassDestroy)(FRenderContext* pContext, FRenderPass** ppRenderPass);
 
-FRenderPass* FRenderPassCreate(const FRenderPassCreateInfo* pInfo);
-void FRenderPassDestroy(FRenderPass** ppRenderPass);
+FRenderPass* FRenderPassCreate(FRenderContext* pContext, const FRenderPassCreateInfo* pInfo);
+void FRenderPassDestroy(FRenderContext* pContext, FRenderPass** ppRenderPass);
 
 #endif

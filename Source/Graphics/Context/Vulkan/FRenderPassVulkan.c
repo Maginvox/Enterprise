@@ -1,8 +1,8 @@
 #include "Graphics/Context/Vulkan/FRenderPassVulkan.h"
 
-FRenderPass* FRenderPassCreateVulkan(const FRenderPassCreateInfo* pInfo)
+FRenderPass* FRenderPassCreateVulkan(FRenderContext* pContext, const FRenderPassCreateInfo* pInfo)
 {
-    if (pInfo == NULL)
+    if (pContext == NULL || pInfo == NULL)
     {
         return NULL;
     }

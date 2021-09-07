@@ -3,7 +3,7 @@
 
 
 #include "Networking/FOnlineService.h"
-#include "Rendering/FRenderer.h"
+#include "Graphics/FRenderer.h"
 
 
 typedef struct FGame

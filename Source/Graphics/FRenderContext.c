@@ -15,5 +15,13 @@ FRenderContext* FRenderContextCreate(const FRenderContextCreateInfo* pInfo)
     /* Initialize the platform */
     
 
-    switch()
+    switch(pInfo->api)
+    {
+        case FRenderAPI_Vulkan:
+            
+            break;
+        
+        case FRenderAPI_D3D12:
+            break;
+    }
 }

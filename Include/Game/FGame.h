@@ -2,13 +2,11 @@
 #define __FGAME_H__
 
 
+#include "Resource/FAsset.h"
 #include "Networking/FOnlineService.h"
-#include "Graphics/FRenderer.h"
-
 
 typedef struct FGame
 {   
-    FRenderer* pRenderDevice;
     FOnlineService* pOnlineService;
 } FGame;
 

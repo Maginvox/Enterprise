@@ -10,7 +10,7 @@ typedef struct FRenderPassVulkan
     VkRenderPass renderPass;
 } FRenderPassVulkan;
 
-FRenderPass* FRenderPassCreateVulkan(const FRenderPassCreateInfo* pInfo);
-void FRenderPassDestroy(FRenderPass** ppRenderPass);
+FRenderPass* FRenderPassCreateVulkan(FRenderContext* pContext, const FRenderPassCreateInfo* pInfo);
+void FRenderPassDestroy(FRenderContext* pContext, FRenderPass** ppRenderPass);
 
 #endif

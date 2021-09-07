@@ -1,16 +1,18 @@
-#ifndef __FRENDERDEVICE_H__
-#define __FRENDERDEVICE_H__
+#ifndef __FRENDERCONTEXT_H__
+#define __FRENDERCONTEXT_H__
 
-typedef enum FRenderContextAPI
+typedef enum FRenderAPI
 {
-    FRenderContextAPI_Vulkan,
-} FRenderContextAPI;
+    FRenderAPI_Vulkan,
+    FRenderAPI_D3D12,
+} FRenderAPI;
 
 typedef struct FRenderContextCreateInfo
 {
-    FRenderContextAPI api;
+    FRenderAPI api;
 } FRenderContextCreateInfo;
 
+typedef struct FRenderData FRenderData;
 typedef struct FRenderContext FRenderContext;
 
 FRenderContext* FRenderContextCreate(const FRenderContextCreateInfo* pInfo);

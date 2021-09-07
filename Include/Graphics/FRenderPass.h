@@ -26,6 +26,10 @@ typedef struct FRenderPassAttachment
     FImageFormat format;
     FImageLayout initialLayout;
     FImageLayout finalLayout;
+    FRenderPassAttachmentLoadOp loadOp;
+    FRenderPassAttachmentStoreOp storeOp;
+    FRenderPassAttachmentLoadOp stencilLoadOp;
+    FRenderPassAttachmentStoreOp stencilStoreOp;
 } FRenderPassAttachment;
 
 typedef struct FRenderPassCreateInfo

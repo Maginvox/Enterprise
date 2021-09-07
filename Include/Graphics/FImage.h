@@ -18,7 +18,7 @@ typedef enum FImageLayout
     FImageLayout_General,
     FImageLayout_Color,
     FImageLayout_DepthStencil,
-    FImageLayout_Shader,
+    FImageLayout_ReadShader, /* Cannot write to */
     FImageLayout_Present,
 } FImageLayout;
 

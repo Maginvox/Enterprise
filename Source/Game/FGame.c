@@ -80,7 +80,7 @@ FGame* FGameCreate(int argc, const char* const* argv)
     {
         if (FStringCompare(configOptionRenderAPI.value.String, ENTERPRISE_NAME_MAX_LENGTH, "Vulkan", sizeof("Vulkan")) == 0)
         {
-            renderOptions.api = E_RENDER_API_VULKAN;
+            renderOptions.api = FRenderAPI;
         }
         else if (FStringCompare(configOptionRenderAPI.value.String, ENTERPRISE_NAME_MAX_LENGTH, "OpenGL", sizeof("OpenGL")) == 0)
         {

@@ -5,8 +5,10 @@
 
 typedef struct FRenderDataVulkan
 {
-
+    VkInstance instance;
 } FRenderDataVulkan;
 
+FRenderDataVulkan* FRenderDataVulkanCreate();
+void FRenderDataVulkanDestroy(FRenderDataVulkan** ppData);
 
 #endif

@@ -12,7 +12,6 @@ typedef struct FRenderContextCreateInfo
     FRenderAPI api;
 } FRenderContextCreateInfo;
 
-typedef struct FRenderData FRenderData;
 typedef struct FRenderContext FRenderContext;
 
 FRenderContext* FRenderContextCreate(const FRenderContextCreateInfo* pInfo);

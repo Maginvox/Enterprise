@@ -2,6 +2,7 @@
 #define __FRENDERPASS_VULKAN_H__
 
 #include <vulkan/vulkan.h>
+#include <vk_mem_alloc.h>
 
 #include "Graphics/FRenderPass.h"
 

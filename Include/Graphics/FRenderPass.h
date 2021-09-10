@@ -32,12 +32,13 @@ typedef struct FRenderPassAttachment
     FRenderPassAttachmentStoreOp stencilStoreOp;
 } FRenderPassAttachment;
 
+/* FRenderPassCreateInfo
+    A render pass only contains one depth/stencil attachment and multiple color attachments. */
 typedef struct FRenderPassCreateInfo
 {
     FInt32 colorAttachmentsCount;
-    const FRenderPassAttachment** pColorAttachments;
-    const FRenderPassAttachment* pDepthAttachment;
-    const FRenderPassAttachment* pStencilAttachment;
+    const FRenderPassAttachment* pColorAttachments;
+    const FRenderPassAttachment* pDepthStencilAttachment;
 } FRenderPassCreateInfo;
 
 typedef struct FRenderPass FRenderPass;

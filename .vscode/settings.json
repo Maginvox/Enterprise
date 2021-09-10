@@ -56,7 +56,8 @@
         "frenderapi.h": "c",
         "fimage.h": "c",
         "frenderpass.h": "c",
-        "frendercontext_impl.h": "c"
+        "frendercontext_impl.h": "c",
+        "frenderpassvulkan.h": "c"
     },
     "cmake.configureOnOpen": true
 }

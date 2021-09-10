@@ -65,35 +65,6 @@ FGame* FGameCreate(int argc, const char* const* argv)
         return NULL;
     }
 
-    /* Fill the different subsystems options with the config information */
-    FRenderOptions renderOptions = {0};
-    renderOptions.bDebugAndValidate = true;
-
-    FConfigParsedOption configOptionRenderAPI = {0};
-    /* FConfigParsedOption configOptionRenderFullscreen = {0}; */
-    /* FConfigParsedOption configOptionRenderWidth = {0}; */
-    /* FConfigParsedOption configOptionRenderHeight = {0}; */
-    /* FConfigParsedOption configOptionRenderVSync = {0}; */
-    /* FConfigParsedOption configOptionRenderPhysicalDeviceVulkan = {0}; */
-
-    if (FConfigParserGetOption(pConfigParser, "RenderAPI", &configOptionRenderAPI))
-    {
-        if (FStringCompare(configOptionRenderAPI.value.String, ENTERPRISE_NAME_MAX_LENGTH, "Vulkan", sizeof("Vulkan")) == 0)
-        {
-            renderOptions.api = FRenderAPI;
-        }
-        else if (FStringCompare(configOptionRenderAPI.value.String, ENTERPRISE_NAME_MAX_LENGTH, "OpenGL", sizeof("OpenGL")) == 0)
-        {
-            renderOptions.api = E_RENDER_API_OPENGL;
-        }
-        else
-        {
-            FLogWarning("Config RenderAPI value was invalid, using default value.");
-            FConfigParserResetOption(pConfigParser, "Config/config.cfg", "RenderAPI");
-            FConfigParserGetOption(pConfigParser, "RenderAPI", &configOptionRenderAPI);
-        }
-    }
-
     FConfigParserDestroy(pConfigParser);
 
     /* Parse the args */
@@ -175,56 +146,10 @@ FGame* FGameCreate(int argc, const char* const* argv)
     FArgumentParsedOption renderVSyncOption = {0};
     FArgumentParsedOption renderPhysicalDeviceVulkanOption = {0};
     
-    if (FArgumentParserGetOption(pArgumentParser, "RenderAPI", &renderAPIOption))
-    {
-        if (FStringCompare(renderAPIOption.value.String, ENTERPRISE_NAME_MAX_LENGTH, "Vulkan", sizeof("Vulkan")) == 0)
-        {
-            renderOptions.api = E_RENDER_API_VULKAN;
-        }
-        else if (FStringCompare(renderAPIOption.value.String, ENTERPRISE_NAME_MAX_LENGTH, "OpenGL", sizeof("OpenGL")) == 0)
-        {
-            renderOptions.api = E_RENDER_API_OPENGL;
-        }
-        else
-        {
-            FLogWarning("Argument value for --RenderAPI was invalid, using config value.");
-        }
-    }
-
-    if (FArgumentParserGetOption(pArgumentParser, "RenderFullscreen", &renderFullscreenOption))
-    {
-        renderOptions.bFullscreen = renderFullscreenOption.value.Bool;
-    }
-
-    if (FArgumentParserGetOption(pArgumentParser, "RenderWidth", &renderWidthOption))
-    {
-        renderOptions.width = renderWidthOption.value.Int;
-    }
-
-    if (FArgumentParserGetOption(pArgumentParser, "RenderHeight", &renderHeightOption))
-    {
-        renderOptions.height = renderHeightOption.value.Int;
-    }
-
-    if (FArgumentParserGetOption(pArgumentParser, "RenderVSync", &renderVSyncOption))
-    {
-        renderOptions.bVSync = renderVSyncOption.value.Bool;
-    }
-
-    if (FArgumentParserGetOption(pArgumentParser, "RenderPhysicalDeviceVulkan", &renderPhysicalDeviceVulkanOption))
-    {
-        renderOptions.physicalDeviceVulkanID = renderPhysicalDeviceVulkanOption.value.Int;
-    }
-
-    FArgumentParserDestroy(&pArgumentParser);
-
-
-
-    pGame->pRenderDevice = FRendererCreate(&renderOptions);
+  
     pGame->pOnlineService = FOnlineServiceCreate();
 
-    if (pGame->pRenderDevice == NULL ||
-        pGame->pOnlineService == NULL)
+    if (pGame->pOnlineService == NULL)
     {
         FGameDestroy(&pGame);
         return NULL;
@@ -247,7 +172,6 @@ void FGameDestroy(FGame** ppGame)
 
     FGame* pGame = *ppGame;
 
-    FRendererDestroy(&pGame->pRenderDevice);
     FOnlineServiceDestroy(&pGame->pOnlineService);
     
     FLogShutdown();

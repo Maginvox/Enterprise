@@ -8,7 +8,7 @@
 
 typedef struct FRenderContext
 {
-    FRenderData* pRenderData;
+    FRenderContext* pRenderContext;
 
     PFN_FRenderPassCreate pRenderPassCreate;
     PFN_FRenderPassDestroy pRenderPassDestroy;

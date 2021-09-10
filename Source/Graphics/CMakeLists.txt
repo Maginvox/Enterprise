@@ -20,7 +20,7 @@ endif()
 
 add_library(EnterpriseGraphics SHARED ${GraphicsSources})
 target_include_directories(EnterpriseGraphics PUBLIC "${PROJECT_SOURCE_DIR}/Include/")
-target_link_libraries(EnterpriseGraphics Enterprise)
+target_link_libraries(EnterpriseGraphics EnterpriseCore)
 
 
 # Include ThirdParty Libraries

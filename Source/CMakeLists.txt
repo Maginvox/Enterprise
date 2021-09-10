@@ -6,16 +6,7 @@ find_package(Vulkan REQUIRED)
 set (EnterpriseSources "")
 
 # Add the Core sources
-list (APPEND EnterpriseSources 
-	"Core/FMemory.c"
-	"Core/FString.c"
-	"Core/FArray.c"
-	"Core/FTime.c"
-	"Core/FThread.c"
-	"Core/FHash.c"
-	"Core/FHashMap.c"
-	"Core/FArgumentParser.c"
-	"Core/FConfigParser.c")
+add_subdirectory(Core)
 
 # Add the IO sources
 list (APPEND EnterpriseSources
@@ -48,8 +39,7 @@ endif()
 add_subdirectory(Graphics)
 
 # Add the Resource sources
-list (APPEND EnterpriseSources
-	"Resource/FPackage.c")
+add_subdirectory(Resource)
 
 # Add the Game sources
 list (APPEND EnterpriseSources

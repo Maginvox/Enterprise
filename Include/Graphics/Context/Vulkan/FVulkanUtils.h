@@ -18,7 +18,7 @@ static inline VkFormat FImageFormatToVkFormat(FImageFormat format)
     }
 }
 
-static inline FRenderPassAttachmentLoadOpToVkAttachmentLoadOp(FRenderPassAttachmentLoadOp loadOp)
+static inline VkAttachmentLoadOp FRenderPassAttachmentLoadOpToVkAttachmentLoadOp(FRenderPassAttachmentLoadOp loadOp)
 {
     switch (loadOp)
     {
@@ -37,7 +37,7 @@ static inline FRenderPassAttachmentLoadOpToVkAttachmentLoadOp(FRenderPassAttachm
     }
 }
 
-static inline FRenderPassAttachmentStoreOpToVkAttachmentStoreOp(FRenderPassAttachmentStoreOp storeOp)
+static inline VkAttachmentStoreOp FRenderPassAttachmentStoreOpToVkAttachmentStoreOp(FRenderPassAttachmentStoreOp storeOp)
 {
     switch (storeOp)
     {
@@ -53,7 +53,7 @@ static inline FRenderPassAttachmentStoreOpToVkAttachmentStoreOp(FRenderPassAttac
     }
 }
 
-static inline FImageLayoutToVkImageLayout(FImageLayout layout)
+static inline VkImageLayout FImageLayoutToVkImageLayout(FImageLayout layout)
 {
     switch (layout)
     {

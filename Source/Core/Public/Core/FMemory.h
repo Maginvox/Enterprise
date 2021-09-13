@@ -1,7 +1,7 @@
 #ifndef __FMEMORY_H__
 #define __FMEMORY_H__
 
-#include "FTypes.h"
+#include "Core/FTypes.h"
 
 void* FAllocate(FUInt64 size);
 void* FAllocateZero(FUInt64 count, FUInt64 size);

@@ -4,8 +4,9 @@
 /* Arguments are formatted like this "--name=value" to pass a value, or "--name" to indicate an options is on or off */
 /* Arguments that do not have this format will be excluded from the retrievable options */
 
+#include "Export.h"
 #include "Core/FMacro.h"
-#include "FTypes.h"
+#include "Core/FTypes.h"
 
 typedef enum EArgumentType {
     E_ARGUMENT_TYPE_INT,

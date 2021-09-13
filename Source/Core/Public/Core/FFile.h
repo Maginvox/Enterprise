@@ -1,7 +1,7 @@
 #ifndef __FFILE_H__
 #define __FFILE_H__
 
-#include "FTypes.h"
+#include "Core/FTypes.h"
 
 #define FEOF -1
 #define FPATH_MAX 256

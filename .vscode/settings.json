@@ -57,7 +57,10 @@
         "fimage.h": "c",
         "frenderpass.h": "c",
         "frendercontext_impl.h": "c",
-        "frenderpassvulkan.h": "c"
+        "frenderpassvulkan.h": "c",
+        "fvulkanvalidation.h": "c",
+        "frendercontextvulkan.h": "c",
+        "frendercontext.h": "c"
     },
     "cmake.configureOnOpen": true
 }

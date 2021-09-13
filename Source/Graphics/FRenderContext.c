@@ -1,11 +1,11 @@
 #include "Graphics/FRenderContext.h"
 #include "FRenderContext_Impl.h"
 
-#ifdef ENTERPRISE_GRAPHICS_HAS_VULKAN
+#ifdef ENTERPRISE_GRAPHICS_VULKAN
     #include "Graphics/Context/Vulkan/FRenderContextVulkan.h"
 #endif
 
-FRenderContext* FRenderContextCreate(const FRenderContextCreateInfo* pInfo)
+FRenderContext* FRenderContext_Create(const FRenderContextCreateInfo* pInfo)
 {
     if (pInfo == NULL)
     {
@@ -18,10 +18,13 @@ FRenderContext* FRenderContextCreate(const FRenderContextCreateInfo* pInfo)
     switch(pInfo->api)
     {
         case FRenderAPI_Vulkan:
-            
+            return FRenderContextVulkan_Create(pInfo);
             break;
         
         case FRenderAPI_D3D12:
             break;
+
+        default:
+            return NULL;
     }
 }

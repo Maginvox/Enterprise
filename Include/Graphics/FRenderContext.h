@@ -10,11 +10,17 @@ typedef enum FRenderAPI
 typedef struct FRenderContextCreateInfo
 {
     FRenderAPI api;
+    const char* pTitle;
 } FRenderContextCreateInfo;
+
+typedef struct FRenderContextOptions
+{
+    FRenderAPI api;
+} FRenderContextOptions;
 
 typedef struct FRenderContext FRenderContext;
 
-FRenderContext* FRenderContextCreate(const FRenderContextCreateInfo* pInfo);
-void FRenderContextDestroy(FRenderContext** ppContext);
+FRenderContext* FRenderContext_Create(const FRenderContextCreateInfo* pInfo);
+void FRenderContext_Destroy(FRenderContext** ppContext);
 
 #endif

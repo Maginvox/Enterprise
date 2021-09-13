@@ -1,0 +1,40 @@
+{
+  "configurations": [
+    {
+      "name": "Linux Debug",
+      "generator": "Unix Makefiles",
+      "configurationType" : "Debug",
+      "buildRoot":  "${projectDir}/build/${name}",
+      "cmakeCommandArgs":  "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs":  ""
+    },
+    {
+      "name": "Linux Release",
+      "generator": "Unix Makefiles",
+      "configurationType" : "Release",
+      "buildRoot": "${projectDir}/build/${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "Windows Debug",
+      "generator": "Visual Studio 16 2019",
+      "configurationType" : "Debug",
+      "buildRoot":  "${projectDir}/build/${name}",
+      "cmakeCommandArgs":  "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs":  ""
+    },
+    {
+      "name": "Windows Release",
+      "generator": "Visual Studio 16 2019",
+      "configurationType" : "Release",
+      "buildRoot": "${projectDir}/build/${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": ""
+    }
+  ]
+}

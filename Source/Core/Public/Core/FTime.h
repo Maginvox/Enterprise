@@ -17,6 +17,6 @@ typedef struct FTime
     FInt32 isDaylightSavingTime;
 } FTime;
 
-FEXPORT void FTimeCurrent(FTime* time);
+void FTimeCurrent(FTime* time);
 
 #endif

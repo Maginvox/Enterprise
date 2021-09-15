@@ -22,7 +22,7 @@ typedef struct FFramebuffer FFramebuffer;
 typedef FFramebuffer* (*PFN_FFramebufferCreate)(const FFramebufferCreateInfo* pInfo);
 typedef void (*PFN_FFramebufferDestroy)(FFramebuffer** ppFramebuffer);
 
-FEXPORT FFramebuffer* FFramebufferCreate(const FFramebufferCreateInfo* pInfo);
-FEXPORT void FFramebufferDestroy(FFramebuffer** ppFramebuffer);
+FFramebuffer* FFramebufferCreate(const FFramebufferCreateInfo* pInfo);
+void FFramebufferDestroy(FFramebuffer** ppFramebuffer);
 
 #endif

@@ -27,6 +27,7 @@ target_link_libraries(EnterpriseGraphics EnterpriseCore SDL2)
 # Include ThirdParty Libraries
 if (Vulkan_FOUND)
     target_include_directories(EnterpriseGraphics PUBLIC ${Vulkan_INCLUDE_DIR})
+    target_link_libraries(EnterpriseGraphics ${Vulkan_LIBRARY})
     target_compile_definitions(EnterpriseGraphics PUBLIC ENTERPRISE_GRAPHICS_VULKAN)
 
     target_link_libraries(EnterpriseGraphics VulkanMemoryAllocator)

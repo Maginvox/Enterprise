@@ -5,10 +5,12 @@
     //  Microsoft 
     #define FEXPORT __declspec(dllexport)
     #define FIMPORT __declspec(dllimport)
+    #define FDEPRECATED __declspec(deprecated)
 #elif defined(__GNUC__)
     //  GCC
     #define FEXPORT
     #define FIMPORT
+    #define FDEPRECATED __attribute__((deprecated))
 #else
     //  do nothing and hope for the best?
     #define FEXPORT

@@ -43,9 +43,9 @@ typedef struct FArgumentParser
     FArgumentParsedOption* pParsedOptions;
 } FArgumentParser;
 
-FEXPORT FArgumentParser* FArgumentParserCreate(const FInt32 optionsCount, const FArgumentOption* pOptions);
-FEXPORT void FArgumentParserDestroy(FArgumentParser** pArgumentParser);
-FEXPORT bool FArgumentParserParse(FArgumentParser* pArgumentParser, const int argc, const char* const* argv);
-FEXPORT bool FArgumentParserGetOption(FArgumentParser* pArgumentParser, const char* pName, FArgumentParsedOption* pParsedOption);
+FArgumentParser* FArgumentParserCreate(const FInt32 optionsCount, const FArgumentOption* pOptions);
+void FArgumentParserDestroy(FArgumentParser** pArgumentParser);
+bool FArgumentParserParse(FArgumentParser* pArgumentParser, const int argc, const char* const* argv);
+bool FArgumentParserGetOption(FArgumentParser* pArgumentParser, const char* pName, FArgumentParsedOption* pParsedOption);
 
 #endif

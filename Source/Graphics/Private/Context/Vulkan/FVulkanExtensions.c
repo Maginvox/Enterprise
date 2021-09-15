@@ -40,11 +40,11 @@ const char* const* FVulkanValidationLayers(FInt32* pCount)
     }
 
     /* Loop through all the layers and find out if any are missing. */
-    for (int i = 0; i < FCOUNT_OF(ppValidationLayers); i++)
+    for (FInt i = 0; i < FCOUNT_OF(ppValidationLayers); i++)
     {
         bool found = false;
 
-        for (int j = 0; j < propertiesCount; j++)
+        for (FUInt32 j = 0; j < propertiesCount; j++)
         {
             if (FStringCompare(pProperties[j].layerName, VK_MAX_EXTENSION_NAME_SIZE, ppValidationLayers[i], VK_MAX_EXTENSION_NAME_SIZE) == 0)
             {

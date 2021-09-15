@@ -4,12 +4,12 @@
 #include "Core/FExport.h"
 #include "Core/FTypes.h"
 
-FEXPORT void* FAllocate(FUInt64 size);
-FEXPORT void* FAllocateZero(FUInt64 count, FUInt64 size);
-FEXPORT void* FReallocate(void* pMemory, FUInt64 size);
-FEXPORT void FDeallocate(void* pMemory);
+void* FAllocate(FUInt64 size);
+void* FAllocateZero(FUInt64 count, FUInt64 size);
+void* FReallocate(void* pMemory, FUInt64 size);
+void FDeallocate(void* pMemory);
 
-FEXPORT void* FMemoryCopy(const void* pSource, void* pDestination, FInt64 size);
-FEXPORT void* FMemorySet(void* pDestination, FInt64 destinationSize, FInt value);
+void* FMemoryCopy(const void* pSource, void* pDestination, FInt64 size);
+void* FMemorySet(void* pDestination, FInt64 destinationSize, FInt value);
 
 #endif

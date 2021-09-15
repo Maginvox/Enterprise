@@ -12,9 +12,8 @@ FRenderContext* FRenderContext_Create(const FRenderContextCreateInfo* pInfo)
         return NULL;
     }
 
-    /* Initialize the platform */
+    SDL_Init();
     
-
     switch(pInfo->api)
     {
         case FRenderAPI_Vulkan:
@@ -27,4 +26,16 @@ FRenderContext* FRenderContext_Create(const FRenderContextCreateInfo* pInfo)
         default:
             return NULL;
     }
+
+    return NULL;
+}
+
+void FRenderContext_Destroy(FRenderContext** ppContext)
+{
+    if (ppContext == NULL || *ppContext == NULL)
+    {
+        return NULL;
+    }
+
+    
 }

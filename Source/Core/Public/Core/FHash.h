@@ -3,6 +3,6 @@
 
 #include "FTypes.h"
 
-FUInt32 FHashMultiplicationMethod(const char* pString);
+FEXPORT FUInt32 FHashMultiplicationMethod(const char* pString);
 
 #endif

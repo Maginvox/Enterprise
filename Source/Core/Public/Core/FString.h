@@ -1,8 +1,9 @@
 #ifndef __FSTRING_H__
 #define __FSTRING_H__
 
-#include "FTypes.h"
-#include "FTime.h"
+#include "Core/FExport.h"
+#include "Core/FTypes.h"
+#include "Core/FTime.h"
 
 #define FSTRING_MAX_LENGTH 1024
 
@@ -27,33 +28,33 @@ typedef struct FStringFormatArgument
     } value;
 } FStringFormatArgument;
 
-bool FCharacterIsSpace(char Character);
-bool FCharacterIsDigit(char Character);
-bool FCharacterIsAlpha(char Character);
-bool FCharacterIsAlphaNumeric(char Character);
+FEXPORT bool FCharacterIsSpace(char Character);
+FEXPORT bool FCharacterIsDigit(char Character);
+FEXPORT bool FCharacterIsAlpha(char Character);
+FEXPORT bool FCharacterIsAlphaNumeric(char Character);
 
-FInt FStringLength(const char* pString, FInt maxLength);
-char* FStringSeperate(const char* pSource, FInt sourceMaxLength, const char* pSeparators, FInt separatorsLength);
-bool FStringConcatenate(const char* pSource, FInt sourceMaxLength, char* pDestination, FInt destinationMaxLength);
-FInt FStringCompare(const char* pSource, FInt sourceMaxLength, const char* pCompare, FInt compareMaxLength);
-bool FStringCopy(const char* pSource, FInt sourceMaxLength, char* pDestination, FInt destinationMaxLength);
-bool FStringReverse(char* pString, FInt maxLength);
-void FStringRemoveSpaces(char* pString);
-bool FStringIsAlpha(const char* pString);
-bool FStringIsNumeric(const char* pString);
-bool FStringIsAlphaNumeric(const char* pString);
-bool FStringFormat(char* pDestination, FInt destinationMaxLength, const char* pFormat, const FStringFormatArgument* pFormatArguments, FInt formatArgumentsCount); /* Possible escape formats, %i for int, %f for float, %d for double, and %s  */
+FEXPORT FInt FStringLength(const char* pString, FInt maxLength);
+FEXPORT char* FStringSeperate(const char* pSource, FInt sourceMaxLength, const char* pSeparators, FInt separatorsLength);
+FEXPORT bool FStringConcatenate(const char* pSource, FInt sourceMaxLength, char* pDestination, FInt destinationMaxLength);
+FEXPORT FInt FStringCompare(const char* pSource, FInt sourceMaxLength, const char* pCompare, FInt compareMaxLength);
+FEXPORT bool FStringCopy(const char* pSource, FInt sourceMaxLength, char* pDestination, FInt destinationMaxLength);
+FEXPORT bool FStringReverse(char* pString, FInt maxLength);
+FEXPORT void FStringRemoveSpaces(char* pString);
+FEXPORT bool FStringIsAlpha(const char* pString);
+FEXPORT bool FStringIsNumeric(const char* pString);
+FEXPORT bool FStringIsAlphaNumeric(const char* pString);
+FEXPORT bool FStringFormat(char* pDestination, FInt destinationMaxLength, const char* pFormat, const FStringFormatArgument* pFormatArguments, FInt formatArgumentsCount); /* Possible escape formats, %i for int, %f for float, %d for double, and %s  */
 
-bool FStringConvertFromInt(FInt value, FInt8 base, char* pDestination, FInt destinationMaxLength);
-bool FStringConvertFromFloat(float value, char* pDestination, FInt destinationMaxLength);
-bool FStringConvertFromDouble(double value, char* pDestination, FInt destinationMaxLength);
-bool FStringConvertFromBool(bool value, char* pDestination, FInt destinationMaxLength);
-bool FStringConvertFromTime(const FTime* pValue, char* pDestination, FInt destinationMaxLength); /* Destination must be greater than or equal to 32 characters */
+FEXPORT bool FStringConvertFromInt(FInt value, FInt8 base, char* pDestination, FInt destinationMaxLength);
+FEXPORT bool FStringConvertFromFloat(float value, char* pDestination, FInt destinationMaxLength);
+FEXPORT bool FStringConvertFromDouble(double value, char* pDestination, FInt destinationMaxLength);
+FEXPORT bool FStringConvertFromBool(bool value, char* pDestination, FInt destinationMaxLength);
+FEXPORT bool FStringConvertFromTime(const FTime* pValue, char* pDestination, FInt destinationMaxLength); /* Destination must be greater than or equal to 32 characters */
 
-bool FStringConvertToInt(const char* pSource, FInt sourceMaxLength, FInt* pValue);
-bool FStringConvertToFloat(const char* pSource, FInt sourceMaxLength, float* pValue);
-bool FStringConvertToDouble(const char* pSource, FInt sourceMaxLength, double* pValue);
-bool FStringConvertToBool(const char* pSource, FInt sourceMaxLength, bool* pValue);
+FEXPORT bool FStringConvertToInt(const char* pSource, FInt sourceMaxLength, FInt* pValue);
+FEXPORT bool FStringConvertToFloat(const char* pSource, FInt sourceMaxLength, float* pValue);
+FEXPORT bool FStringConvertToDouble(const char* pSource, FInt sourceMaxLength, double* pValue);
+FEXPORT bool FStringConvertToBool(const char* pSource, FInt sourceMaxLength, bool* pValue);
 
 
 

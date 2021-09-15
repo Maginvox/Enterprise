@@ -4,7 +4,7 @@
 /* Arguments are formatted like this "--name=value" to pass a value, or "--name" to indicate an options is on or off */
 /* Arguments that do not have this format will be excluded from the retrievable options */
 
-#include "Export.h"
+#include "Core/FExport.h"
 #include "Core/FMacro.h"
 #include "Core/FTypes.h"
 
@@ -43,9 +43,9 @@ typedef struct FArgumentParser
     FArgumentParsedOption* pParsedOptions;
 } FArgumentParser;
 
-FArgumentParser* FArgumentParserCreate(const FInt32 optionsCount, const FArgumentOption* pOptions);
-void FArgumentParserDestroy(FArgumentParser** pArgumentParser);
-bool FArgumentParserParse(FArgumentParser* pArgumentParser, const int argc, const char* const* argv);
-bool FArgumentParserGetOption(FArgumentParser* pArgumentParser, const char* pName, FArgumentParsedOption* pParsedOption);
+FEXPORT FArgumentParser* FArgumentParserCreate(const FInt32 optionsCount, const FArgumentOption* pOptions);
+FEXPORT void FArgumentParserDestroy(FArgumentParser** pArgumentParser);
+FEXPORT bool FArgumentParserParse(FArgumentParser* pArgumentParser, const int argc, const char* const* argv);
+FEXPORT bool FArgumentParserGetOption(FArgumentParser* pArgumentParser, const char* pName, FArgumentParsedOption* pParsedOption);
 
 #endif

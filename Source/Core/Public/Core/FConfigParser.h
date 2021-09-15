@@ -45,11 +45,11 @@ typedef struct FConfigParser
     FConfigParsedOption* pParsedOptions;
 } FConfigParser;
 
-FConfigParser* FConfigParserCreate(FInt64 optionsCount, FConfigOption* pOptions);
-void FConfigParserDestroy(FConfigParser* pConfigParser);
-bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilename);
-bool FConfigParserGetOption(FConfigParser* pConfigParser, const char* pOptionName, FConfigParsedOption* pParsedOption);
-void FConfigParserReset(FConfigParser* pConfigParser, const char* pConfigFilename);
-void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigFilename, const char* pOptionName);
+FEXPORT FConfigParser* FConfigParserCreate(FInt64 optionsCount, FConfigOption* pOptions);
+FEXPORT void FConfigParserDestroy(FConfigParser* pConfigParser);
+FEXPORT bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilename);
+FEXPORT bool FConfigParserGetOption(FConfigParser* pConfigParser, const char* pOptionName, FConfigParsedOption* pParsedOption);
+FEXPORT void FConfigParserReset(FConfigParser* pConfigParser, const char* pConfigFilename);
+FEXPORT void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigFilename, const char* pOptionName);
 
 #endif

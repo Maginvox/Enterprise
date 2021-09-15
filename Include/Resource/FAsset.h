@@ -9,7 +9,7 @@
 #ifndef __FASSET_H__
 #define __FASSET_H__
 
-#include "FTypes.h"
+#include "Core/FTypes.h"
 
 #define PACKAGE_MAGIC_NUMBER (FInt64)0x032AB3AB39
 #define PACKAGE_VERSION_NUMBER (FInt64)0x0002

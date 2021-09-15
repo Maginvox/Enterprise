@@ -1,7 +1,8 @@
 #ifndef __FPACKAGE_H__
 #define __FPACKAGE_H__
 
-#include "FTypes.h"
+#include "Core/FExport.h"
+#include "Core/FTypes.h"
 #include "Core/FArray.h"
 #include "Core/FHashMap.h"
 
@@ -48,13 +49,13 @@ typedef struct FPackage
     FHashMap* pRecordsMap;
 } FPackage;
 
-FPackage* FPackageCreate(const char* pRecordsPath, const char* pDataPath);
-void FPackageDestroy(FPackage** ppPackage);
-bool FPackageRecordAppend(FPackage* pPackage, const FPackageRecord* pRecord);
-bool FPackageRecordMarkRemove(FPackage* pPackage, const char* pNameId);
-bool FPackageRecordChange(FPackage* pPackage, const FPackageRecord* pRecord);
-bool FPackageDataAppend(FPackage* pPackage, const void* pData, FInt64 size, FInt64* pOffset);
-const FPackageRecord* FPackageGetRecord(FPackage* pPackage, const char* pName);
-bool FPackageDefragment(FPackage* pPackage); /* Removes the marked records and removes them from data in the package file */
+FEXPORT FPackage* FPackageCreate(const char* pRecordsPath, const char* pDataPath);
+FEXPORT void FPackageDestroy(FPackage** ppPackage);
+FEXPORT bool FPackageRecordAppend(FPackage* pPackage, const FPackageRecord* pRecord);
+FEXPORT bool FPackageRecordMarkRemove(FPackage* pPackage, const char* pNameId);
+FEXPORT bool FPackageRecordChange(FPackage* pPackage, const FPackageRecord* pRecord);
+FEXPORT bool FPackageDataAppend(FPackage* pPackage, const void* pData, FInt64 size, FInt64* pOffset);
+FEXPORT const FPackageRecord* FPackageGetRecord(FPackage* pPackage, const char* pName);
+FEXPORT bool FPackageDefragment(FPackage* pPackage); /* Removes the marked records and removes them from data in the package file */
 
 #endif

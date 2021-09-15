@@ -1,6 +1,7 @@
 #ifndef __FTIME_H__
 #define __FTIME_H__
 
+#include "FExport.h"
 #include "FTypes.h"
 
 typedef struct FTime
@@ -16,6 +17,6 @@ typedef struct FTime
     FInt32 isDaylightSavingTime;
 } FTime;
 
-void FTimeCurrent(FTime* time);
+FEXPORT void FTimeCurrent(FTime* time);
 
 #endif

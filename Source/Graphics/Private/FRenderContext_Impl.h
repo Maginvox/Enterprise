@@ -10,14 +10,16 @@ typedef struct FRenderContext
 {
     FRenderContext* pRenderContext;
 
-    PFN_FRenderPassCreate pRenderPassCreate;
-    PFN_FRenderPassDestroy pRenderPassDestroy;
-    
-    PFN_FImageCreate pImageCreate;
-    PFN_FImageDestroy pImageDestroy;
+    FRenderContextDestroyFunction pRenderContextDestroy;
 
-    PFN_FFramebufferCreate pFramebufferCreate;
-    PFN_FFramebufferDestroy pFramebufferDestroy;
+    FRenderPassCreateFunction pRenderPassCreate;
+    FRenderPassDestroyFunction pRenderPassDestroy;
+    
+    FImageCreateFunction pImageCreate;
+    FImageDestroyFunction pImageDestroy;
+
+    FFramebufferCreateFunction pFramebufferCreate;
+    FFramebufferDestroyFunction pFramebufferDestroy;
 } FRenderContext;
 
 #endif

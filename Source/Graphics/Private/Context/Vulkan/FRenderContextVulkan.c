@@ -2,6 +2,11 @@
 #include "Graphics/Context/Vulkan/FRenderContextVulkan.h"
 #include "Graphics/Context/Vulkan/FVulkanExtensions.h"
 
+void FRenderContextVulkan_Load(FRenderContext* pContext)
+{
+    
+}
+
 FRenderContext* FRenderContextVulkan_Create(const FRenderContextCreateInfo* pInfo)
 {
 

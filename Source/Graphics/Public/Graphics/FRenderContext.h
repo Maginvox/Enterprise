@@ -20,7 +20,10 @@ typedef struct FRenderContextOptions
 
 typedef struct FRenderContext FRenderContext;
 
-FRenderContext* FRenderContext_Create(const FRenderContextCreateInfo* pInfo);
-void FRenderContext_Destroy(FRenderContext** ppContext);
+typedef void (*FRenderContextCreateFunction)(const FRenderContextCreateInfo* pInfo);
+typedef void (*FRenderContextDestroyFunction)(FRenderContext** ppContext);
+
+FRenderContext* FRenderContextCreate(const FRenderContextCreateInfo* pInfo);
+void FRenderContextDestroy(FRenderContext** ppContext);
 
 #endif

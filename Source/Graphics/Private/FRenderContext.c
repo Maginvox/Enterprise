@@ -34,8 +34,9 @@ void FRenderContext_Destroy(FRenderContext** ppContext)
 {
     if (ppContext == NULL || *ppContext == NULL)
     {
-        return NULL;
+        return;
     }
-
+    
+    FRenderContext* pContext = *ppContext;
     
 }

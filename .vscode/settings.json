@@ -61,7 +61,9 @@
         "fvulkanvalidation.h": "c",
         "frendercontextvulkan.h": "c",
         "frendercontext.h": "c",
-        "fframebuffer.h": "c"
+        "fframebuffer.h": "c",
+        "fgraphicscontext.h": "c",
+        "fvulkanextensions.h": "c"
     },
     "cmake.configureOnOpen": true
 }

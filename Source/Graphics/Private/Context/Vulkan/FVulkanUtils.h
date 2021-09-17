@@ -10,7 +10,7 @@ static inline VkFormat FImageFormatToVkFormat(FImageFormat format)
 {
     switch (format)
     {
-        case FImageFormat_SRGB8:
+        case FImageFormat_R8G8B8A8:
             return VK_FORMAT_R8G8B8A8_SRGB;
             break;
         default:

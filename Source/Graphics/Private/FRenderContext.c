@@ -1,27 +1,39 @@
-#include "Graphics/FRenderContext.h"
-#include "FRenderContext_Impl.h"
+#include <SDL.h>
+
+#include "Core/FMath.h"
+#include "Core/FLog.h"
+#include "Graphics/FGraphicsContext.h"
+#include "FGraphicsContext_Impl.h"
 
 #ifdef ENTERPRISE_GRAPHICS_VULKAN
-    #include "Graphics/Context/Vulkan/FRenderContextVulkan.h"
+    #include "Context/Vulkan/FGraphicsContextVulkan.h"
 #endif
 
-FRenderContext* FRenderContext_Create(const FRenderContextCreateInfo* pInfo)
+FGraphicsContext* FRenderContextCreate(const FRenderAPI api)
 {
-    if (pInfo == NULL)
+    if (!FMathIsBetween(api, 0, FRenderAPI_Max))
     {
         return NULL;
     }
 
-    SDL_Init();
-    
-    switch(pInfo->api)
+    if (SDL_Init(SDL_INIT_EVERYTHING) != SDL_TRUE)
     {
+        return NULL;
+    }
+    
+    switch(api)
+    {
+
+#ifdef ENTERPRISE_GRAPHICS_VULKAN
         case FRenderAPI_Vulkan:
-            return FRenderContextVulkan_Create(pInfo);
+            return FGraphicsContextVulkanCreate();
             break;
-        
+#endif
+
+#ifdef ENTERPRISE_GRAPHICS_D3D12
         case FRenderAPI_D3D12:
             break;
+#endif
 
         default:
             return NULL;
@@ -30,13 +42,13 @@ FRenderContext* FRenderContext_Create(const FRenderContextCreateInfo* pInfo)
     return NULL;
 }
 
-void FRenderContext_Destroy(FRenderContext** ppContext)
+void FRenderContext_Destroy(FGraphicsContext** ppContext)
 {
     if (ppContext == NULL || *ppContext == NULL)
     {
         return;
     }
     
-    FRenderContext* pContext = *ppContext;
+    FGraphicsContext* pContext = *ppContext;
     
 }

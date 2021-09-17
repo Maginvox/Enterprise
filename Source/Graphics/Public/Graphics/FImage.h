@@ -7,11 +7,11 @@
 
 #include "Core/FExport.h"
 #include "Core/FTypes.h"
-#include "Graphics/FRenderContext.h"
+#include "Graphics/FGraphicsContext.h"
 
 typedef enum FImageFormat
 {
-    FImageFormat_SRGB8
+    FImageFormat_R8G8B8A8
 } FImageFormat;
 
 typedef enum FImageLayout
@@ -35,10 +35,10 @@ typedef struct FImageCreateInfo
 
 typedef struct FImage FImage;
 
-typedef FImage* (*PFN_FImageCreate)(FRenderContext* pAPI, const FImageCreateInfo* pInfo);
-typedef FImage* (*PFN_FImageDestroy)(FRenderContext* pAPI, FImage* pImage);
+typedef FImage* (*FImageCreateFunction)(FGraphicsContext* pContext, const FImageCreateInfo* pInfo);
+typedef void (*FImageDestroyFunction)(FGraphicsContext* pContext, FImage** ppImage);
 
-FImage* FImageCreate(FRenderContext* pAPI, const FImageCreateInfo* pInfo);
-void FImageDestroy(FRenderContext* pAPI, FImage** ppImage);
+FImage* FImageCreate(FGraphicsContext* pContext, const FImageCreateInfo* pInfo);
+void FImageDestroy(FGraphicsContext* pContext, FImage** ppImage);
 
 #endif

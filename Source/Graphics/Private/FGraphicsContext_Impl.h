@@ -1,16 +1,16 @@
-#ifndef __FRENDERCONTEXT_IMPL_H__
-#define __FRENDERCONTEXT_IMPL_H__
+#ifndef __FGRAPHICSCONTEXT_IMPL_H__
+#define __FGRAPHICSCONTEXT_IMPL_H__
 
-#include "Graphics/FRenderContext.h"
+#include "Graphics/FGraphicsContext.h"
 #include "Graphics/FRenderPass.h"
 #include "Graphics/FImage.h"
 #include "Graphics/FFramebuffer.h"
 
-typedef struct FRenderContext
+typedef struct FGraphicsContext
 {
-    FRenderContext* pRenderContext;
+    FGraphicsContext* pRenderContext;
 
-    FRenderContextDestroyFunction pRenderContextDestroy;
+    FGraphicsContextDestroyFunction pRenderContextDestroy;
 
     FRenderPassCreateFunction pRenderPassCreate;
     FRenderPassDestroyFunction pRenderPassDestroy;
@@ -20,6 +20,6 @@ typedef struct FRenderContext
 
     FFramebufferCreateFunction pFramebufferCreate;
     FFramebufferDestroyFunction pFramebufferDestroy;
-} FRenderContext;
+} FGraphicsContext;
 
 #endif

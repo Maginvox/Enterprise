@@ -15,14 +15,17 @@ if (Vulkan_FOUND)
     list(APPEND GraphicsSources
         "Private/Context/Vulkan/FVulkanExtensions.c"
         "Private/Context/Vulkan/FVulkanMemoryAllocator.cpp" 
-        "Private/Context/Vulkan/FRenderContextVulkan.c"
-        "Private/Context/Vulkan/FRenderPassVulkan.c")
+        "Private/Context/Vulkan/FGraphicsContextVulkan.c"
+        "Private/Context/Vulkan/FRenderPassVulkan.c"
+        "Private/Context/Vulkan/FImageVulkan.c"
+        "Private/Context/Vulkan/FFramebufferVulkan.c")
 endif()
 
 
 add_library(EnterpriseGraphics SHARED ${GraphicsSources})
 target_include_directories(EnterpriseGraphics PUBLIC "Public")
-target_link_libraries(EnterpriseGraphics EnterpriseCore SDL2)
+target_link_libraries(EnterpriseGraphics EnterpriseCore)
+target_link_libraries(EnterpriseGraphics SDL2)
 
 # Include ThirdParty Libraries
 if (Vulkan_FOUND)

@@ -1,22 +1,32 @@
 #include "Core/FMemory.h"
-#include "Graphics/Context/Vulkan/FRenderContextVulkan.h"
-#include "Graphics/Context/Vulkan/FVulkanExtensions.h"
+#include "FVulkanExtensions.h"
+#include "FGraphicsContextVulkan.h"
+#include "FRenderPassVulkan.h"
+#include "FFramebufferVulkan.h"
 
-void FRenderContextVulkan_Load(FRenderContext* pContext)
+#include "../../FGraphicsContext_Impl.h"
+
+void FGraphicsContextVulkanLoad(FGraphicsContext* pContext)
 {
+    pContext->pRenderContextDestroy = FGraphicsContextVulkanDestroy;
     
+    pContext->pRenderPassCreate = FRenderPassVulkanCreate;
+    pContext->pRenderPassDestroy = FRenderPassVulkanDestroy;
+
+    pContext->pFramebufferCreate = FFramebufferVulkanCreate;
+    pContext->pFramebufferDestroy = FFramebufferVulkanDestroy;
 }
 
-FRenderContext* FRenderContextVulkan_Create(const FRenderContextCreateInfo* pInfo)
+FGraphicsContext* FGraphicsContextVulkanCreate()
 {
 
-    FRenderContextVulkan* pContextVulkan = FAllocateZero(1, sizeof(FRenderContextVulkan));
+    FGraphicsContextVulkan* pContextVulkan = FAllocateZero(1, sizeof(FGraphicsContextVulkan));
     if (pContextVulkan == NULL)
     {
         return NULL;
     }
 
-    FRenderContext* pContext = (FRenderContext*)pContextVulkan;
+    FGraphicsContext* pContext = (FGraphicsContext*)pContextVulkan;
 
     /* Build the info to create the Vulkan instance. */
     VkApplicationInfo applicationInfo = {
@@ -49,7 +59,7 @@ FRenderContext* FRenderContextVulkan_Create(const FRenderContextCreateInfo* pInf
 
     if (vkCreateInstance(&createInfo, NULL, &pContextVulkan->instance) != VK_SUCCESS)
     {
-        FRenderContextVulkan_Destroy(&pContext);
+        FGraphicsContextVulkanDestroy(&pContext);
         return NULL;
     }
 
@@ -57,14 +67,14 @@ FRenderContext* FRenderContextVulkan_Create(const FRenderContextCreateInfo* pInf
     uint32_t physicalDeviceCount = 0;
     if (vkEnumeratePhysicalDevices(pContextVulkan->instance, &physicalDeviceCount, NULL) != VK_SUCCESS)
     {
-        FRenderContextVulkan_Destroy(&pContext);
+        FGraphicsContextVulkanDestroy(&pContext);
         return NULL;
     }
 
     VkPhysicalDevice* pPhysicalDevices = FAllocateZero(physicalDeviceCount, sizeof(VkPhysicalDevice));
     if (pPhysicalDevices == NULL)
     {
-        FRenderContextVulkan_Destroy(&pContext);
+        FGraphicsContextVulkanDestroy(&pContext);
         return NULL;
     }
 
@@ -73,14 +83,14 @@ FRenderContext* FRenderContextVulkan_Create(const FRenderContextCreateInfo* pInf
     return pContext;
 }
 
-void FRenderContextVulkan_Destroy(FRenderContext** ppContext)
+void FGraphicsContextVulkanDestroy(FGraphicsContext** ppContext)
 {
     if (ppContext == NULL || *ppContext == NULL)
     {
         return;
     }
 
-    FRenderContextVulkan* pContextVulkan = (FRenderContextVulkan*)*ppContext;
+    FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)*ppContext;
 
     if (pContextVulkan->instance != VK_NULL_HANDLE)
     {

@@ -1,8 +1,8 @@
-#include "FRenderContext_Impl.h"
+#include "FGraphicsContext_Impl.h"
 #include "Graphics/FRenderPass.h"
 
 
-FRenderPass* FRenderPassCreate(FRenderContext* pContext, const FRenderPassCreateInfo* pInfo)
+FRenderPass* FRenderPassCreate(FGraphicsContext* pContext, const FRenderPassCreateInfo* pInfo)
 {
     if (pContext == NULL || pContext->pRenderPassCreate == NULL)
     {
@@ -12,7 +12,7 @@ FRenderPass* FRenderPassCreate(FRenderContext* pContext, const FRenderPassCreate
     return pContext->pRenderPassCreate(pContext, pInfo);
 }
 
-void FRenderPassDestroy(FRenderContext* pContext, FRenderPass** ppRenderPass)
+void FRenderPassDestroy(FGraphicsContext* pContext, FRenderPass** ppRenderPass)
 {
     if (pContext == NULL || pContext->pRenderPassDestroy == NULL || ppRenderPass == NULL || *ppRenderPass == NULL)
     {

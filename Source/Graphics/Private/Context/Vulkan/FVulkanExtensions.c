@@ -5,7 +5,7 @@
 #include "Core/FMacro.h"
 #include "Core/FMemory.h"
 #include "Core/FString.h"
-#include "Graphics/Context/Vulkan/FVulkanExtensions.h"
+#include "FVulkanExtensions.h"
 
 static const char ppValidationLayers[1][VK_MAX_EXTENSION_NAME_SIZE] = {
     "VK_LAYER_KHRONOS_validation"

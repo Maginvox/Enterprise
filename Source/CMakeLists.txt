@@ -7,7 +7,8 @@ set (EnterpriseSources "")
 
 # Build each module
 add_subdirectory(Core)
+add_subdirectory(Resource)
 add_subdirectory(Networking)
 add_subdirectory(Graphics)
-add_subdirectory(Resource)
+add_subdirectory(GraphicsUI)
 add_subdirectory(Application)

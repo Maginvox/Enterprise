@@ -1,17 +1,17 @@
 #include "Core/FMemory.h"
-#include "../../FRenderContext_Impl.h"
-#include "Graphics/Context/Vulkan/FVulkanUtils.h"
-#include "Graphics/Context/Vulkan/FRenderContextVulkan.h"
-#include "Graphics/Context/Vulkan/FRenderPassVulkan.h"
+#include "../../FGraphicsContext_Impl.h"
+#include "FVulkanUtils.h"
+#include "FGraphicsContextVulkan.h"
+#include "FRenderPassVulkan.h"
 
-FRenderPass* FRenderPassCreateVulkan(FRenderContext* pContext, const FRenderPassCreateInfo* pInfo)
+FRenderPass* FRenderPassCreateVulkan(FGraphicsContext* pContext, const FRenderPassCreateInfo* pInfo)
 {
     if (pContext == NULL || pInfo == NULL)
     {
         return NULL;
     }
 
-    FRenderContextVulkan* pContextVulkan = (FRenderContextVulkan*)pContext->pRenderContext;
+    FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)pContext->pRenderContext;
 
     /* Count the attachment and allocate the descriptions and reference */
     FInt32 attachmentDescriptionCount = pInfo->colorAttachmentsCount + (pInfo->pDepthStencilAttachment != NULL ? 1 : 0);    

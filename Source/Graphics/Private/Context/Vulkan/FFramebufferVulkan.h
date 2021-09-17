@@ -10,7 +10,7 @@ typedef struct FFramebufferVulkan
     VkFramebuffer framebuffer;
 } FFramebufferVulkan;
 
-FFramebuffer* FFramebufferVulkanCreate(const FFramebufferCreateInfo* pInfo);
+FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFramebufferCreateInfo* pInfo);
 void FFramebufferVulkanDestroy(FFramebuffer** ppFramebuffer);
 
 #endif

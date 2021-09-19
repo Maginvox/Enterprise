@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifdef ENTERPRISE_WINDOWS
 
 #include <WinSock2.h>

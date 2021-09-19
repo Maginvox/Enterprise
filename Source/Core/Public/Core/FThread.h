@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FTHREAD_H__
 #define __FTHREAD_H__
 

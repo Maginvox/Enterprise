@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #include "Core/FMacro.h"
 #include "Core/FString.h"
 #include "Core/FHash.h"

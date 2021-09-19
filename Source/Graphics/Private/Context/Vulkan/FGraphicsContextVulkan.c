@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #include "Core/FMemory.h"
 #include "FVulkanExtensions.h"
 #include "FGraphicsContextVulkan.h"

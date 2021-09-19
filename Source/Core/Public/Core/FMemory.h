@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FMEMORY_H__
 #define __FMEMORY_H__
 

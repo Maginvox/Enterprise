@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __MACRO_H__
 #define __MACRO_H__
 

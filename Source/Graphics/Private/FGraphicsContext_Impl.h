@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FGRAPHICSCONTEXT_IMPL_H__
 #define __FGRAPHICSCONTEXT_IMPL_H__
 

@@ -1,7 +1,10 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #include "Core/FMemory.h"
 #include "../../FGraphicsContext_Impl.h"
 #include "FGraphicsContextVulkan.h"
 #include "FFramebufferVulkan.h"
+#include "FRenderPassVulkan.h"
 
 FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFramebufferCreateInfo* pInfo)
 {
@@ -11,6 +14,7 @@ FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFrameb
     }
 
     FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)pContext->pRenderContext;
+    FRenderPassVulkan* pRenderPass = (FRenderPassVulkan*)pInfo->pRenderPass;
 
     FFramebufferVulkan* pFramebuffer = FAllocateZero(1, sizeof(FFramebufferVulkan));
     if (pFramebuffer == NULL)
@@ -29,6 +33,7 @@ FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFrameb
         .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
         .pNext = NULL,
         .flags = 0,
+        .renderPass = pRenderPass->renderPass,
         .attachmentCount = pInfo->attachmentsCount,
         .pAttachments = pAttachments,
         .width = pInfo->width,
@@ -48,12 +53,20 @@ FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFrameb
     return (FFramebuffer*)pFramebuffer;
 }
 
-void FFramebufferVulkanDestroy(FFramebuffer** ppFramebuffer)
+void FFramebufferVulkanDestroy(FGraphicsContext* pContext, FFramebuffer** ppFramebuffer)
 {
-    if (ppFramebuffer == NULL || *ppFramebuffer == NULL)
+    if (pContext == NULL || ppFramebuffer == NULL || *ppFramebuffer == NULL)
     {
         return;
     }
 
-    vkDestroyFramebuffer()
+    FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)pContext->pRenderContext;
+    FFramebufferVulkan* pFramebufferVulkan = (FFramebufferVulkan*)*ppFramebuffer;
+    
+    if (pFramebufferVulkan->framebuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyFramebuffer(pContextVulkan->device, pFramebufferVulkan->framebuffer, NULL);
+    }
+
+    FDeallocate(pFramebufferVulkan);
 }

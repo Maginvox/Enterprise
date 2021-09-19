@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FEXPORT_H__
 #define __FEXPORT_H__
 

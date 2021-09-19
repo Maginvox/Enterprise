@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __D3D12_RENDER_DATA_H__
 #define __D3D12_RENDER_DATA_H__
 

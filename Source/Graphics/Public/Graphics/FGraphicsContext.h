@@ -1,7 +1,7 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#ifndef __FRENDERCONTEXT_H__
-#define __FRENDERCONTEXT_H__
+#ifndef __FGRAPHICSCONTEXT_H__
+#define __FGRAPHICSCONTEXT_H__
 
 
 typedef enum FRenderAPI

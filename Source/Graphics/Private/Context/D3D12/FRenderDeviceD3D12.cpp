@@ -1,4 +1,4 @@
-#ifdef ENTERPRISE_WINDOWS
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
 #include "Graphics/D3D12/d3d12renderdata.h"
 
@@ -48,5 +48,3 @@ void FD3D12RenderDataDeviceDestroy(FD3D12RenderData* pRenderData)
 {
     
 }
-
-#endif

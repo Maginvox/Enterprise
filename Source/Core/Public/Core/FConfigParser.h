@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FCONFIG_PARSER_H__
 #define __FCONFIG_PARSER_H__ 
 

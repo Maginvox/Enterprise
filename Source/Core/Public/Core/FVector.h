@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FVECTOR_H__
 #define __FVECTOR_H__
 

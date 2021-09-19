@@ -1,10 +1,12 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #include "Core/FMemory.h"
 #include "../../FGraphicsContext_Impl.h"
 #include "FVulkanUtils.h"
 #include "FGraphicsContextVulkan.h"
 #include "FRenderPassVulkan.h"
 
-FRenderPass* FRenderPassCreateVulkan(FGraphicsContext* pContext, const FRenderPassCreateInfo* pInfo)
+FRenderPass* FRenderPassVulkanCreate(FGraphicsContext* pContext, const FRenderPassCreateInfo* pInfo)
 {
     if (pContext == NULL || pInfo == NULL)
     {
@@ -133,4 +135,22 @@ FRenderPass* FRenderPassCreateVulkan(FGraphicsContext* pContext, const FRenderPa
     FDeallocate(pAttachmentReferences);
 
     return (FRenderPass*)pRenderPass;
+}
+
+void FRenderPassVulkanDestroy(FGraphicsContext* pContext, FRenderPass** ppRenderPass)
+{
+    if (pContext == NULL || ppRenderPass == NULL || *ppRenderPass == NULL)
+    {
+        return;
+    }
+
+    FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)pContext->pRenderContext;
+    FRenderPassVulkan* pRenderPassVulkan = (FRenderPassVulkan*)*ppRenderPass;
+    
+    if (pRenderPassVulkan->renderPass != VK_NULL_HANDLE)
+    {
+        vkDestroyRenderPass(pContextVulkan->device, pRenderPassVulkan->renderPass, NULL);
+    }
+
+    FDeallocate(pRenderPassVulkan);
 }

@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FMESH_CONVERSION_H__
 #define __FMESH_CONVERSION_H__
 

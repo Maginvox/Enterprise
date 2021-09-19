@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FFRAMEBUFFER_VULKAN_H__
 #define __FFRAMEBUFFER_VULKAN_H__
 
@@ -11,6 +13,6 @@ typedef struct FFramebufferVulkan
 } FFramebufferVulkan;
 
 FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFramebufferCreateInfo* pInfo);
-void FFramebufferVulkanDestroy(FFramebuffer** ppFramebuffer);
+void FFramebufferVulkanDestroy(FGraphicsContext* pContext, FFramebuffer** ppFramebuffer);
 
 #endif

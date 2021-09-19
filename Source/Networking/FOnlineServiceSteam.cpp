@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #include <steam/steam_api_flat.h>
 
 extern "C" {

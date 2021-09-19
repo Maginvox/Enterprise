@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FVERTEX_H__
 #define __FVERTEX_H__
 

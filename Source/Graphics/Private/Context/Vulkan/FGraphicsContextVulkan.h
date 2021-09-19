@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FRENDERCONTEXT_VULKAN_H__
 #define __FRENDERCONTEXT_VULKAN_H__
 

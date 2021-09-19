@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #include "Core/FLog.h"
 #include "Core/FMemory.h"
 #include "Core/FString.h"

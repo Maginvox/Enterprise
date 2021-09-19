@@ -1,7 +1,8 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FSTRING_H__
 #define __FSTRING_H__
 
-#include "Core/FExport.h"
 #include "Core/FTypes.h"
 #include "Core/FTime.h"
 

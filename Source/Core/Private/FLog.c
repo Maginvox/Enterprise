@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #include <stdio.h>
 
 #include "Core/FFile.h"

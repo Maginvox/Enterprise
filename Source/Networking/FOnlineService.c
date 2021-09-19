@@ -1,5 +1,6 @@
-#include "Networking/FOnlineService.h"
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
+#include "Networking/FOnlineService.h"
 
 FOnlineService* FOnlineServiceCreate(); 
 void FOnlineServiceDestroy(FOnlineService** pService);

@@ -1,6 +1,4 @@
-/*
-    : Copyright © 2021 Caden Miller, All Rights Reserved.
- */
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
 #ifndef __FRENDERPASS_H__
 #define __FRENDERPASS_H__

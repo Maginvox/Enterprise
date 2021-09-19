@@ -1,6 +1,4 @@
-/*
-   Notice: Copyright © 2021 Caden Miller, All Rights Reserved.
- */
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
 #ifndef __FIMAGE_H__
 #define __FIMAGE_H__

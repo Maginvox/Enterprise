@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FRENDER_COMMANDS_H__
 #define __FRENDER_COMMANDS_H__
 

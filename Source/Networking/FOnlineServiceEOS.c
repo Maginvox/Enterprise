@@ -1,4 +1,4 @@
-#ifdef ENTERPRISE_ONLINE_SERVICE_EPIC_GAMES
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
 #include <string.h>
 
@@ -281,5 +281,3 @@ FResult FStoreEpicGamesGetUserIcon(FOnlineService* pStore, const FStoreUser user
 {
 
 }
-
-#endif

@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __ARGS_PARSER_H__
 #define __ARGS_PARSER_H__
 

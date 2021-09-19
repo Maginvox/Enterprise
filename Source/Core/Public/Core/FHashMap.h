@@ -1,3 +1,5 @@
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+
 #ifndef __FHASH_MAP_H__
 #define __FHASH_MAP_H__
 

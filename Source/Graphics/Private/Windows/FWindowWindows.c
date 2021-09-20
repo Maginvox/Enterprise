@@ -4,7 +4,16 @@
 
 #include "Graphics/FWindow.h"
 
-FWindow* FWindowCreate()
+
+
+FWindow* FWindowCreate(FGraphicsContext* pContext, const FWindowCreateInfo* pInfo)
 {
+
+    WNDCLASS wc = {0};
+    wc.
     
+    DWORD style = WS_EX_OVERLAPPEDWINDOW;
+
+    CreateWindowEx(style, )
+
 }

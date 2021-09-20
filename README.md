@@ -56,8 +56,7 @@ ENTERPRISE_DISCORD_INCLUDE_PATH = "${ENTERPRISE_DISCORD_PATH}/c"
 ## Tasks
 - [X] Complete Config Parser
 - [X] Complete Argument Parser
-- [ ] Complete Asset Packager Application
-- [x] Complete Asset Manager
+- [X] Complete Asset Manager
 - [ ] Complete Vulkan Implementation
 - [ ] Complete Audio Manager
 - [ ] Complete Steam Online Service
@@ -77,4 +76,4 @@ ENTERPRISE_DISCORD_INCLUDE_PATH = "${ENTERPRISE_DISCORD_PATH}/c"
 If you wish to commit to Enterprise, that is great! Feel free to make pull requests, issues and whatever else. The only ask that I have is that you make sure you read [STYLE.md](STYLE.md) and ensure that your code complies with the rest of the project.
 
 ## License
-This project is licensed under the **MIT License**, [LICENSE.md](LICENSE.md)
+No license yet.

@@ -21,6 +21,26 @@ if (Vulkan_FOUND)
         "Private/Context/Vulkan/FFramebufferVulkan.c")
 endif()
 
+# Build a specific window file
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    list(APPEND GraphicsSources
+        "Private/Windows/FWindowWindows.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    list(APPEND GraphicsSources
+        "Private/Windows/FWindowMacOS.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    list(APPEND GraphicsSources
+        "Private/Windows/FWindowAndroid.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    if (ENTERPRISE_GRAPHICS_X11)
+        list(APPEND GraphicsSources
+            "Private/Windows/FWindowLinuxX11.c")
+    elseif(ENTERPRISE_GRAPHICS_WAYLAND)
+        list(APPEND GraphicsSources
+            "Private/Windows/FWindowLinuxWayland.c")
+    endif()
+endif()
+
 
 add_library(EnterpriseGraphics SHARED ${GraphicsSources})
 target_include_directories(EnterpriseGraphics PUBLIC "Public")

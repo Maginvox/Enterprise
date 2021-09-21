@@ -14,7 +14,7 @@ list(APPEND CoreSources
 		"Private/FArgumentParser.c"
 		"Private/FConfigParser.c")
 
-add_library(EnterpriseCore SHARED ${CoreSources})
+add_library(EnterpriseCore STATIC ${CoreSources})
 target_include_directories(EnterpriseCore PUBLIC "Public")
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

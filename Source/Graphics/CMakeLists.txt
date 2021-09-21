@@ -32,13 +32,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     list(APPEND GraphicsSources
         "Private/Windows/FWindowAndroid.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    if (ENTERPRISE_GRAPHICS_X11)
-        list(APPEND GraphicsSources
-            "Private/Windows/FWindowLinuxX11.c")
-    elseif(ENTERPRISE_GRAPHICS_WAYLAND)
-        list(APPEND GraphicsSources
-            "Private/Windows/FWindowLinuxWayland.c")
-    endif()
+    list(APPEND GraphicsSources
+        "Private/Windows/FWindowLinuxX11.c")
 endif()
 
 

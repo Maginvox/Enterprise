@@ -76,4 +76,4 @@ ENTERPRISE_DISCORD_INCLUDE_PATH = "${ENTERPRISE_DISCORD_PATH}/c"
 If you wish to commit to Enterprise, that is great! Feel free to make pull requests, issues and whatever else. The only ask that I have is that you make sure you read [STYLE.md](STYLE.md) and ensure that your code complies with the rest of the project.
 
 ## License
-No license yet.
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.

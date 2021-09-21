@@ -63,7 +63,8 @@
         "frendercontext.h": "c",
         "fframebuffer.h": "c",
         "fgraphicscontext.h": "c",
-        "fvulkanextensions.h": "c"
+        "fvulkanextensions.h": "c",
+        "xwindows.h": "c"
     },
     "cmake.configureOnOpen": true
 }

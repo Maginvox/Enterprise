@@ -12,10 +12,12 @@ typedef struct FWindowCreateInfo
 
 typedef struct FWindow FWindow;
 
+bool FWindowSystemInitialize();
+void FWindowSystemShutdown();
+bool FWindowSystemIsInitialized();
+
 FWindow* FWindowCreate(FWindowCreateInfo* pInfo);
 void FWindowDestroy(FWindow** ppWindow);
-
-
-
+void* FWindowGetHandle(FWindow* pWindow);
 
 #endif

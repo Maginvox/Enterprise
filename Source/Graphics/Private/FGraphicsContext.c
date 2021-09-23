@@ -1,7 +1,5 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#include <SDL.h>
-
 #include "Core/FMath.h"
 #include "Core/FLog.h"
 #include "Graphics/FGraphicsContext.h"
@@ -11,24 +9,19 @@
     #include "Context/Vulkan/FGraphicsContextVulkan.h"
 #endif
 
-FGraphicsContext* FRenderContextCreate(const FRenderAPI api)
+FGraphicsContext* FGraphicsContextCreate(FWindow* pWindow, const FGraphicsOptions* pOptions)
 {
-    if (!FMathIsBetween(api, 0, FRenderAPI_Max))
+    if (!FMathIsBetween(pOptions->api, 0, FRenderAPI_Max))
     {
         return NULL;
     }
 
-    if (SDL_Init(SDL_INIT_EVERYTHING) != SDL_TRUE)
-    {
-        return NULL;
-    }
-    
-    switch(api)
+    switch(pOptions->api)
     {
 
 #ifdef ENTERPRISE_GRAPHICS_VULKAN
         case FRenderAPI_Vulkan:
-            return FGraphicsContextVulkanCreate();
+            return FGraphicsContextVulkanCreate(pWindow, pOptions);
             break;
 #endif
 
@@ -44,13 +37,15 @@ FGraphicsContext* FRenderContextCreate(const FRenderAPI api)
     return NULL;
 }
 
-void FRenderContext_Destroy(FGraphicsContext** ppContext)
+void FGraphicsContextDestroy(FGraphicsContext** ppContext)
 {
     if (ppContext == NULL || *ppContext == NULL)
     {
         return;
     }
     
-    FGraphicsContext* pContext = *ppContext;
     
+
+    FGraphicsContext* pContext = *ppContext;
+
 }

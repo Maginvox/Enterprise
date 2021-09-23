@@ -16,5 +16,5 @@ if(ENTERPRISE_NETWORKING_HAS_DISCORD)
     
 endif()
 
-add_library(EnterpriseNetworking ${NetworkingSources})
+add_library(EnterpriseNetworking STATIC ${NetworkingSources})
 target_include_directories(EnterpriseNetworking PUBLIC "${PROJECT_SOURCE_DIR}/Include/")

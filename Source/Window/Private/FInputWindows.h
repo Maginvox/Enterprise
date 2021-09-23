@@ -5,5 +5,4 @@
 
 LRESULT FWindowProcedure(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
-
 #endif

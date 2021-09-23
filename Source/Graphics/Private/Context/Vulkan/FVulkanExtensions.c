@@ -1,7 +1,6 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
 #include <vulkan/vulkan.h>
-#include <SDL_vulkan.h>
 
 #include "Core/FTypes.h"
 #include "Core/FMacro.h"

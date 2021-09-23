@@ -23,7 +23,7 @@ typedef struct FGraphicsContextVulkan
     VmaAllocator allocator;
 } FGraphicsContextVulkan;
 
-FGraphicsContext* FGraphicsContextVulkanCreate();
+FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphicsOptions* pOptions);
 void FGraphicsContextVulkanDestroy(FGraphicsContext** ppContext);
 
 void FGraphicsContextVulkanGetOptions(FGraphicsContext* pContext, FGraphicsOptions* pOptions);

@@ -64,7 +64,9 @@
         "fframebuffer.h": "c",
         "fgraphicscontext.h": "c",
         "fvulkanextensions.h": "c",
-        "xwindows.h": "c"
+        "xwindows.h": "c",
+        "finputwindows.h": "c",
+        "fwindow.h": "c"
     },
     "cmake.configureOnOpen": true
 }

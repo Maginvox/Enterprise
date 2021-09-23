@@ -1,9 +1,9 @@
 #ifndef __FWINDOW_VULKAN_H__
 #define __FWINDOW_VULKAN_H__
 
-/* Define the vulkan window api for surface creation */
-
 #include <vulkan/vulkan.h>
+
+#include "Window/FWindow.h"
 
 typedef struct FWindowVulkan
 {
@@ -11,5 +11,7 @@ typedef struct FWindowVulkan
     VkSwapchain swapchain;
 } FWindowVulkan;
 
+FWindowVulkan* FWindowVulkanCreate(FWindow* pWindow);
+void FWindowVulkanDestroy(FWindowVulkan* pWindow);
 
 #endif

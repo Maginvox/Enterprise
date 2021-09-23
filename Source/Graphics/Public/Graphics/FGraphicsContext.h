@@ -3,6 +3,7 @@
 #ifndef __FGRAPHICSCONTEXT_H__
 #define __FGRAPHICSCONTEXT_H__
 
+#include "Window/FWindow.h"
 
 typedef enum FRenderAPI
 {
@@ -13,7 +14,8 @@ typedef enum FRenderAPI
 
 typedef struct FGraphicsOptions
 {
-    FRenderAPI api;
+    FRenderAPI api; /* Can only change on create */
+    FInt32 physicalDevice; /* Can only change on create */
 } FGraphicsOptions;
 
 typedef struct FGraphicsContext FGraphicsContext;
@@ -22,7 +24,7 @@ typedef void (*FGraphicsContextDestroyFunction)(FGraphicsContext** ppContext);
 typedef void (*FGraphicsContextGetOptionsFunction)(FGraphicsContext* pContext, FGraphicsOptions* pOptions);
 typedef void (*FGraphicsContextApplyOptionsFunction)(FGraphicsContext* pContext, const FGraphicsOptions* pOptions);
 
-FGraphicsContext* FGraphicsContextCreate(const FRenderAPI api);
+FGraphicsContext* FGraphicsContextCreate(FWindow* pWindow, const FGraphicsOptions* pOptions);
 void FGraphicsContextDestroy(FGraphicsContext** ppContext);
 
 void FGraphicsContextGetOptions(FGraphicsContext* pContext, FGraphicsOptions* pOptions);

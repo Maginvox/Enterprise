@@ -5,6 +5,7 @@ find_package(Vulkan REQUIRED)
 
 set (EnterpriseSources "")
 
+
 # Build each module
 add_subdirectory(Core)
 add_subdirectory(Resource)

@@ -5,7 +5,7 @@ find_package(Vulkan REQUIRED)
 set(GraphicsSources "")
 
 list(APPEND GraphicsSources
-    "Private/FRenderContext.c"
+    "Private/FGraphicsContext.c"
     "Private/FRenderPass.c"
     "Private/FImage.c"
     "Private/FFramebuffer.c")
@@ -23,10 +23,9 @@ endif()
 
 
 
-add_library(EnterpriseGraphics SHARED ${GraphicsSources})
+add_library(EnterpriseGraphics STATIC ${GraphicsSources})
 target_include_directories(EnterpriseGraphics PUBLIC "Public")
 target_link_libraries(EnterpriseGraphics EnterpriseCore EnterpriseWindow)
-target_link_libraries(EnterpriseGraphics SDL2)
 
 # Include ThirdParty Libraries
 if (Vulkan_FOUND)

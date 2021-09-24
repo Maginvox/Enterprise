@@ -13,8 +13,6 @@ typedef struct FWindowWindows {
     void* pRenderData;
 } FWindowWindows;
 
-static FWindowSystemCreateCallbackFunction g_pWindowSystemCreateCallback;
-static FWindowSystemDestroyCallbackFunction g_pWindowSystemDestroyCallback;
 static bool systemInitialized = false;
 
 bool FWindowSystemInitialize()
@@ -45,35 +43,11 @@ void FWindowSystemShutdown()
 
 }
 
-bool FWindowSystemIsInitialized()
-{
-    return systemInitialized;
-}
-
-void FWindowSystemSetCreateCallback(FWindowSystemCreateCallbackFunction pCreateCallback)
-{
-    g_pWindowSystemCreateCallback = pCreateCallback;
-}
-
-void FWindowSystemSetDestroyCallback(FWindowSystemDestroyCallbackFunction pDestroyCallback)
-{
-    g_pWindowSystemDestroyCallback = pDestroyCallback;
-}
-
 FWindow* FWindowCreate(const FWindowCreateInfo* pInfo)
 {
     if (pInfo == NULL || pInfo->pTitle == NULL || pInfo->width <= 0 || pInfo->height <= 0)
     {
         return NULL;
-    }
-
-    if (!FWindowSystemIsInitialized())
-    {
-        if (!FWindowSystemInitialize())
-        {
-            FLogError("Could not initialize the windowing system!");
-            return NULL;
-        }
     }
 
     DWORD style = WS_EX_OVERLAPPEDWINDOW;
@@ -96,24 +70,42 @@ FWindow* FWindowCreate(const FWindowCreateInfo* pInfo)
 
     pWindowWindows->hWnd = window;
 
-    if (g_pWindowSystemCreateCallback != NULL && !g_pWindowSystemCreateCallback((FWindow*)pWindowWindows))
-    {
-        return NULL;
-    }
-
     return (FWindow*)pWindowWindows;
 }
 
-void FWindowDestroy(FWindow** ppWindow)
+void FWindowDestroy(FWindow* pWindow)
 {
-    if (ppWindow == NULL || *ppWindow == NULL)
+    if (pWindow == NULL)
     {
         return;
     }
 
-    FWindowWindows* pWindowWindows = (FWindowWindows*)*ppWindow;
-
+    FWindowWindows* pWindowWindows = (FWindowWindows*)*pWindow;
     CloseWindow(pWindowWindows->hWnd);
 
     FDeallocate(pWindowWindows);
+}
+
+void FWindowSetRenderData(FWindow* pWindow, void* pRenderData)
+{
+    if (pWindow == NULL)
+    {
+        return;
+    }
+
+    FWindowWindows* pWindowWindows = (FWindowWindows*)pWindow;
+
+    pWindowWindows->pRenderData = pRenderData;
+}
+
+void* FWindowGetRenderData(const FWindow* pWindow)
+{
+    if (pWindow == NULL)
+    {
+        return NULL;
+    }
+
+    FWindowWindows* pWindowWindows = (FWindowWindows*)pWindow;
+
+    return pWindowWindows->pRenderData;
 }

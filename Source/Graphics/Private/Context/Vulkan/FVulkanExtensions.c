@@ -136,3 +136,56 @@ const char* const* FVulkanInstanceExtensions(FInt32* pCount)
 
     return (const char* const*)ppInstanceExtensions;
 }
+
+static const char ppDeviceExtensions[1][VK_MAX_EXTENSION_NAME_SIZE] =
+{
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
+
+const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, FInt32* pCount)
+{
+    if (pCount == NULL)
+    {
+        return NULL;
+    }
+
+    *pCount = 0; 
+    
+    /* Get the supported device extensions */
+    uint32_t propertiesCount = 0;
+    if (vkEnumerateDeviceExtensionProperties(physicalDevice, NULL, &propertiesCount, NULL) != VK_SUCCESS)
+    {
+        return NULL;
+    }
+
+    VkExtensionProperties* pProperties = FAllocateZero(propertiesCount, sizeof(VkExtensionProperties));
+    if (pProperties == NULL)
+    {
+        return NULL;
+    }
+
+    vkEnumerateDeviceExtensionProperties(physicalDevice, NULL, &propertiesCount, pProperties);
+
+    /* Loop over all of the requested extensions and make sure they were found */
+    for (FInt32 i = 0; i < FCOUNT_OF(ppDeviceExtensions); i++)
+    {
+        bool found = false;
+
+        for (uint32_t j = 0; j < propertiesCount; j++)
+        {
+            if (FStringCompare(ppDeviceExtensions[i], VK_MAX_EXTENSION_NAME_SIZE, pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            FDeallocate(pProperties);
+            return NULL;
+        }
+    }
+
+    return (const char* const*)ppDeviceExtensions;
+}

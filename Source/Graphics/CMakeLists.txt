@@ -13,6 +13,7 @@ list(APPEND GraphicsSources
 # Vulkan API
 if (Vulkan_FOUND)
     list(APPEND GraphicsSources
+        "Private/Context/Vulkan/FWindowVulkan.c"
         "Private/Context/Vulkan/FVulkanExtensions.c"
         "Private/Context/Vulkan/FVulkanMemoryAllocator.cpp" 
         "Private/Context/Vulkan/FGraphicsContextVulkan.c"

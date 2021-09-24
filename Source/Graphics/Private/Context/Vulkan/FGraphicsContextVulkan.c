@@ -3,6 +3,7 @@
 #include "Core/FMemory.h"
 #include "Core/FMath.h"
 #include "Core/FBitset.h"
+#include "Core/FLog.h"
 
 #include "FVulkanExtensions.h"
 #include "FGraphicsContextVulkan.h"
@@ -25,8 +26,6 @@ void FGraphicsContextVulkanLoad(FGraphicsContext* pContext)
 
 FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphicsOptions* pOptions)
 {
-    FWindowSystemSetCreateCallback(FVulkanWindowCreateCallback);
-    FWindowSystemSetDestroyCallback(FVulkanWindowDestroyCallback);
 
     FGraphicsContextVulkan* pContextVulkan = FAllocateZero(1, sizeof(FGraphicsContextVulkan));
     if (pContextVulkan == NULL)
@@ -72,7 +71,7 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
     }
 
     /* Now that the surface is created we can create the window surface */
-    FWindowVulkan* pWindowVulkan = FWindowVulkanCreate(pWindow);
+    FWindowVulkan* pWindowVulkan = FWindowVulkanCreate(pContextVulkan, pWindow);
     if (pWindowVulkan == NULL)
     {
         FGraphicsContextVulkanDestroy(&pContext);
@@ -142,41 +141,153 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
             3. Find a less specialized queue family and use it instead.
     */
 
-    #define FQUEUE_COUNT 3
-
+    /* Find the graphics queue */
+    bool foundGraphicsFamily = false, foundPresentFamily = false, foundComputeFamily = false;
+    FUInt32 graphicsFamily = 0, presentFamily = 0, computeFamily = 0;
     
-    VkQueueFlags requestedQueues
-
-    for (FInt i = 0; i < FQUEUE_COUNT; i++)
+    for (FUInt32 i = 0; i < queueFamilyPropertiesCount; i++)
     {
-        FInt32 bestQueue = 0;
+        VkQueueFamilyProperties* pFamilyProperties = &pQueueFamilyProperties[i];
 
-        for (FUInt32 j = 0; j < queueFamilyPropertiesCount; j++)
+        /* Check for the graphics family */
+        if (pFamilyProperties->queueFlags & VK_QUEUE_GRAPHICS_BIT)
         {
-            char bits[FBITNSLOTS(FQUEUE_COUNT)];
+            foundGraphicsFamily = true;
 
-            if (pQueueFamilyProperties[j].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+            if (pFamilyProperties->queueFlags == VK_QUEUE_GRAPHICS_BIT) /* This queue is only for graphics */
             {
-                bits[]
+                graphicsFamily = i;
+                continue;
+            }
+
+            if (pQueueFamilyProperties[graphicsFamily].queueFlags > pFamilyProperties->queueFlags)
+            {
+                graphicsFamily = i;
+            }
+        }
+
+        /* Check for the present family */
+        VkBool32 presentSupport = VK_FALSE;
+        vkGetPhysicalDeviceSurfaceSupportKHR(pContextVulkan->physicalDevice, i, pWindowVulkan->surface, &presentSupport);
+
+        if (presentSupport)
+        {
+            foundPresentFamily = true;
+
+            if (pQueueFamilyProperties[presentFamily].queueFlags > pFamilyProperties->queueFlags)
+            {
+                presentFamily = i;
+            }
+        }
+
+        /* Check for the compute family */
+        if (pFamilyProperties->queueFlags & VK_QUEUE_COMPUTE_BIT)
+        {
+            foundComputeFamily = true;
+
+            if (pFamilyProperties->queueFlags == VK_QUEUE_COMPUTE_BIT) /* This queue is only for graphics */
+            {
+                computeFamily = i;
+                continue;
+            }
+
+            if (pQueueFamilyProperties[computeFamily].queueFlags > pFamilyProperties->queueFlags)
+            {
+                computeFamily = i;
             }
         }
     }
 
-    for (FUInt32 i = 0; i < queueFamilyPropertiesCount; i++)
-    {
-        if (pQueueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-        {
-            pContextVulkan->graphicsFamilyIndex = i;
-        }
+    FDeallocate(pQueueFamilyProperties);
 
-        VkBool32 surfaceSupported = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(pContextVulkan->physicalDevice, i, pWindowData->surface, &surfaceSupported);
-        if (surfaceSupported)
-        {
-            pContextVulkan->presentFamilyIndex = i;
-        }
+    /* Make sure all of the queue families were found. */ 
+    if (!foundGraphicsFamily || !foundPresentFamily || !foundComputeFamily)
+    {
+        FGraphicsContextVulkanDestroy(&pContext);
+        FLogError("Could not find a required vulkan queue!");
+        return NULL;
     }
 
+    /* Look for duplicates in the queue families */
+    const bool bGraphicsAndPresentSame = (graphicsFamily == presentFamily);
+    const bool bPresentAndComputeSame = (presentFamily == computeFamily);
+    const bool bAllQueuesSame = (bGraphicsAndPresentSame && bPresentAndComputeSame);
+    const bool bAllQueuesDifferent = (!bGraphicsAndPresentSame && !bPresentAndComputeSame);
+
+    const FUInt32 queueFamilyCount = bAllQueuesSame ? 1 : (bAllQueuesDifferent ? 3 : 2);
+
+    VkDeviceQueueCreateInfo* pQueueCreateInfos = FAllocateZero(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
+    if (pQueueCreateInfos == NULL)
+    {
+        FGraphicsContextVulkanDestroy(&pContext);
+        return NULL;
+    }
+
+    float pQueuePriorities[3] = 
+    {
+        1.0f,
+        1.0f,
+        1.0f
+    };
+
+    pQueueCreateInfos[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    pQueueCreateInfos[0].pNext = NULL;
+    pQueueCreateInfos[0].flags = 0;
+    pQueueCreateInfos[0].queueFamilyIndex = graphicsFamily;
+    pQueueCreateInfos[0].queueCount = 1;
+    pQueueCreateInfos[0].pQueuePriorities = pQueuePriorities;
+    FInt queueFamiliesUsed = 1;
+
+    if (!bGraphicsAndPresentSame)
+    {
+        pQueueCreateInfos[queueFamiliesUsed].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        pQueueCreateInfos[queueFamiliesUsed].pNext = NULL;
+        pQueueCreateInfos[queueFamiliesUsed].flags = 0;
+        pQueueCreateInfos[queueFamiliesUsed].queueFamilyIndex = presentFamily;
+        pQueueCreateInfos[queueFamiliesUsed].queueCount = 1;
+        pQueueCreateInfos[queueFamiliesUsed].pQueuePriorities = pQueuePriorities;
+        queueFamiliesUsed++;
+    }
+
+    if (!bPresentAndComputeSame)
+    {
+        pQueueCreateInfos[queueFamiliesUsed].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        pQueueCreateInfos[queueFamiliesUsed].pNext = NULL;
+        pQueueCreateInfos[queueFamiliesUsed].flags = 0;
+        pQueueCreateInfos[queueFamiliesUsed].queueFamilyIndex = computeFamily;
+        pQueueCreateInfos[queueFamiliesUsed].queueCount = 1;
+        pQueueCreateInfos[queueFamiliesUsed].pQueuePriorities = pQueuePriorities;
+        queueFamiliesUsed++;
+    }
+
+    /* Get the device extensions. */ 
+    FInt32 deviceExtensionsCount = 0;
+    const char* const* ppDeviceExtensions = FVulkanDeviceExtensions(pContextVulkan->physicalDevice, &deviceExtensionsCount);
+
+    const VkPhysicalDeviceFeatures deviceFeatures = {0};
+    const VkDeviceCreateInfo deviceCreateInfo = 
+    {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+        .pNext = NULL,
+        .flags = 0,
+        .queueCreateInfoCount = queueFamilyCount,
+        .pQueueCreateInfos = pQueueCreateInfos,
+        .enabledLayerCount = validationLayersCount,
+        .ppEnabledLayerNames = ppValidationLayers,
+        .enabledExtensionCount = deviceExtensionsCount,
+        .ppEnabledExtensionNames = ppDeviceExtensions,
+        .pEnabledFeatures = &deviceFeatures
+    };
+
+    if (vkCreateDevice(pContextVulkan->physicalDevice, &deviceCreateInfo, NULL, &pContextVulkan->device) != VK_SUCCESS)
+    {
+        FDeallocate(pQueueCreateInfos);
+        FGraphicsContextVulkanDestroy(&pContext);
+        FLogError("Could not create the Vulkan device!");
+        return NULL;
+    }
+
+    FDeallocate(pQueueCreateInfos);
 
     return pContext;
 }

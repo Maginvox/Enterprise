@@ -21,12 +21,13 @@ typedef struct FWindowCreateInfo
 typedef struct FWindow FWindow;
 
 FWindow* FWindowCreate(const FWindowCreateInfo* pInfo);
-void FWindowDestroy(FWindow** ppWindow);
+void  FWindowDestroy(FWindow* pWindow);
 void* FWindowGetSystemHandle(const FWindow* pWindow);
+void  FWindowSetUserData(FWindow* pWindow, void* pData);
+void* FWindowGetUserData(const FWindow* pWindow);
 
-/* If the Render API has extra data that it stores on the window this should be used, it will not be modified */
-void FWindowSetRenderData(FWindow* pWindow, void* pRenderData);
-void* FWindowGetRenderData(const FWindow* pWindow);
+#include "FInput.h"
 
+void FWindowSetInputCloseCallback
 
 #endif

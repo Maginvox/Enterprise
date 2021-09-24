@@ -17,7 +17,12 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    FGraphicsContext* pContext = FGraphicsContextCreate(FRenderAPI_Vulkan);
+    const FGraphicsOptions options =
+    {
+        .api = FRenderAPI_Vulkan
+    };
+
+    FGraphicsContext* pContext = FGraphicsContextCreate(pWindow, &options);
     if (pContext == NULL)
     {
         FWindowDestroy(&pWindow);

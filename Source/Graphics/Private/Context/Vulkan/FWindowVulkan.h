@@ -4,14 +4,18 @@
 #include <vulkan/vulkan.h>
 
 #include "Window/FWindow.h"
+#include "FGraphicsContextVulkan.h"
 
 typedef struct FWindowVulkan
 {
-    VkSurface surface;
-    VkSwapchain swapchain;
+    VkSurfaceKHR surface;
+    VkSwapchainKHR swapchain;
 } FWindowVulkan;
 
-FWindowVulkan* FWindowVulkanCreate(FWindow* pWindow);
-void FWindowVulkanDestroy(FWindowVulkan* pWindow);
+FWindowVulkan* FWindowVulkanCreate(FGraphicsContextVulkan* pContext, FWindow* pWindow); /* Will also create the swapchain if pContext->device is not VK_NULL_HANDLE */
+void FWindowVulkanDestroy(FGraphicsContextVulkan* pContext, FWindowVulkan* pWindow);
+
+void FWindowVulkanCreateSwapchain(FGraphicsContextVulkan* pContext, FWindowVulkan* pWindow);
+void FWindowVulkanDestroySwapchain(FGraphicsContextVulkan* pContext, FWindowVulkan* pWindow);
 
 #endif

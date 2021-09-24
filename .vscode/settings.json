@@ -66,7 +66,8 @@
         "fvulkanextensions.h": "c",
         "xwindows.h": "c",
         "finputwindows.h": "c",
-        "fwindow.h": "c"
+        "fwindow.h": "c",
+        "finput.h": "c"
     },
     "cmake.configureOnOpen": true
 }

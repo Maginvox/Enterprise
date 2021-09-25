@@ -3,12 +3,14 @@
 
 #include "X11/Xlib.h"
 
+#include "Core/FMemory.h"
+#include "Core/FMath.h"
 #include "Core/FLog.h"
-#include "Window/FWindow.h"
+#include "FWindow_Impl.h"
 
 Display* pDisplay = NULL;
 
-bool FX11Initialize()
+bool FWindowInitialize()
 {
     pDisplay = XOpenDisplay(NULL);
     if (pDisplay == NULL) {
@@ -19,7 +21,7 @@ bool FX11Initialize()
     return true;
 }
 
-void FX11Shutdown()
+void FWindowShutdown()
 {
     if (pDisplay != NULL)
     {
@@ -27,17 +29,63 @@ void FX11Shutdown()
     }
 }
 
-FWindow* FWindowCreate(FWindowCreateInfo* pInfo)
+FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowStyle style)
 {
+    if (width <= 0 || height <= 0 || !FMathIsBetween(style, 0, FWindowStyle_Max))
+    {
+        return NULL;
+    }
+
+    if (pDisplay == NULL)
+    {
+        if (!FWindowInitialize())
+        {
+            return NULL;
+        }
+    }
+
+    FWindow* pWindow = FAllocateZero(1, sizeof(FWindow));
+    if (pWindow == NULL)
+    {
+        return NULL;
+    }
     
-
-
+    /* Create the X11 window */
     int screen = DefaultScreen(pDisplay);
-    Window window = XCreateSimpleWindow(pDisplay, RootWindow(pDisplay, screen), 10, 10, 100, 100, 1, BlackPixel(pDisplay, screen), WhitePixel(pDisplay, screen));
+    pWindow->pHandle = (void*)XCreateSimpleWindow(pDisplay, RootWindow(pDisplay, screen), 10, 10, 100, 100, 1, BlackPixel(pDisplay, screen), WhitePixel(pDisplay, screen));
+    /* ^ A pointer ^ is just a number, so I guess this works? */
+ 
+    if (pWindow->pHandle == NULL)
+    {
+        FWindowDestroy(pWindow);
+        return NULL;
+    }
 
-    
-    XMapWindow(pDisplay, window);
+    XMapWindow(pDisplay, (Window)pWindow->pHandle);
+    XSelectInput(pDisplay, (Window)pWindow->pHandle, ExposureMask | KeyPressMask);
 
-    XSelectInput(pDisplay, window, ExposureMask | KeyPressMask);
+    /* Send out the create callback */
+    if (pCreateCallback != NULL)
+    {
+        if (!pCreateCallback(pWindow))
+        {
+            FWindowDestroy(pWindow);
+            return NULL;
+        }
+    }
 
+    return pWindow;
 }
+
+void FWindowDestroy(FWindow* pWindow)
+{
+    if (pWindow == NULL)
+    {
+        return;
+    }
+
+    XDestroyWindow(pDisplay, (Window)pWindow->pHandle);
+
+    FDeallocate(pWindow);
+}
+

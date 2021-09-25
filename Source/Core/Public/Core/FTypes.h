@@ -19,7 +19,7 @@ typedef unsigned long FUInt32;
 typedef unsigned long long FUInt64;
 typedef unsigned short FWChar;
 typedef int FInt;
-typedef unsigned int FuInt;
+typedef unsigned int FUInt;
 
 #define FINT8_MAX 127
 #define FINT8_MIN 128

@@ -12,6 +12,8 @@
 typedef struct FGraphicsContextVulkan
 {
     VkInstance instance;
+    PFN_vkCreateDebugUtilsMessengerEXT pCreateDebugMessenger;
+    PFN_vkDestroyDebugUtilsMessengerEXT pDestroyDebugMessenger;
     VkDebugUtilsMessengerEXT debugMessenger;
 
     VkPhysicalDevice physicalDevice;

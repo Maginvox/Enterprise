@@ -4,14 +4,12 @@
 
 int main(int argc, char** argv)
 {
-    FWindowCreateInfo info = {
-        "Enteprise Example",
-        1080,
-        720,
-        FWindowStyle_Default
-    };
-
-    FWindow* pWindow = FWindowCreate(&info);
+    if (!FWindowInitialize())
+    {
+        return -1;
+    }
+    
+    FWindow* pWindow = FWindowCreate("Enterprise Example", 1080, 720, FWindowStyle_Default);
     if (pWindow == NULL)
     {
         return -1;
@@ -25,10 +23,11 @@ int main(int argc, char** argv)
     FGraphicsContext* pContext = FGraphicsContextCreate(pWindow, &options);
     if (pContext == NULL)
     {
-        FWindowDestroy(&pWindow);
+        FWindowDestroy(pWindow);
         return -1;
     }
 
+    FWindowDestroy(pWindow);
     FGraphicsContextDestroy(&pContext);
-    FWindowDestroy(&pWindow);
+    FWindowShutdown();
 }

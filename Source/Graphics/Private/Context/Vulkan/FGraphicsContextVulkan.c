@@ -13,6 +13,25 @@
 
 #include "../../FGraphicsContext_Impl.h"
 
+VkBool32 FVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
+{
+    switch(messageSeverity)
+    {
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+            FLogInfo(pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+            FLogWarning(pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+            FLogError(pCallbackData->pMessage);
+        break;
+    }
+
+    return VK_FALSE;
+}
+
 void FGraphicsContextVulkanLoad(FGraphicsContext* pContext)
 {
     pContext->pRenderContextDestroy = FGraphicsContextVulkanDestroy;
@@ -53,9 +72,26 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
     FInt32 instanceExtensionsCount = 0;
     const char* const* ppInstanceExtensions = FVulkanInstanceExtensions(&instanceExtensionsCount);
 
+#ifdef ENTERPRISE_DEBUG
+    VkDebugUtilsMessengerCreateInfoEXT messengerCreateInfo = 
+    {
+        .sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
+        .pNext = NULL,
+        .flags = 0,
+        .messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
+        .messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+        .pfnUserCallback = FVulkanValidationLogger,
+        .pUserData = NULL
+    };
+#endif
+
     VkInstanceCreateInfo createInfo = {
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+#ifdef ENTERPRISE_DEBUG
+        .pNext = &messengerCreateInfo,
+#else
         .pNext = NULL,
+#endif
         .flags = 0,
         .pApplicationInfo = &applicationInfo,
         .enabledLayerCount = validationLayersCount,
@@ -70,6 +106,26 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
         return NULL;
     }
 
+    
+#ifdef ENTERPRISE_DEBUG
+    /* Load the messenger create and destroy functions */
+    pContextVulkan->pCreateDebugMessenger = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(pContextVulkan->instance, "vkCreateDebugUtilsMessengerEXT");
+    pContextVulkan->pDestroyDebugMessenger = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(pContextVulkan->instance, "vkDestroyDebugUtilsMessengerEXT");
+
+    if (pContextVulkan->pCreateDebugMessenger == NULL || pContextVulkan->pDestroyDebugMessenger == NULL)
+    {
+        FGraphicsContextDestroy(&pContext);
+        FLogError("Could not load vulkan debug functions, was the VulkanSDK installed?");
+        return NULL;
+    }
+
+    if (pContextVulkan->pCreateDebugMessenger(pContextVulkan->instance, &messengerCreateInfo, NULL, &pContextVulkan->debugMessenger) != VK_SUCCESS)
+    {
+        FGraphicsContextDestroy(&pContext);
+        return NULL;
+    }
+#endif
+
     /* Now that the surface is created we can create the window surface */
     FWindowVulkan* pWindowVulkan = FWindowVulkanCreate(pContextVulkan, pWindow);
     if (pWindowVulkan == NULL)
@@ -78,7 +134,7 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
         return NULL;
     }
 
-    FWindowSetRenderData(pWindow, pWindowVulkan);
+    FWindowSetUserData(pWindow, pWindowVulkan);
 
     /* Find the physical device */
     uint32_t physicalDeviceCount = 0;
@@ -111,7 +167,7 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
 
 
     /* Get the physical devices queues */
-    FUInt32 queueFamilyPropertiesCount = 0;
+    FUInt queueFamilyPropertiesCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(pContextVulkan->physicalDevice, &queueFamilyPropertiesCount, NULL);
 
     VkQueueFamilyProperties* pQueueFamilyProperties = FAllocateZero(queueFamilyPropertiesCount, sizeof(VkQueueFamilyProperties));

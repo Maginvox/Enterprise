@@ -3,8 +3,8 @@
 find_package(Vulkan REQUIRED)
 
 
-set (EnterpriseSources "")
-
+set(EnterpriseSources "")
+add_compile_definitions(ENTERPRISE_DEBUG)
 
 # Build each module
 add_subdirectory(Core)

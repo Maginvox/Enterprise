@@ -8,7 +8,7 @@
 #include "Core/FString.h"
 #include "FVulkanExtensions.h"
 
-static const char ppValidationLayers[1][VK_MAX_EXTENSION_NAME_SIZE] = {
+const char ppValidationLayers[1][VK_MAX_EXTENSION_NAME_SIZE] = {
     "VK_LAYER_KHRONOS_validation"
 };
 
@@ -66,7 +66,7 @@ const char* const* FVulkanValidationLayers(FInt32* pCount)
     return (const char* const*)ppValidationLayers;
 }
 
-static const char ppInstanceExtensions[2][VK_MAX_EXTENSION_NAME_SIZE] = {
+const char ppInstanceExtensions[2][VK_MAX_EXTENSION_NAME_SIZE] = {
     VK_KHR_SURFACE_EXTENSION_NAME,
 
     #ifdef ENTERPRISE_CORE_WINDOWS
@@ -137,7 +137,7 @@ const char* const* FVulkanInstanceExtensions(FInt32* pCount)
     return (const char* const*)ppInstanceExtensions;
 }
 
-static const char ppDeviceExtensions[1][VK_MAX_EXTENSION_NAME_SIZE] =
+const char ppDeviceExtensions[1][VK_MAX_EXTENSION_NAME_SIZE] =
 {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };

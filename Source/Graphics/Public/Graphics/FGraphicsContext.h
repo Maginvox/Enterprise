@@ -30,4 +30,8 @@ void FGraphicsContextDestroy(FGraphicsContext** ppContext);
 void FGraphicsContextGetOptions(FGraphicsContext* pContext, FGraphicsOptions* pOptions);
 void FGraphicsContextApplyOptions(FGraphicsContext* pContext, const FGraphicsOptions* pOptions);
 
+/* Warning don't store anything in the windows user data if you are going to use the graphics module, this funciton will override it. */
+void FGraphicsContextRegisterWindow(FGraphicsContext* pContext, FWindow* pWindow);
+void FGraphicsContextUnRegisterWindow(FGraphicsContext* pContext, FWindow* pWindow);
+
 #endif

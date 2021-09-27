@@ -13,6 +13,8 @@
 
 #include "../../FGraphicsContext_Impl.h"
 
+
+
 VkBool32 FVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
 {
     switch(messageSeverity)
@@ -70,7 +72,7 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
     const char* const* ppValidationLayers = FVulkanValidationLayers(&validationLayersCount);
 
     FInt32 instanceExtensionsCount = 0;
-    const char* const* ppInstanceExtensions = FVulkanInstanceExtensions(&instanceExtensionsCount);
+    const char* const* ppInstanceExtension = FVulkanInstanceExtensions(&instanceExtensionsCount);
 
 #ifdef ENTERPRISE_DEBUG
     VkDebugUtilsMessengerCreateInfoEXT messengerCreateInfo = 
@@ -97,7 +99,7 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
         .enabledLayerCount = validationLayersCount,
         .ppEnabledLayerNames = ppValidationLayers,
         .enabledExtensionCount = instanceExtensionsCount,
-        .ppEnabledExtensionNames = ppInstanceExtensions
+        .ppEnabledExtensionNames = ppInstanceExtension
     };
 
     if (vkCreateInstance(&createInfo, NULL, &pContextVulkan->instance) != VK_SUCCESS)
@@ -318,7 +320,7 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
 
     /* Get the device extensions. */ 
     FInt32 deviceExtensionsCount = 0;
-    const char* const* ppDeviceExtensions = FVulkanDeviceExtensions(pContextVulkan->physicalDevice, &deviceExtensionsCount);
+    const char* const* ppDeviceExtension = FVulkanDeviceExtensions(pContextVulkan->physicalDevice, &deviceExtensionsCount);
 
     const VkPhysicalDeviceFeatures deviceFeatures = {0};
     const VkDeviceCreateInfo deviceCreateInfo = 
@@ -331,7 +333,7 @@ FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphics
         .enabledLayerCount = validationLayersCount,
         .ppEnabledLayerNames = ppValidationLayers,
         .enabledExtensionCount = deviceExtensionsCount,
-        .ppEnabledExtensionNames = ppDeviceExtensions,
+        .ppEnabledExtensionNames = ppDeviceExtension,
         .pEnabledFeatures = &deviceFeatures
     };
 

@@ -8,12 +8,50 @@
 #include "Core/FString.h"
 #include "FVulkanExtensions.h"
 
-const char ppValidationLayers[1][VK_MAX_EXTENSION_NAME_SIZE] = {
+static const char* ppValidationLayers[1] = {
     "VK_LAYER_KHRONOS_validation"
+};
+
+static const char* ppDeviceExtensions[1] =
+{
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
+
+#ifdef ENTERPRISE_DEBUG
+    #define INSTANCE_EXTENSIONS_COUNT 3
+#else
+    #define INSTANCE_EXTENSIONS_COUNT 2
+#endif
+
+static const char* ppInstanceExtensions[INSTANCE_EXTENSIONS_COUNT] = {
+    VK_KHR_SURFACE_EXTENSION_NAME,
+
+    #ifdef ENTERPRISE_DEBUG
+        VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
+    #endif
+
+    #ifdef ENTERPRISE_CORE_WINDOWS
+        "VK_KHR_win32_surface"
+    #elif ENTERPRISE_CORE_MACOS
+        "VK_MVK_macos_surface"
+    #elif ENTERPRISE_CORE_ANDROID
+        "VK_KHR_android_surface"
+    #elif ENTERPRISE_CORE_LINUX
+        #ifdef ENTERPRISE_GRAPHICS_X11
+            "VK_KHR_xlib_surface"
+        #elif ENTERPRISE_GRAPHICS_WAYLAND
+            "VK_KHR_wayland_surface"
+        #else
+            #error Unsupported linux graphics platform!
+        #endif
+    #else
+        #error Unsupported graphics platform!
+    #endif
 };
 
 const char* const* FVulkanValidationLayers(FInt32* pCount)
 {
+
     if (pCount == NULL)
     {
         return NULL;
@@ -62,35 +100,15 @@ const char* const* FVulkanValidationLayers(FInt32* pCount)
         }
     }
 
+    *pCount = FCOUNT_OF(ppValidationLayers);
+
     /* None missing, return the string array. */
     return (const char* const*)ppValidationLayers;
 }
 
-const char ppInstanceExtensions[2][VK_MAX_EXTENSION_NAME_SIZE] = {
-    VK_KHR_SURFACE_EXTENSION_NAME,
-
-    #ifdef ENTERPRISE_CORE_WINDOWS
-        "VK_KHR_win32_surface"
-    #elif ENTERPRISE_CORE_MACOS
-        "VK_MVK_macos_surface"
-    #elif ENTERPRISE_CORE_ANDROID
-        "VK_KHR_android_surface"
-    #elif ENTERPRISE_CORE_LINUX
-        #ifdef ENTERPRISE_GRAPHICS_X11
-            "VK_KHR_xlib_surface"
-        #elif ENTERPRISE_GRAPHICS_WAYLAND
-            "VK_KHR_wayland_surface"
-        #else
-            #error Unsupported linux graphics platform!
-        #endif
-    #else
-        #error Unsupported graphics platform!
-    #endif
-};
-
 const char* const* FVulkanInstanceExtensions(FInt32* pCount)
 {
-    
+
     if (pCount == NULL)
     {
         return NULL;
@@ -134,16 +152,15 @@ const char* const* FVulkanInstanceExtensions(FInt32* pCount)
         }
     }
 
+    *pCount = FCOUNT_OF(ppInstanceExtensions);
+
     return (const char* const*)ppInstanceExtensions;
 }
 
-const char ppDeviceExtensions[1][VK_MAX_EXTENSION_NAME_SIZE] =
-{
-    VK_KHR_SWAPCHAIN_EXTENSION_NAME
-};
-
 const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, FInt32* pCount)
 {
+
+
     if (pCount == NULL)
     {
         return NULL;
@@ -186,6 +203,8 @@ const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, FInt
             return NULL;
         }
     }
+
+    *pCount = FCOUNT_OF(ppDeviceExtensions);
 
     return (const char* const*)ppDeviceExtensions;
 }

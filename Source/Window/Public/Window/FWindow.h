@@ -21,10 +21,14 @@ void FWindowDestroy(FWindow* pWindow);
 void* FWindowGetSystemHandle(const FWindow* pWindow);
 void FWindowSetUserData(FWindow* pWindow, void* pData);
 void* FWindowGetUserData(const FWindow* pWindow);
+void FWindowGetSize(const FWindow* pWindow, FUInt32* width, FUInt32* height);
+void FWindowSetSize(const FWindow* pWindow, FUInt32 width, FUInt32 height);
+
 
 /* Input callbacks */
 typedef bool (*FWindowCreateCallback)(FWindow* pWindow);
 typedef void (*FWindowDestroyCallback)(FWindow* pWindow);
+typedef void (*FWindowResizeCallback)(FWindow* pWindow, FUInt32 width, FUInt32 height);
 typedef void (*FWindowCharacterCallback)(FWindow* pWindow, FUInt32 key, FInputAction action);
 typedef void (*FWindowMouseCallback)(FWindow* pWindow, double offsetx, double offsety);
 typedef void (*FWindowMouseButtonCallback)(FWindow* pWindow, FInputMouseButton button, FInputAction action);

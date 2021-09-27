@@ -5,6 +5,9 @@
 
 #include <vulkan/vulkan.h>
 
+#include "Core/FMacro.h"
+#include "Core/FMemory.h"
+
 const char* const* FVulkanValidationLayers(FInt32* pCount);
 const char* const* FVulkanInstanceExtensions(FInt32* pCount);
 const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, FInt32* pCount);

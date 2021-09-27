@@ -31,4 +31,7 @@ void FGraphicsContextVulkanDestroy(FGraphicsContext** ppContext);
 void FGraphicsContextVulkanGetOptions(FGraphicsContext* pContext, FGraphicsOptions* pOptions);
 void FGraphicsContextVulkanApplyOptions(FGraphicsContext* pContext, const FGraphicsOptions* pOption);
 
+void FGraphicsContextVulkanWindowCreateCallback(FWindow* pWindow);
+void FGraphicsContextVulkanWindowDestroyCallback(FWindow* pWindow);
+
 #endif

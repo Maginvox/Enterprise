@@ -69,7 +69,9 @@
         "fwindow.h": "c",
         "finput.h": "c",
         "fgraphicscontextvulkan.h": "c",
-        "fwindowvulkan.h": "c"
+        "fwindowvulkan.h": "c",
+        "fgraphicscontext_impl.h": "c",
+        "fframebuffervulkan.h": "c"
     },
     "cmake.configureOnOpen": true
 }

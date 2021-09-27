@@ -37,17 +37,19 @@ VkBool32 FVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageS
 void FGraphicsContextVulkanLoad(FGraphicsContext* pContext)
 {
     pContext->pRenderContextDestroy = FGraphicsContextVulkanDestroy;
-    
+
     pContext->pRenderPassCreate = FRenderPassVulkanCreate;
     pContext->pRenderPassDestroy = FRenderPassVulkanDestroy;
 
     pContext->pFramebufferCreate = FFramebufferVulkanCreate;
     pContext->pFramebufferDestroy = FFramebufferVulkanDestroy;
+
+    FWindowSetCreateCallback(FGraphicsContextVulkanWindowCreateCallback);
+    FWindowSetDestroyCallback(FGraphicsContextVulkanWindowDestroyCallback);
 }
 
 FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphicsOptions* pOptions)
 {
-
     FGraphicsContextVulkan* pContextVulkan = FAllocateZero(1, sizeof(FGraphicsContextVulkan));
     if (pContextVulkan == NULL)
     {
@@ -366,4 +368,14 @@ void FGraphicsContextVulkanDestroy(FGraphicsContext** ppContext)
 
     FDeallocate(pContextVulkan);
     *ppContext = NULL;
+}
+
+void FGraphicsContextVulkanWindowCreateCallback(FGraphicsContext* pContext, FWindow* pWindow)
+{
+    
+}
+
+void FGraphicsContextVulkanWindowDestroyCallback(FGraphicsContext* pContext, FWindow* pWindow)
+{
+
 }

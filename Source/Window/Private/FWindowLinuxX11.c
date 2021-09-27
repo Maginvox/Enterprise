@@ -29,6 +29,11 @@ void FWindowShutdown()
     }
 }
 
+void* FWindowSystemHandle()
+{
+    return pDisplay;
+}
+
 FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowStyle style)
 {
     if (width <= 0 || height <= 0 || !FMathIsBetween(style, 0, FWindowStyle_Max))
@@ -89,3 +94,18 @@ void FWindowDestroy(FWindow* pWindow)
     FDeallocate(pWindow);
 }
 
+void* FWindowGetSystemHandle(const FWindow* pWindow)
+{
+    return pWindow->pHandle;
+}
+
+void FWindowGetSize(const FWindow* pWindow, FUInt32* pWidth, FUInt32* pHeight)
+{
+    Window window = (Window)pWindow;
+
+    XWindowAttributes attributes = {0};
+    XGetWindowAttributes(pDisplay, window, &attributes);
+
+    *pWidth = attributes.width;
+    *pHeight = attributes.height;
+}

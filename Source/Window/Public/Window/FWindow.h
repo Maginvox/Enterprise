@@ -13,6 +13,7 @@ typedef enum FWindowStyle
 
 bool FWindowInitialize();
 void FWindowShutdown();
+void* FWindowSystemHandle();
 
 typedef struct FWindow FWindow;
 

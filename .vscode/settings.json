@@ -74,7 +74,9 @@
         "fframebuffervulkan.h": "c",
         "fgraphicsvulkan.h": "c",
         "fgraphics.h": "c",
-        "fwindow_impl.h": "c"
+        "fwindow_impl.h": "c",
+        "fwindowx11.h": "c",
+        "xlib.h": "c"
     },
     "cmake.configureOnOpen": true
 }

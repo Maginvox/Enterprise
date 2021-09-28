@@ -407,12 +407,12 @@ FContext* FGraphicsRegisterWindow(FWindow* pWindow)
         .pNext = NULL,
         .flags = 0,
         .dpy = FWindowSystemHandle(),
-        .window = (Window)FWindowGetSystemHandle(pWindow)
+        .window = (Window)FWindowGetHandle(pWindow)
     };
 
-    if (vkCreateXlibSurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &pWindowVulkan->surface) != VK_SUCCESS)
+    if (vkCreateXlibSurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &pContextVulkan->surface) != VK_SUCCESS)
     {
-        FWindowVulkanDestroy(pWindow, pWindowVulkan);
+        FGraphicsUnRegisterWindow(pWindow, pContext);
         FLogError("Could not create the vulkan surface!");
         return NULL;
     }

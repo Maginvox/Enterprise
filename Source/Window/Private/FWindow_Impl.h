@@ -15,7 +15,4 @@ typedef struct FWindow
     FWindowMouseScrollCallback pMouseScrollCallback;
 } FWindow;
 
-extern FWindowCreateCallback pCreateCallback;
-extern FWindowDestroyCallback pDestroyCallback;
-
 #endif

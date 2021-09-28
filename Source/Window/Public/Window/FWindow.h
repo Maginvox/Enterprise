@@ -19,12 +19,12 @@ typedef struct FWindow FWindow;
 
 FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowStyle style);
 void FWindowDestroy(FWindow* pWindow);
-void* FWindowGetSystemHandle(const FWindow* pWindow);
+void* FWindowGetHandle(const FWindow* pWindow);
 void FWindowSetUserData(FWindow* pWindow, void* pData);
 void* FWindowGetUserData(const FWindow* pWindow);
 void FWindowGetSize(const FWindow* pWindow, FUInt32* width, FUInt32* height);
 void FWindowSetSize(const FWindow* pWindow, FUInt32 width, FUInt32 height);
-
+bool FWindowShouldClose(const FWindow* pWindow);
 
 /* Input callbacks */
 typedef bool (*FWindowCreateCallback)(FWindow* pWindow);

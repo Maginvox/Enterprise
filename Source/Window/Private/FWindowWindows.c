@@ -40,6 +40,11 @@ void FWindowShutdown()
 
 }
 
+void* FWindowSystemHandle()
+{
+    return GetModuleHandle(NULL);
+}
+
 FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowStyle style)
 {
     if (pTitle == NULL || width <= 0 || height <= 0 || !FMathIsBetween(style, 0, FWindowStyle_Max))
@@ -47,7 +52,17 @@ FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowS
         return NULL;
     }
 
-    DWORD winStyle = WS_EX_OVERLAPPEDWINDOW;
+    DWORD winStyle = 0;
+    switch(style)
+    {
+        case FWindowStyle_Default:
+            winStyle = WS_OVERLAPPEDWINDOW;
+        break;
+        case FWindowStyle_Minimal:
+            winStyle = WS_POPUPWINDOW;
+        break;
+    }
+
     HWND window = CreateWindowEx(style, "Enterprise_DefaultWindow", pTitle, winStyle, 0, 0, width, height, NULL, NULL, GetModuleHandle(NULL), NULL);
 
     if (window == NULL)
@@ -66,6 +81,8 @@ FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowS
     }
 
     pWindow->pHandle = window;
+    
+    SetWindowLongPtr(window, GWLP_USERDATA, (LONG_PTR)pWindow);
 
     return pWindow;
 }
@@ -90,8 +107,13 @@ void FWindowGetSize(const FWindow* pWindow, FUInt32* pWidth, FUInt32* pHeight)
     }
 
     RECT rect = {0};
-    GetWindowRect((HWND)pWindow->pHandle, &rect);
+    GetClientRect((HWND)pWindow->pHandle, &rect);
 
     *pWidth = rect.right - rect.left;
     *pHeight = rect.bottom - rect.top;
+}
+
+void* FWindowGetHandle(const FWindow* pWindow)
+{
+    return pWindow->pHandle;
 }

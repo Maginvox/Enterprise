@@ -5,7 +5,7 @@
 
 #include "Core/FExport.h"
 #include "Core/FTypes.h"
-#include "Graphics/FGraphicsContext.h"
+#include "Graphics/FGraphics.h"
 
 typedef enum FImageFormat
 {
@@ -33,10 +33,7 @@ typedef struct FImageCreateInfo
 
 typedef struct FImage FImage;
 
-typedef FImage* (*FImageCreateFunction)(FGraphicsContext* pContext, const FImageCreateInfo* pInfo);
-typedef void (*FImageDestroyFunction)(FGraphicsContext* pContext, FImage** ppImage);
-
-FImage* FImageCreate(FGraphicsContext* pContext, const FImageCreateInfo* pInfo);
-void FImageDestroy(FGraphicsContext* pContext, FImage** ppImage);
+FImage* FImageCreate(const FImageCreateInfo* pInfo);
+void FImageDestroy(FImage** ppImage);
 
 #endif

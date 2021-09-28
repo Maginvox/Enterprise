@@ -1,19 +1,17 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
 #include "Core/FMemory.h"
-#include "../../FGraphicsContext_Impl.h"
-#include "FGraphicsContextVulkan.h"
+#include "FGraphicsVulkan.h"
 #include "FFramebufferVulkan.h"
 #include "FRenderPassVulkan.h"
 
-FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFramebufferCreateInfo* pInfo)
+FFramebuffer* FFramebufferVulkanCreate(const FFramebufferCreateInfo* pInfo)
 {
     if (pInfo == NULL || pInfo->pRenderPass == NULL || pInfo->attachmentsCount <= 0 || pInfo->ppAttachments == NULL || pInfo->width <= 0 || pInfo->height <= 0)
     {
         return NULL;
     }
 
-    FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)pContext->pRenderContext;
     FRenderPassVulkan* pRenderPass = (FRenderPassVulkan*)pInfo->pRenderPass;
 
     FFramebufferVulkan* pFramebuffer = FAllocateZero(1, sizeof(FFramebufferVulkan));
@@ -41,7 +39,7 @@ FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFrameb
         .layers = 1  
     };
 
-    if (vkCreateFramebuffer(pContextVulkan->device, &createInfo, NULL, &pFramebuffer->framebuffer) != VK_SUCCESS)
+    if (vkCreateFramebuffer(graphics_vk.device, &createInfo, NULL, &pFramebuffer->framebuffer) != VK_SUCCESS)
     {
         FDeallocate(pFramebuffer);
         FDeallocate(pAttachments);
@@ -53,19 +51,18 @@ FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFrameb
     return (FFramebuffer*)pFramebuffer;
 }
 
-void FFramebufferVulkanDestroy(FGraphicsContext* pContext, FFramebuffer** ppFramebuffer)
+void FFramebufferVulkanDestroy(FFramebuffer* pFramebuffer)
 {
-    if (pContext == NULL || ppFramebuffer == NULL || *ppFramebuffer == NULL)
+    if (pFramebuffer == NULL)
     {
         return;
     }
 
-    FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)pContext->pRenderContext;
-    FFramebufferVulkan* pFramebufferVulkan = (FFramebufferVulkan*)*ppFramebuffer;
+    FFramebufferVulkan* pFramebufferVulkan = (FFramebufferVulkan*)pFramebuffer;
     
     if (pFramebufferVulkan->framebuffer != VK_NULL_HANDLE)
     {
-        vkDestroyFramebuffer(pContextVulkan->device, pFramebufferVulkan->framebuffer, NULL);
+        vkDestroyFramebuffer(graphics_vk.device, pFramebufferVulkan->framebuffer, NULL);
     }
 
     FDeallocate(pFramebufferVulkan);

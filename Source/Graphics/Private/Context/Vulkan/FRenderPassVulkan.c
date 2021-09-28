@@ -1,19 +1,16 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
 #include "Core/FMemory.h"
-#include "../../FGraphicsContext_Impl.h"
 #include "FVulkanUtils.h"
-#include "FGraphicsContextVulkan.h"
+#include "FGraphicsVulkan.h"
 #include "FRenderPassVulkan.h"
 
-FRenderPass* FRenderPassVulkanCreate(FGraphicsContext* pContext, const FRenderPassCreateInfo* pInfo)
+FRenderPass* FRenderPassVulkanCreate(const FRenderPassCreateInfo* pInfo)
 {
-    if (pContext == NULL || pInfo == NULL)
+    if (pInfo == NULL)
     {
         return NULL;
     }
-
-    FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)pContext->pRenderContext;
 
     /* Count the attachment and allocate the descriptions and reference */
     FInt32 attachmentDescriptionCount = pInfo->colorAttachmentsCount + (pInfo->pDepthStencilAttachment != NULL ? 1 : 0);    
@@ -124,7 +121,7 @@ FRenderPass* FRenderPassVulkanCreate(FGraphicsContext* pContext, const FRenderPa
         return NULL;
     }
 
-    if (vkCreateRenderPass(pContextVulkan->device, &createInfo, NULL, &pRenderPass->renderPass) != VK_SUCCESS)
+    if (vkCreateRenderPass(graphics_vk.device, &createInfo, NULL, &pRenderPass->renderPass) != VK_SUCCESS)
     {
         FDeallocate(pAttachmentDescriptions);
         FDeallocate(pAttachmentReferences);
@@ -137,19 +134,18 @@ FRenderPass* FRenderPassVulkanCreate(FGraphicsContext* pContext, const FRenderPa
     return (FRenderPass*)pRenderPass;
 }
 
-void FRenderPassVulkanDestroy(FGraphicsContext* pContext, FRenderPass** ppRenderPass)
+void FRenderPassDestroy(FRenderPass* pRenderPass)
 {
-    if (pContext == NULL || ppRenderPass == NULL || *ppRenderPass == NULL)
+    if (pRenderPass == NULL)
     {
         return;
     }
 
-    FGraphicsContextVulkan* pContextVulkan = (FGraphicsContextVulkan*)pContext->pRenderContext;
-    FRenderPassVulkan* pRenderPassVulkan = (FRenderPassVulkan*)*ppRenderPass;
+    FRenderPassVulkan* pRenderPassVulkan = (FRenderPassVulkan*)pRenderPass;
     
     if (pRenderPassVulkan->renderPass != VK_NULL_HANDLE)
     {
-        vkDestroyRenderPass(pContextVulkan->device, pRenderPassVulkan->renderPass, NULL);
+        vkDestroyRenderPass(graphics_vk.device, pRenderPassVulkan->renderPass, NULL);
     }
 
     FDeallocate(pRenderPassVulkan);

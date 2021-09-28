@@ -4,19 +4,13 @@ find_package(Vulkan REQUIRED)
 
 set(GraphicsSources "")
 
-list(APPEND GraphicsSources
-    "Private/FGraphicsContext.c"
-    "Private/FRenderPass.c"
-    "Private/FImage.c"
-    "Private/FFramebuffer.c")
-
 # Vulkan API
 if (Vulkan_FOUND)
     list(APPEND GraphicsSources
-        "Private/Context/Vulkan/FWindowVulkan.c"
-        "Private/Context/Vulkan/FVulkanExtensions.c"
+        "Private/Context/Vulkan/FVulkanExtensions.c"    
+        "Private/Context/Vulkan/FVulkanFormats.c"
         "Private/Context/Vulkan/FVulkanMemoryAllocator.cpp" 
-        "Private/Context/Vulkan/FGraphicsContextVulkan.c"
+        "Private/Context/Vulkan/FGraphicsVulkan.c"
         "Private/Context/Vulkan/FRenderPassVulkan.c"
         "Private/Context/Vulkan/FImageVulkan.c"
         "Private/Context/Vulkan/FFramebufferVulkan.c")

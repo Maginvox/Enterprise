@@ -1,15 +1,15 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#ifndef __FRENDERCONTEXT_VULKAN_H__
-#define __FRENDERCONTEXT_VULKAN_H__
+#ifndef __FGRAPHICS_VULKAN_H__
+#define __FGRAPHICS_VULKAN_H__
 
 #include <vulkan/vulkan.h> /* We use the Vulkan 1.1 specification with extensions. https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#extensions */
 #include <vk_mem_alloc.h>
 
 #include <Core/FTypes.h>
-#include "Graphics/FGraphicsContext.h"
+#include "Graphics/FGraphics.h"
 
-typedef struct FGraphicsContextVulkan
+typedef struct FGraphicsVulkan
 {
     VkInstance instance;
     PFN_vkCreateDebugUtilsMessengerEXT pCreateDebugMessenger;
@@ -23,15 +23,20 @@ typedef struct FGraphicsContextVulkan
     VkDevice device;
     
     VmaAllocator allocator;
-} FGraphicsContextVulkan;
+} FGraphicsVulkan;
 
-FGraphicsContext* FGraphicsContextVulkanCreate(FWindow* pWindow, const FGraphicsOptions* pOptions);
-void FGraphicsContextVulkanDestroy(FGraphicsContext** ppContext);
+typedef struct FContextVulkan
+{
+    VkSurfaceKHR surface;
+    VkSurfaceFormatKHR surfaceFormat;
+    FUInt32 imageCount;
+    VkPresentModeKHR presentMode;
+    VkSwapchainKHR swapchain;
+} FContextVulkan;
 
-void FGraphicsContextVulkanGetOptions(FGraphicsContext* pContext, FGraphicsOptions* pOptions);
-void FGraphicsContextVulkanApplyOptions(FGraphicsContext* pContext, const FGraphicsOptions* pOption);
+bool FContextVulkanCreateSwapchain(FWindow* pWindow, FContextVulkan* pContext);
+void FContextVulkanDestroySwapchain(FWindow* pWindow, FContextVulkan* pContext);
 
-void FGraphicsContextVulkanWindowCreateCallback(FWindow* pWindow);
-void FGraphicsContextVulkanWindowDestroyCallback(FWindow* pWindow);
+extern FGraphicsVulkan graphics_vk;
 
 #endif

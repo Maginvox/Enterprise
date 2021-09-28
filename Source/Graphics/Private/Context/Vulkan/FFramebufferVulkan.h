@@ -12,7 +12,4 @@ typedef struct FFramebufferVulkan
     VkFramebuffer framebuffer;
 } FFramebufferVulkan;
 
-FFramebuffer* FFramebufferVulkanCreate(FGraphicsContext* pContext, const FFramebufferCreateInfo* pInfo);
-void FFramebufferVulkanDestroy(FGraphicsContext* pContext, FFramebuffer** ppFramebuffer);
-
 #endif

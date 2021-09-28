@@ -7,6 +7,7 @@ typedef struct FWindow
 {
     void* pHandle;
     void* pUserData;
+    bool shouldClose;
 
     FWindowCharacterCallback pCharacterCallback;
     FWindowMouseCallback pMouseCallback;

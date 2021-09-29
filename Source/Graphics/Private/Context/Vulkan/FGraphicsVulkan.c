@@ -361,11 +361,9 @@ void FGraphicsShutdown()
     }
 }
 
-
-
-FContext* FGraphicsRegisterWindow(FWindow* pWindow)
+FContext FGraphicsRegisterWindow(FWindow window)
 {
-    if (pWindow == NULL)
+    if (window == NULL)
     {
         return NULL;
     }
@@ -376,8 +374,6 @@ FContext* FGraphicsRegisterWindow(FWindow* pWindow)
         return NULL;
     }
 
-    FContext* pContext = (FContext*)pContextVulkan;
-
     /* Create the platform surface */
 #ifdef ENTERPRISE_WINDOWS
     
@@ -386,12 +382,12 @@ FContext* FGraphicsRegisterWindow(FWindow* pWindow)
         .pNext = NULL,
         .flags = 0,
         .hinstance = FWindowSystemHandle(),
-        .hwnd = FWindowGetHandle(pWindow)
+        .hwnd = (HWND)FWindowGetHandle(window)
     };
 
     if (vkCreateWin32SurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &pContextVulkan->surface) != VK_SUCCESS)
     {
-        FGraphicsUnRegisterWindow(pWindow, pContext);
+        FGraphicsUnRegisterWindow(window, (FContext)pContextVulkan);
         FLogError("Could not create the vulkan surface!");
         return NULL; 
     }
@@ -421,15 +417,15 @@ FContext* FGraphicsRegisterWindow(FWindow* pWindow)
     /* Create the swapchain */
     if (graphics_vk.device != VK_NULL_HANDLE) /* In the device is not yet created we can't create the swapchain, the context will do it for us. */
     {
-        if (!FContextVulkanCreateSwapchain(pWindow, pContextVulkan))
+        if (!FContextVulkanCreateSwapchain(window, pContextVulkan))
         {
-            FGraphicsUnRegisterWindow(pWindow, pContext);
+            FGraphicsUnRegisterWindow(window, (FContext)pContextVulkan);
             FLogError("Could not create the vulkan surface!");
             return NULL;
         }
     }
 
-    return pContext;
+    return (FContext)pContextVulkan;
 }
 
 void FGraphicsUnRegisterWindow(FWindow* pWindow, FContext* pContext)
@@ -444,7 +440,7 @@ void FGraphicsUnRegisterWindow(FWindow* pWindow, FContext* pContext)
     }
 }
 
-bool FContextVulkanCreateSwapchain(FWindow* pWindow, FContextVulkan* pContext)
+bool FContextVulkanCreateSwapchain(FWindow window, FContextVulkan* pContext)
 {
     /* Get the surface information */
     VkBool32 surfaceSupported = false;
@@ -462,7 +458,7 @@ bool FContextVulkanCreateSwapchain(FWindow* pWindow, FContextVulkan* pContext)
     pContext->surfaceFormat = FWindowVulkanSurfaceFormat(pContext);
     
     FUInt32 width = 0, height = 0;
-    FWindowGetSize(pWindow, &width, &height);
+    FWindowGetSize(window, &width, &height);
 
     pContext->presentMode = FWindowVulkanPresentMode(pContext);
 

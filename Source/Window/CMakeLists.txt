@@ -1,8 +1,5 @@
 set(WindowSources "")
 
-list(APPEND WindowSources
-    "Private/FWindow.c")
-
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     list(APPEND WindowSources
         "Private/FWindowWindows.c"

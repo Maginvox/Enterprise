@@ -12,13 +12,13 @@ typedef struct FGraphicsOptions
 
 typedef void* FContext;
 
-bool FGraphicsInitialize(FWindow* pWindow, FContext* pContext, const FGraphicsOptions* pOptions); /* Will automatically register the first window */
+bool FGraphicsInitialize(FWindow window, FContext* pContext, const FGraphicsOptions* pOptions); /* Will automatically register the first window */
 void FGraphicsShutdown();
 
 void FGraphicsGetOptions(FGraphicsOptions* pOptions);
 void FGraphicsApplyOptions(const FGraphicsOptions* pOptions);
 
-FContext* FGraphicsRegisterWindow(FWindow* pWindow);
-void FGraphicsUnRegisterWindow(FWindow* pWindow, FContext* pContext);
+FContext FGraphicsRegisterWindow(FWindow window);
+void FGraphicsUnRegisterWindow(FWindow window, FContext context);
 
 #endif

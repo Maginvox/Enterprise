@@ -16,9 +16,9 @@ typedef struct FFramebufferCreateInfo
     FInt32 height;
 } FFramebufferCreateInfo;
 
-typedef struct FFramebuffer FFramebuffer;
+typedef void* FFramebuffer;
 
-FFramebuffer* FFramebufferCreate(const FFramebufferCreateInfo* pInfo);
-void FFramebufferDestroy(FFramebuffer* pFramebuffer);
+FFramebuffer FFramebufferCreate(const FFramebufferCreateInfo* pInfo);
+void FFramebufferDestroy(FFramebuffer pFramebuffer);
 
 #endif

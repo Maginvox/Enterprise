@@ -15,32 +15,32 @@ bool FWindowInitialize();
 void FWindowShutdown();
 void* FWindowSystemHandle();
 
-typedef struct FWindow FWindow;
+typedef void* FWindow;
 
-FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowStyle style);
-void FWindowDestroy(FWindow* pWindow);
-void* FWindowGetHandle(const FWindow* pWindow);
-void FWindowSetUserData(FWindow* pWindow, void* pData);
-void* FWindowGetUserData(const FWindow* pWindow);
-void FWindowGetSize(const FWindow* pWindow, FUInt32* width, FUInt32* height);
-void FWindowSetSize(const FWindow* pWindow, FUInt32 width, FUInt32 height);
-bool FWindowShouldClose(const FWindow* pWindow);
+FWindow FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowStyle style);
+void FWindowDestroy(FWindow window);
+void* FWindowGetHandle(const FWindow window);
+void FWindowSetUserData(FWindow window, void* pData);
+void* FWindowGetUserData(const FWindow window);
+void FWindowGetSize(const FWindow window, FUInt32* width, FUInt32* height);
+void FWindowSetSize(const FWindow window, FUInt32 width, FUInt32 height);
+bool FWindowShouldClose(const FWindow window);
 
 /* Input callbacks */
-typedef bool (*FWindowCreateCallback)(FWindow* pWindow);
-typedef void (*FWindowDestroyCallback)(FWindow* pWindow);
-typedef void (*FWindowResizeCallback)(FWindow* pWindow, FUInt32 width, FUInt32 height);
-typedef void (*FWindowCharacterCallback)(FWindow* pWindow, FUInt32 key, FInputAction action);
-typedef void (*FWindowMouseCallback)(FWindow* pWindow, double offsetx, double offsety);
-typedef void (*FWindowMouseButtonCallback)(FWindow* pWindow, FInputMouseButton button, FInputAction action);
-typedef void (*FWindowMouseScrollCallback)(FWindow* pWindow, double offsetx, double offsety);
+typedef bool (*FWindowCreateCallback)(FWindow window);
+typedef void (*FWindowDestroyCallback)(FWindow window);
+typedef void (*FWindowResizeCallback)(FWindow window, FUInt32 width, FUInt32 height);
+typedef void (*FWindowCharacterCallback)(FWindow window, FUInt32 key, FInputAction action);
+typedef void (*FWindowMouseCallback)(FWindow window, double offsetx, double offsety);
+typedef void (*FWindowMouseButtonCallback)(FWindow window, FInputMouseButton button, FInputAction action);
+typedef void (*FWindowMouseScrollCallback)(FWindow window, double offsetx, double offsety);
 
 void FWindowSetCreateCallback(FWindowCreateCallback pCallback);
 void FWindowSetDestroyCallback(FWindowDestroyCallback pCallback);
-void FWindowSetCharacterCallback(FWindow* pWindow, FWindowCharacterCallback pCallback);
-void FWindowSetMouseCallback(FWindow* pWindow, FWindowMouseCallback pCallback);
-void FWindowSetMouseButtonCallback(FWindow* pWindow, FWindowMouseCallback pCallback);
-void FWindowSetMouseScrollCallback(FWindow* pWindow, FWindowMouseScrollCallback pCallback);
+void FWindowSetCharacterCallback(FWindow window, FWindowCharacterCallback pCallback);
+void FWindowSetMouseCallback(FWindow window, FWindowMouseCallback pCallback);
+void FWindowSetMouseButtonCallback(FWindow window, FWindowMouseCallback pCallback);
+void FWindowSetMouseScrollCallback(FWindow window, FWindowMouseScrollCallback pCallback);
 
 
 #endif

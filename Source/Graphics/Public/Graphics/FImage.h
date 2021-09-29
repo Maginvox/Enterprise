@@ -33,7 +33,7 @@ typedef struct FImageCreateInfo
 
 typedef struct FImage FImage;
 
-FImage* FImageCreate(const FImageCreateInfo* pInfo);
-void FImageDestroy(FImage** ppImage);
+FImage FImageCreate(const FImageCreateInfo* pInfo);
+void FImageDestroy(FImage image);
 
 #endif

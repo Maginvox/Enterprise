@@ -7,8 +7,7 @@
 #include "Core/FLog.h"
 #include "FInputWindows.h"
 #include "Window/FWindow.h"
-#include "FWindow_Impl.h"
-
+#include "FWindowWindows.h"
 
 static bool systemInitialized = false;
 
@@ -45,13 +44,21 @@ void* FWindowSystemHandle()
     return GetModuleHandle(NULL);
 }
 
-FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowStyle style)
+FWindow FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowStyle style)
 {
     if (pTitle == NULL || width <= 0 || height <= 0 || !FMathIsBetween(style, 0, FWindowStyle_Max))
     {
         return NULL;
     }
 
+    /* Allocate the window */
+    FWindowWindows* pWindow = FAllocateZero(1, sizeof(FWindowWindows));
+    if (pWindow == NULL)
+    {
+        return NULL;
+    }
+
+    /* Get the style */
     DWORD winStyle = 0;
     switch(style)
     {
@@ -63,57 +70,97 @@ FWindow* FWindowCreate(const char* pTitle, FInt32 width, FInt32 height, FWindowS
         break;
     }
 
-    HWND window = CreateWindowEx(style, "Enterprise_DefaultWindow", pTitle, winStyle, 0, 0, width, height, NULL, NULL, GetModuleHandle(NULL), NULL);
+    /* Create the window */
+    pWindow->hWnd = CreateWindowEx(style, "Enterprise_DefaultWindow", pTitle, winStyle, 0, 0, width, height, NULL, NULL, GetModuleHandle(NULL), NULL);
 
-    if (window == NULL)
+    if (pWindow->hWnd == NULL)
     {
+        FDeallocate(pWindow);
         FLogError("Could not create a new window!");
         return NULL;
     }
 
-    ShowWindow(window, SHOW_OPENWINDOW);
+    ShowWindow(pWindow->hWnd, SHOW_OPENWINDOW);
 
-    FWindow* pWindow = FAllocateZero(1, sizeof(FWindow));
-    if (pWindow == NULL)
-    {
-        CloseWindow(window);
-        return NULL;
-    }
-
-    pWindow->pHandle = window;
-    
-    SetWindowLongPtr(window, GWLP_USERDATA, (LONG_PTR)pWindow);
+    /* Set the windows user pointer to the pWindow */
+    SetWindowLongPtr(pWindow->hWnd, GWLP_USERDATA, (LONG_PTR)pWindow);
 
     return pWindow;
 }
 
-void FWindowDestroy(FWindow* pWindow)
+void FWindowDestroy(FWindow window)
 {
-    if (pWindow == NULL)
+    if (window == NULL)
     {
         return;
     }
 
-    CloseWindow((HWND)pWindow->pHandle);
+    FWindowWindows* pWindow = window;
 
+    CloseWindow(pWindow->hWnd);
     FDeallocate(pWindow);
 }
 
-void FWindowGetSize(const FWindow* pWindow, FUInt32* pWidth, FUInt32* pHeight)
+void FWindowGetSize(FWindow window, FUInt32* pWidth, FUInt32* pHeight)
 {
-    if (pWindow == NULL || pWindow == NULL || pHeight == NULL)
+    if (window == NULL || pWidth == NULL || pHeight == NULL)
     {
         return;
     }
 
+    FWindowWindows* pWindow = window;
+
     RECT rect = {0};
-    GetClientRect((HWND)pWindow->pHandle, &rect);
+    GetClientRect(pWindow->hWnd, &rect);
 
     *pWidth = rect.right - rect.left;
     *pHeight = rect.bottom - rect.top;
 }
 
-void* FWindowGetHandle(const FWindow* pWindow)
+void* FWindowGetHandle(FWindow window)
 {
-    return pWindow->pHandle;
+    if (window == NULL)
+    {
+        return NULL;
+    }
+
+    FWindowWindows* pWindow = window;
+
+    return pWindow->hWnd;
+}
+
+void FWindowSetUserData(FWindow window, void* pUserData)
+{
+    if (window == NULL)
+    {
+        return;
+    }
+
+    FWindowWindows* pWindow = window;
+
+    pWindow->pUserData = pUserData;
+}
+
+void* FWindowGetUserData(FWindow window)
+{
+    if (window == NULL)
+    {
+        return NULL;
+    }
+
+    FWindowWindows* pWindow = window;
+
+    return pWindow->pUserData;
+}
+
+bool FWindowShouldClose(FWindow window)
+{
+    if (window == NULL)
+    {
+        return true;
+    }
+
+    FWindowWindows* pWindow = window;
+
+    return pWindow->shouldClose;
 }

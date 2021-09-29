@@ -40,9 +40,9 @@ typedef struct FRenderPassCreateInfo
     const FRenderPassAttachment* pDepthStencilAttachment;
 } FRenderPassCreateInfo;
 
-typedef struct FRenderPass FRenderPass;
+typedef void* FRenderPass;
 
-FRenderPass* FRenderPassCreate(const FRenderPassCreateInfo* pInfo);
-void FRenderPassDestroy(FRenderPass* pRenderPass);
+FRenderPass FRenderPassCreate(const FRenderPassCreateInfo* pInfo);
+void FRenderPassDestroy(FRenderPass renderPass);
 
 #endif

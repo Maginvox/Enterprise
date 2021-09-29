@@ -1,10 +1,10 @@
 #include "FInputWindows.h"
-#include "FWindow_Impl.h"
 #include "Window/FInput.h"
+#include "FWindowWindows.h"
 
 LRESULT FWindowProcedure(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-    FWindow* pWindow = (FWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    FWindowWindows* pWindow = (FWindowWindows*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
     switch(Msg)
     {

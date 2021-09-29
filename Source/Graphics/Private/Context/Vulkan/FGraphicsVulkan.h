@@ -34,8 +34,8 @@ typedef struct FContextVulkan
     VkSwapchainKHR swapchain;
 } FContextVulkan;
 
-bool FContextVulkanCreateSwapchain(FWindow* pWindow, FContextVulkan* pContext);
-void FContextVulkanDestroySwapchain(FWindow* pWindow, FContextVulkan* pContext);
+bool FContextVulkanCreateSwapchain(FWindow window, FContextVulkan* pContext);
+void FContextVulkanDestroySwapchain(FWindow window, FContextVulkan* pContext);
 
 extern FGraphicsVulkan graphics_vk;
 

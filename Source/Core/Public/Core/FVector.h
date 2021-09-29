@@ -9,8 +9,7 @@ typedef float FVector2[2];
 typedef float FVector3[3];
 typedef float FVector4[4];
 typedef float FQuaternion[4];
-typedef float FMatrix3[9];
-typedef float FMatrix4[16];
+
 
 FVector2* FVector2Add(float* pResult, FVector2 a, FVector2 b);
 FVector2* FVector2Sub(float* pResult, FVector2 a, FVector2 b);

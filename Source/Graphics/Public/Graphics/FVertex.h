@@ -5,14 +5,14 @@
 
 #include "Core/FVector.h"
 
-typedef struct FVertex
+typedef struct
 {
     FVector3 position;
     FVector3 normal;
     FVector2 texCoord;
 } FVertex;
 
-typedef struct FVertexSkinned
+typedef struct
 {
     FVector3 position;
     FVector3 normal;

@@ -3,7 +3,7 @@
 #ifndef __FGRAPHICS_H__
 #define __FGRAPHICS_H__
 
-#include "Window/FWindow.h"
+#include "FWindow.h"
 
 typedef struct FGraphicsOptions
 {
@@ -12,13 +12,12 @@ typedef struct FGraphicsOptions
 
 typedef void* FContext;
 
-bool FGraphicsInitialize(FWindow window, FContext* pContext, const FGraphicsOptions* pOptions); /* Will automatically register the first window */
+bool FGraphicsInitialize(const FWindowInfo* pWindowInfo,  const FGraphicsOptions* pOptions); /* Will automatically register the first window */
 void FGraphicsShutdown();
 
 void FGraphicsGetOptions(FGraphicsOptions* pOptions);
 void FGraphicsApplyOptions(const FGraphicsOptions* pOptions);
 
-FContext FGraphicsRegisterWindow(FWindow window);
-void FGraphicsUnRegisterWindow(FWindow window, FContext context);
+void FGraphicsNextFrame();
 
 #endif

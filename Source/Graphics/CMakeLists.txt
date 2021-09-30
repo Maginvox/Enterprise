@@ -7,20 +7,21 @@ set(GraphicsSources "")
 # Vulkan API
 if (Vulkan_FOUND)
     list(APPEND GraphicsSources
-        "Private/Context/Vulkan/FVulkanExtensions.c"    
-        "Private/Context/Vulkan/FVulkanFormats.c"
-        "Private/Context/Vulkan/FVulkanMemoryAllocator.cpp" 
-        "Private/Context/Vulkan/FGraphicsVulkan.c"
-        "Private/Context/Vulkan/FRenderPassVulkan.c"
-        "Private/Context/Vulkan/FImageVulkan.c"
-        "Private/Context/Vulkan/FFramebufferVulkan.c")
+        "Private/Vulkan/FVulkanExtensions.c"    
+        "Private/Vulkan/FVulkanFormats.c"
+        "Private/Vulkan/FVulkanMemoryAllocator.cpp" 
+        "Private/Vulkan/FWindowVulkan.c"
+        "Private/Vulkan/FGraphicsVulkan.c"
+        "Private/Vulkan/FRenderPassVulkan.c"
+        "Private/Vulkan/FImageVulkan.c"
+        "Private/Vulkan/FFramebufferVulkan.c")
 endif()
 
 
 
 add_library(EnterpriseGraphics STATIC ${GraphicsSources})
 target_include_directories(EnterpriseGraphics PUBLIC "Public")
-target_link_libraries(EnterpriseGraphics EnterpriseCore EnterpriseWindow)
+target_link_libraries(EnterpriseGraphics EnterpriseCore)
 
 # Include ThirdParty Libraries
 if (Vulkan_FOUND)

@@ -76,7 +76,8 @@
         "fgraphics.h": "c",
         "fwindow_impl.h": "c",
         "fwindowx11.h": "c",
-        "xlib.h": "c"
+        "xlib.h": "c",
+        "fvulkanformats.h": "c"
     },
     "cmake.configureOnOpen": true
 }

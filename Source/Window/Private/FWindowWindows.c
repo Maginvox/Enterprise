@@ -6,7 +6,6 @@
 #include "Core/FMath.h"
 #include "Core/FLog.h"
 #include "FInputWindows.h"
-#include "Window/FWindow.h"
 #include "FWindowWindows.h"
 
 static bool systemInitialized = false;
@@ -117,7 +116,7 @@ void FWindowGetSize(FWindow window, FUInt32* pWidth, FUInt32* pHeight)
     *pHeight = rect.bottom - rect.top;
 }
 
-void* FWindowGetHandle(FWindow window)
+HWND FWindowGetHandle(FWindow window)
 {
     if (window == NULL)
     {

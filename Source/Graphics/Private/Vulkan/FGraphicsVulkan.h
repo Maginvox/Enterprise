@@ -25,18 +25,6 @@ typedef struct FGraphicsVulkan
     VmaAllocator allocator;
 } FGraphicsVulkan;
 
-typedef struct FContextVulkan
-{
-    VkSurfaceKHR surface;
-    VkSurfaceFormatKHR surfaceFormat;
-    FUInt32 imageCount;
-    VkPresentModeKHR presentMode;
-    VkSwapchainKHR swapchain;
-} FContextVulkan;
-
-bool FContextVulkanCreateSwapchain(FWindow window, FContextVulkan* pContext);
-void FContextVulkanDestroySwapchain(FWindow window, FContextVulkan* pContext);
-
 extern FGraphicsVulkan graphics_vk;
 
 #endif

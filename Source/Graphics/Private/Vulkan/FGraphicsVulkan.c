@@ -1,16 +1,5 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#ifdef ENTERPRISE_WINDOWS
-    #include <Windows.h>
-    #define VK_USE_PLATFORM_WIN32_KHR
-#elif ENTERPRISE_MACOS
-    #error Need to implement.
-#elif ENTERPRISE_ANDROID
-    #define VK_USE_PLATFORM_ANDROID_KHR
-#elif ENTERPRISE_LINUX
-    #include <X11/Xlib.h>
-    #define VK_USE_PLATFORM_XLIB_KHR
-#endif
 #include <vulkan/vulkan.h>
 
 #include "Core/FMemory.h"
@@ -28,9 +17,14 @@ FGraphicsVulkan graphics_vk;
 
 VkBool32 FVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
-bool FGraphicsInitialize(FWindow* pWindow, FContext* pContext, const FGraphicsOptions* pOptions)
+bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions* pOptions)
 {
-    if (pWindow == NULL || pOptions == NULL)
+    if (!FWindowInitialize(pWindowInfo))
+    {
+        return false;
+    }
+
+    if (pWindowInfo == NULL || pOptions == NULL)
     {
         return false;
     }
@@ -110,15 +104,12 @@ bool FGraphicsInitialize(FWindow* pWindow, FContext* pContext, const FGraphicsOp
 #endif
 
     /* Now that the surface is created we can create the window surface */
-    FContextVulkan* pContextVulkan = (FContextVulkan*)FGraphicsRegisterWindow(pWindow);
-    if (pContextVulkan == NULL)
+    if (!FWindowVulkanInitialize())
     {
         FGraphicsShutdown();
-        FLogError("Could not register the main window!");
+        FLogError("Could not initialize the vulkan window!");
         return false;
     }
-
-    *pContext = pContextVulkan;
 
     /* Find the physical device */
     uint32_t physicalDeviceCount = 0;
@@ -209,7 +200,7 @@ bool FGraphicsInitialize(FWindow* pWindow, FContext* pContext, const FGraphicsOp
 
         /* Check for the present family */
         VkBool32 presentSupport = VK_FALSE;
-        vkGetPhysicalDeviceSurfaceSupportKHR(graphics_vk.physicalDevice, i, pContextVulkan->surface, &presentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(graphics_vk.physicalDevice, i, window_vk.surface, &presentSupport);
 
         if (presentSupport)
         {
@@ -331,7 +322,7 @@ bool FGraphicsInitialize(FWindow* pWindow, FContext* pContext, const FGraphicsOp
     FDeallocate(pQueueCreateInfos);
 
     /* We can now create the main windows swapchain */
-    if (!FContextVulkanCreateSwapchain(pWindow, pContextVulkan))
+    if (!FWindowVulkanCreateSwapchain())
     {
         FGraphicsShutdown();
         return false;
@@ -358,149 +349,6 @@ void FGraphicsShutdown()
     if (graphics_vk.instance != VK_NULL_HANDLE)
     {
         vkDestroyInstance(graphics_vk.instance, NULL);
-    }
-}
-
-FContext FGraphicsRegisterWindow(FWindow window)
-{
-    if (window == NULL)
-    {
-        return NULL;
-    }
-
-    FContextVulkan* pContextVulkan = FAllocateZero(1, sizeof(FContextVulkan));
-    if (pContextVulkan == NULL)
-    {
-        return NULL;
-    }
-
-    /* Create the platform surface */
-#ifdef ENTERPRISE_WINDOWS
-    
-    VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {
-        .sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-        .pNext = NULL,
-        .flags = 0,
-        .hinstance = FWindowSystemHandle(),
-        .hwnd = (HWND)FWindowGetHandle(window)
-    };
-
-    if (vkCreateWin32SurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &pContextVulkan->surface) != VK_SUCCESS)
-    {
-        FGraphicsUnRegisterWindow(window, (FContext)pContextVulkan);
-        FLogError("Could not create the vulkan surface!");
-        return NULL; 
-    }
-
-#elif ENTERPRISE_MACOS
-    #error Need to implement.
-#elif ENTERPRISE_ANDROID
-    #error Need to implement.
-#elif ENTERPRISE_LINUX
-    
-    VkXlibSurfaceCreateInfoKHR surfaceCreateInfo = {
-        .sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-        .pNext = NULL,
-        .flags = 0,
-        .dpy = FWindowSystemHandle(),
-        .window = (Window)FWindowGetHandle(pWindow)
-    };
-
-    if (vkCreateXlibSurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &pContextVulkan->surface) != VK_SUCCESS)
-    {
-        FGraphicsUnRegisterWindow(pWindow, pContext);
-        FLogError("Could not create the vulkan surface!");
-        return NULL;
-    }
-#endif
-
-    /* Create the swapchain */
-    if (graphics_vk.device != VK_NULL_HANDLE) /* In the device is not yet created we can't create the swapchain, the context will do it for us. */
-    {
-        if (!FContextVulkanCreateSwapchain(window, pContextVulkan))
-        {
-            FGraphicsUnRegisterWindow(window, (FContext)pContextVulkan);
-            FLogError("Could not create the vulkan surface!");
-            return NULL;
-        }
-    }
-
-    return (FContext)pContextVulkan;
-}
-
-void FGraphicsUnRegisterWindow(FWindow* pWindow, FContext* pContext)
-{
-    FContextVulkan* pContextVulkan = (FContextVulkan*)pContext;
-
-    FContextVulkanDestroySwapchain(pWindow, pContextVulkan);
-
-    if (pContextVulkan->surface != VK_NULL_HANDLE)
-    {
-        vkDestroySurfaceKHR(graphics_vk.instance, pContextVulkan->surface, NULL);
-    }
-}
-
-bool FContextVulkanCreateSwapchain(FWindow window, FContextVulkan* pContext)
-{
-    /* Get the surface information */
-    VkBool32 surfaceSupported = false;
-    vkGetPhysicalDeviceSurfaceSupportKHR(graphics_vk.physicalDevice, graphics_vk.presentFamilyIndex, pContext->surface, &surfaceSupported);
-
-    if (!surfaceSupported)
-    {
-        return false;
-    }
-
-    VkSurfaceCapabilitiesKHR surfaceCapabilities = {0};
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(graphics_vk.physicalDevice, pContext->surface, &surfaceCapabilities);
-
-    pContext->imageCount = surfaceCapabilities.minImageCount + 1 <= surfaceCapabilities.maxImageCount ? surfaceCapabilities.minImageCount + 1 : surfaceCapabilities.minImageCount;
-    pContext->surfaceFormat = FWindowVulkanSurfaceFormat(pContext);
-    
-    FUInt32 width = 0, height = 0;
-    FWindowGetSize(window, &width, &height);
-
-    pContext->presentMode = FWindowVulkanPresentMode(pContext);
-
-    VkSwapchainCreateInfoKHR swapchainCreateInfo = {
-        .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-        .pNext = NULL,
-        .flags = 0,
-        .surface = pContext->surface,
-        .minImageCount = pContext->imageCount,
-        .imageFormat = pContext->surfaceFormat.format,
-        .imageColorSpace = pContext->surfaceFormat.colorSpace,
-        .imageExtent = (VkExtent2D){width, height},
-        .imageArrayLayers = 1,
-        .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
-        .imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
-        .queueFamilyIndexCount = 0,
-        .pQueueFamilyIndices = NULL,
-        .preTransform = surfaceCapabilities.currentTransform,
-        .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-        .presentMode = pContext->presentMode,
-        .clipped = VK_FALSE,
-        .oldSwapchain = VK_NULL_HANDLE
-    };
-
-    if (vkCreateSwapchainKHR(graphics_vk.device, &swapchainCreateInfo, NULL, &pContext->swapchain) != VK_SUCCESS)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-void FContextVulkanDestroySwapchain(FWindow* pWindow, FContextVulkan* pContext)
-{
-    if (pWindow == NULL || pContext == NULL)
-    {
-        return;
-    }
-
-    if (pContext->swapchain != VK_NULL_HANDLE)
-    {
-        vkDestroySwapchainKHR(graphics_vk.device, pContext->swapchain, NULL);
     }
 }
 

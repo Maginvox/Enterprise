@@ -1,4 +1,4 @@
 add_executable(EnterpriseExample
     main.c)
 
-target_link_libraries(EnterpriseExample EnterpriseCore EnterpriseWindow EnterpriseGraphics)
+target_link_libraries(EnterpriseExample EnterpriseCore EnterpriseGraphics)

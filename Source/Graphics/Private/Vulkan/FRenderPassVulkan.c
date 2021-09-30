@@ -134,14 +134,14 @@ FRenderPass* FRenderPassVulkanCreate(const FRenderPassCreateInfo* pInfo)
     return (FRenderPass*)pRenderPass;
 }
 
-void FRenderPassDestroy(FRenderPass* pRenderPass)
+void FRenderPassDestroy(FRenderPass renderPass)
 {
-    if (pRenderPass == NULL)
+    if (renderPass == NULL)
     {
         return;
     }
 
-    FRenderPassVulkan* pRenderPassVulkan = (FRenderPassVulkan*)pRenderPass;
+    FRenderPassVulkan* pRenderPassVulkan = renderPass;
     
     if (pRenderPassVulkan->renderPass != VK_NULL_HANDLE)
     {

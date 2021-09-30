@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 
     while(!FWindowShouldClose())
     {
-        
+        FInputPoll();
     }
 
     FGraphicsShutdown();

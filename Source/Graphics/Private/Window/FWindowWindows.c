@@ -18,7 +18,7 @@ bool FWindowInitialize(const FWindowInfo* pInfo)
 {
     if (pTitle == NULL || width <= 0 || height <= 0 || !FMathIsBetween(style, 0, FWindowStyle_Max))
     {
-        return NULL;
+        return false;
     }
 
     /* Register the window class */

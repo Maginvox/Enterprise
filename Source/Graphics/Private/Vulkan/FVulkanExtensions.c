@@ -37,13 +37,7 @@ static const char* ppInstanceExtensions[INSTANCE_EXTENSIONS_COUNT] = {
     #elif ENTERPRISE_CORE_ANDROID
         "VK_KHR_android_surface"
     #elif ENTERPRISE_CORE_LINUX
-        #ifdef ENTERPRISE_GRAPHICS_X11
-            "VK_KHR_xlib_surface"
-        #elif ENTERPRISE_GRAPHICS_WAYLAND
-            "VK_KHR_wayland_surface"
-        #else
-            #error Unsupported linux graphics platform!
-        #endif
+        "VK_KHR_xcb_surface"
     #else
         #error Unsupported graphics platform!
     #endif

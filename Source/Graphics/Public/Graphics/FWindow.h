@@ -19,14 +19,17 @@
 #elif ENTERPRISE_ANDROID
     #error NOT IMPLEMENTED
 #elif ENTERPRISE_LINUX
-    #include <X11/Xlib.h>
+    #include <xcb/xcb.h>
 
     typedef struct
     {
-        Window window;
-    } FWindowXLib;
+        xcb_connection_t* pConnection;
+        xcb_window_t window;
+        xcb_screen_t* pPrimaryScreen;
+        xcb_screen_t* pScreen;
+    } FWindowXcb;
 
-    extern FWindowXLib window_xlib;
+    extern FWindowXcb window_xcb;
 #endif
 
 typedef struct
@@ -34,6 +37,7 @@ typedef struct
     const char* pTitle;
     FUInt width;
     FUInt height;
+    FUInt screen;
 } FWindowInfo;
 
 bool FWindowInitialize(const FWindowInfo* pInfo);
@@ -48,12 +52,15 @@ void FWindowGetSize(FUInt* pWidth, FUInt* pHeight);
 #elif ENTERPRISE_ANDROID
     #error NOT_IMPLEMENTED
 #elif ENTERPRISE_LINUX
-    Display* FWindowGetDisplay();
-    Window FWindowGetHandle();
+    xcb_connection_t* FWindowGetConnection();
+    xcb_window_t FWindowGetHandle();
 #endif
 
 
 /* On window callbacks */
 void FWindowOnResize(FUInt width, FUInt height);
+
+FUInt FScreenPrimary();
+void FScreenEnumerate(FUInt* pCount, FUInt* pScreens);
 
 #endif

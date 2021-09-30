@@ -4,6 +4,22 @@ find_package(Vulkan REQUIRED)
 
 set(GraphicsSources "")
 
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    list(APPEND GraphicsSources
+        "Private/Window/FWindowWindows.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    list(APPEND GraphicsSources
+        "Private/Window/FWindowMacOS.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    list(APPEND GraphicsSources
+        "Private/Window/FWindowAndroid.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND GraphicsSources
+        "Private/Window/FWindowXcb.c")
+endif()
+
+
 # Vulkan API
 if (Vulkan_FOUND)
     list(APPEND GraphicsSources
@@ -17,11 +33,9 @@ if (Vulkan_FOUND)
         "Private/Vulkan/FFramebufferVulkan.c")
 endif()
 
-
-
 add_library(EnterpriseGraphics STATIC ${GraphicsSources})
 target_include_directories(EnterpriseGraphics PUBLIC "Public")
-target_link_libraries(EnterpriseGraphics EnterpriseCore)
+target_link_libraries(EnterpriseGraphics EnterpriseCore xcb)
 
 # Include ThirdParty Libraries
 if (Vulkan_FOUND)

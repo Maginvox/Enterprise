@@ -7,7 +7,7 @@
     #define VK_USE_PLATFORM_ANDROID_KHR
 #elif ENTERPRISE_LINUX
     #include <X11/Xlib.h>
-    #define VK_USE_PLATFORM_XLIB_KHR
+    #define VK_USE_PLATFORM_XCB_KHR
 #endif
 #include <vulkan/vulkan.h>
 
@@ -45,19 +45,18 @@ bool FWindowVulkanInitialize()
     #error Need to implement.
 #elif ENTERPRISE_LINUX
     
-    VkXlibSurfaceCreateInfoKHR surfaceCreateInfo = {
+    VkXcbSurfaceCreateInfoKHR surfaceCreateInfo = {
         .sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
         .pNext = NULL,
         .flags = 0,
-        .dpy = FWindowGetDisplay(),
-        .window = (Window)FWindowGetHandle(pWindow)
+        .connection = FWindowGetConnection(),
+        .window = FWindowGetHandle()
     };
 
-    if (vkCreateXlibSurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &pContextVulkan->surface) != VK_SUCCESS)
+    if (vkCreateXcbSurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &window_vk.surface) != VK_SUCCESS)
     {
-        FGraphicsUnRegisterWindow(pWindow, pContext);
         FLogError("Could not create the vulkan surface!");
-        return NULL;
+        return false;
     }
 #endif
 

@@ -102,7 +102,7 @@ bool FWindowVulkanCreateSwapchain()
     window_vk.imageCount = surfaceCapabilities.minImageCount + 1 <= surfaceCapabilities.maxImageCount ? surfaceCapabilities.minImageCount + 1 : surfaceCapabilities.minImageCount;
     window_vk.surfaceFormat = FWindowVulkanSurfaceFormat();
     
-    FUInt32 width = 0, height = 0;
+    FUInt width = 0, height = 0;
     FWindowGetSize(&width, &height);
 
     window_vk.presentMode = FWindowVulkanPresentMode();

@@ -11,7 +11,7 @@ void FInputPoll()
     switch (event.type)
     {
         case DestroyNotify:
-            XtSetValue
+            
             break;
     }
 

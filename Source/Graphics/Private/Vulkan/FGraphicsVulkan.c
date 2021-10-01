@@ -9,8 +9,6 @@
 
 #include "FVulkanExtensions.h"
 #include "FVulkanFormats.h"
-#include "FRenderPassVulkan.h"
-#include "FFramebufferVulkan.h"
 #include "FGraphicsVulkan.h"
 
 FGraphicsVulkan graphics_vk;
@@ -328,11 +326,129 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
         return false;
     }
 
+    /*
+        Color,
+        Specular,
+        WorldNormal,
+        Roughness
+        Depth,
+    */     
+
+    VkAttachmentDescription generalAttachments[1] = 
+    {
+        { /* Color Attachment */
+            .flags = 0,
+            .format = window_vk.surfaceFormat.format,
+            .samples = VK_SAMPLE_COUNT_1_BIT,
+            .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+            .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+            .stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+            .stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+            .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+            .finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+        }
+    };
+
+    VkAttachmentReference generalAttachmentReferences[1] =
+    {
+        { /* Color Reference */
+            .attachment = 0,
+            .layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+        }
+    };
+
+    VkSubpassDescription generalSubpasses[1] =
+    {
+        { /* Color Subpass */
+            .flags = 0,
+            .pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
+            .inputAttachmentCount = 0,
+            .pInputAttachments = NULL,
+            .colorAttachmentCount = 1,
+            .pColorAttachments = (VkAttachmentReference[1])
+                {
+                    generalAttachmentReferences[0]
+                },
+            .pResolveAttachments = NULL,
+            .pDepthStencilAttachment = NULL,
+            .preserveAttachmentCount = 0,
+            .pPreserveAttachments = NULL
+        }
+    };
+
+    VkSubpassDependency generalDependencies[1] =
+    {
+        {
+            .srcSubpass = VK_SUBPASS_EXTERNAL,
+            .dstSubpass = 0,
+            .srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            .srcAccessMask = 0,
+            .dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            .dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+        }
+    };
+
+    VkRenderPassCreateInfo generalPassCreateInfo =
+    {
+        .sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+        .pNext = NULL,
+        .flags = 0,
+        .attachmentCount = FCOUNT_OF(generalAttachments),
+        .pAttachments = &generalAttachments,
+        .subpassCount = FCOUNT_OF(generalSubpasses),
+        .pSubpasses = generalSubpasses,
+        .dependencyCount = FCOUNT_OF(generalDependencies),
+        .pDependencies = generalDependencies,
+    };
+
+    if (vkCreateRenderPass(graphics_vk.device, &generalPassCreateInfo, NULL, &graphics_vk.generalPass) != VK_SUCCESS)
+    {
+        FGraphicsShutdown();
+        FLogError("Could not create the general render pass!");
+        return false;
+    }
+
+    /* Create the global descriptor set */
+    VkDescriptorSetLayoutBinding globalBinding =
+    {
+        .binding = 0,
+        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        .descriptorCount = 1,
+        .stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
+        .pImmutableSamplers = NULL
+    };
+
+    VkDescriptorSetLayoutCreateInfo globalLayoutCreateInfo =
+    {
+        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+        .pNext = NULL,
+        .flags = 0,
+        .bindingCount = 1,
+        .pBindings = &globalBinding
+    };
+
+    if (vkCreateDescriptorSetLayout(graphics_vk.device, &globalLayoutCreateInfo, NULL, &graphics_vk.globalLayout) != VK_SUCCESS)
+    {
+        FGraphicsShutdown();
+        FLogError("Could not create the global descriptor layout!");
+        return false;
+    }
+
     return true;
 }
 
 void FGraphicsShutdown()
 {
+    if (graphics_vk.globalLayout != VK_NULL_HANDLE)
+    {
+        vkDestroyDescriptorSetLayout(graphics_vk.device, graphics_vk.globalLayout, NULL);
+    }
+
+    if (graphics_vk.generalPass != VK_NULL_HANDLE)
+    {
+        vkDestroyRenderPass(graphics_vk.device, graphics_vk.generalPass, NULL);
+    }
+
     FWindowVulkanShutdown();
 
     if (graphics_vk.device != VK_NULL_HANDLE)

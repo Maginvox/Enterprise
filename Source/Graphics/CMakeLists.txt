@@ -28,9 +28,7 @@ if (Vulkan_FOUND)
         "Private/Vulkan/FVulkanMemoryAllocator.cpp" 
         "Private/Vulkan/FWindowVulkan.c"
         "Private/Vulkan/FGraphicsVulkan.c"
-        "Private/Vulkan/FRenderPassVulkan.c"
         "Private/Vulkan/FImageVulkan.c"
-        "Private/Vulkan/FFramebufferVulkan.c"
         "Private/Vulkan/FPipelineVulkan.c")
 endif()
 

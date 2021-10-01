@@ -1,7 +1,7 @@
 #ifndef __FPIPELINE_VULKAN_H__
 #define __FPIPELINE_VULKAN_H__
 
-#include <Vulkan/vulkan.h>
+#include <vulkan/vulkan.h>
 
 typedef struct
 {

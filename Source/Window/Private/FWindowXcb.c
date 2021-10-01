@@ -6,7 +6,7 @@
 #include "Core/FMemory.h"
 #include "Core/FMath.h"
 #include "Core/FLog.h"
-#include "FWindow_Impl.h"
+
 
 FUInt defaultScreen = 0;
 xcb_connection_t* pConnection = NULL;
@@ -21,6 +21,8 @@ bool FWindowInitialize()
         FLogError("Could not connect to the X Server!");
         return false;
     }
+
+    
 
     return true;
 }

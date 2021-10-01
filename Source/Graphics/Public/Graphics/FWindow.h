@@ -29,6 +29,7 @@
         xcb_window_t window;
         xcb_screen_t* pPrimaryScreen;
         xcb_screen_t* pScreen;
+        bool shouldClose;
     } FWindowXcb;
 
     extern FWindowXcb window_xcb;

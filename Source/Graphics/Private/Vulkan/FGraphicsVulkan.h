@@ -23,6 +23,10 @@ typedef struct FGraphicsVulkan
     VkDevice device;
     
     VmaAllocator allocator;
+
+    VkRenderPass generalPass;
+
+    VkDescriptorSetLayout globalLayout;
 } FGraphicsVulkan;
 
 extern FGraphicsVulkan graphics_vk;

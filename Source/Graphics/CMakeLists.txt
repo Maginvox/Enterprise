@@ -30,14 +30,25 @@ if (Vulkan_FOUND)
         "Private/Vulkan/FGraphicsVulkan.c"
         "Private/Vulkan/FRenderPassVulkan.c"
         "Private/Vulkan/FImageVulkan.c"
-        "Private/Vulkan/FFramebufferVulkan.c")
+        "Private/Vulkan/FFramebufferVulkan.c"
+        "Private/Vulkan/FPipelineVulkan.c")
 endif()
 
 add_library(EnterpriseGraphics STATIC ${GraphicsSources})
 target_include_directories(EnterpriseGraphics PUBLIC "Public")
-target_link_libraries(EnterpriseGraphics EnterpriseCore xcb)
+target_link_libraries(EnterpriseGraphics EnterpriseCore)
 
 # Include ThirdParty Libraries
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    list(APPEND GraphicsSources
+        "Private/Window/FWindowMacOS.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+    list(APPEND GraphicsSources
+        "Private/Window/FWindowAndroid.c")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_libraries(EnterpriseGraphics xcb)
+endif()
+
 if (Vulkan_FOUND)
     target_include_directories(EnterpriseGraphics PUBLIC ${Vulkan_INCLUDE_DIR})
     target_link_libraries(EnterpriseGraphics ${Vulkan_LIBRARY})

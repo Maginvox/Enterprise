@@ -14,6 +14,8 @@
 
     extern FWindowWindows window_win;
 
+    LRESULT CALLBACK FWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 #elif ENTERPRISE_MACOS
     #error NOT IMPLEMENTED
 #elif ENTERPRISE_ANDROID

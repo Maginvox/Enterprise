@@ -1,5 +1,6 @@
 #include "Core/FTypes.h"
 #include "Graphics/FGraphics.h"
+#include "Input/FInput.h"
 
 int main(int argc, char** argv)
 {

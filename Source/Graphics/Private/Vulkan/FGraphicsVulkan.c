@@ -333,6 +333,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
 
 void FGraphicsShutdown()
 {
+    FWindowVulkanShutdown();
 
     if (graphics_vk.device != VK_NULL_HANDLE)
     {
@@ -350,6 +351,8 @@ void FGraphicsShutdown()
     {
         vkDestroyInstance(graphics_vk.instance, NULL);
     }
+
+    FWindowShutdown();
 }
 
 VkBool32 FVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)

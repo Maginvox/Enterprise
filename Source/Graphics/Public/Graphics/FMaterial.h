@@ -3,8 +3,10 @@
 #ifndef __FMATERIAL_H__
 #define __FMATERIAL_H__
 
+typedef void* FMaterial;
+typedef void* FMaterialParams;
 
-typedef struct FMaterial FMaterial;
-
+FMaterial FMaterialCreate();
+void FMaterialDestroy();
 
 #endif

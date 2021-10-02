@@ -69,7 +69,7 @@ void FWindowShutdown()
     }
 }
 
-void FWindowGetSize(FUInt* pWidth, FUInt* pHeight)
+void FWindowGetSize(uint32* pWidth, uint32* pHeight)
 {
     if (pWidth == NULL || pHeight == NULL)
     {

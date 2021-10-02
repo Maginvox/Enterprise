@@ -31,7 +31,7 @@ typedef struct FConfigParsedOption
     EConfigType type;
     union
     {
-        FInt Int;
+        int64 Int;
         float Float;
         bool Bool;
         char String[ENTERPRISE_NAME_MAX_LENGTH];
@@ -41,13 +41,13 @@ typedef struct FConfigParsedOption
 typedef struct FConfigParser
 {
     char ConfigFilename[ENTERPRISE_NAME_MAX_LENGTH];
-    FInt64 optionsCount;
+    int64 optionsCount;
     FConfigOption* pOptions;
-    FInt64 parsedOptionsCount;
+    int64 parsedOptionsCount;
     FConfigParsedOption* pParsedOptions;
 } FConfigParser;
 
-FConfigParser* FConfigParserCreate(FInt64 optionsCount, FConfigOption* pOptions);
+FConfigParser* FConfigParserCreate(int64 optionsCount, FConfigOption* pOptions);
 void FConfigParserDestroy(FConfigParser* pConfigParser);
 bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilename);
 bool FConfigParserGetOption(FConfigParser* pConfigParser, const char* pOptionName, FConfigParsedOption* pParsedOption);

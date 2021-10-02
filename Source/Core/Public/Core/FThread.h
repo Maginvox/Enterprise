@@ -22,6 +22,6 @@ typedef struct FThread
 
 FThread* FThreadCreate(FThreadFunction pFunction, void* pParameter);
 void FThreadJoin(FThread** ppThread);
-void FThreadSleep(FInt64 milliseconds); /* Sleeps current thread */
+void FThreadSleep(int64 milliseconds); /* Sleeps current thread */
 
 #endif

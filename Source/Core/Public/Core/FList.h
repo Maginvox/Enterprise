@@ -16,15 +16,15 @@ typedef struct FList
 {
     FListNode* pFirst;
     FListNode* pLast;
-    FInt64 count;
+    int64 count;
 } FList;
 
-FList* FListCreate();
-void FListDestroy(FList** ppList);
-bool FListAdd(FList* pList, void* pData, FListNode** ppNode);
-void FListRemove(FList* pList, FInt64 index);
-void FListRemoveNode(FList* pList, FListNode* pNode);
-void* FListGet(FList* pList, FInt64 index);
-bool FListEnumerate(FList* pList, FListNode** pNode);
+FList*  FListCreate();
+void    FListDestroy(FList** ppList);
+bool    FListAdd(FList* pList, void* pData, FListNode** ppNode);
+void    FListRemove(FList* pList, int64 index);
+void    FListRemoveNode(FList* pList, FListNode* pNode);
+void*   FListGet(FList* pList, int64 index);
+bool    FListEnumerate(FList* pList, FListNode** pNode);
 
 #endif

@@ -6,19 +6,19 @@
 #include "Core/FString.h"
 #include "Core/FConfigParser.h"
 
-bool FConfigParseLine(const char* pLine, char** ppName, FInt* pNameLength, char** ppValue, FInt* pValueLength, EConfigType* pType)
+bool FConfigParseLine(const char* pLine, char** ppName, int32* pNameLength, char** ppValue, int32* pValueLength, EConfigType* pType)
 {
     if (pLine == NULL)
     {
         return false;
     }
 
-    const FInt maxSearchLength = ENTERPRISE_NAME_MAX_LENGTH + sizeof(" = ") + ENTERPRISE_NAME_MAX_LENGTH + 1;
+    const int32 maxSearchLength = ENTERPRISE_NAME_MAX_LENGTH + sizeof(" = ") + ENTERPRISE_NAME_MAX_LENGTH + 1;
 
     char* pName = NULL;
-    FInt nameLength = 0;
+    int32 nameLength = 0;
     char* pValue = NULL;
-    FInt valueLength = 0;
+    int32 valueLength = 0;
     EConfigType type;
 
     char* pLineTemporary = (char*)pLine;
@@ -48,7 +48,7 @@ bool FConfigParseLine(const char* pLine, char** ppName, FInt* pNameLength, char*
     {
         pLineTemporary++;
     }
-    nameLength = (FInt)(pLineTemporary - pName);
+    nameLength = (int32)(pLineTemporary - pName);
 
     if (ppName != NULL)
     {
@@ -71,10 +71,10 @@ bool FConfigParseLine(const char* pLine, char** ppName, FInt* pNameLength, char*
     {
         pLineTemporary++;
     }
-    valueLength = (FInt)(pLineTemporary - pValue);
+    valueLength = (int32)(pLineTemporary - pValue);
 
     /* Get the values type */
-    FInt valueInteger = 0;
+    int64 valueInteger = 0;
     float valueFloat = 0;
     bool valueBool = false;
 
@@ -114,7 +114,7 @@ bool FConfigParseLine(const char* pLine, char** ppName, FInt* pNameLength, char*
 }
 
 /* ====================================================== */
-FConfigParser* FConfigParserCreate(FInt64 optionsCount, FConfigOption* pOptions)
+FConfigParser* FConfigParserCreate(int64 optionsCount, FConfigOption* pOptions)
 {
     if (optionsCount <= 0 || pOptions == NULL)
     {
@@ -184,9 +184,9 @@ bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilenam
     while (FFileReadLine(pFile, pBuffer, FSTRING_MAX_LENGTH))
     {
         char* pName = NULL;
-        FInt nameLength = 0;
+        int32 nameLength = 0;
         char* pValue = NULL;
-        FInt valueLength = 0;
+        int32 valueLength = 0;
         FConfigParsedOption parsedOption = {0};
 
         if (!FConfigParseLine(pBuffer, &pName, &nameLength, &pValue, &valueLength, &parsedOption.type))
@@ -196,7 +196,7 @@ bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilenam
 
         /* Check if the option is in the possible list of opition */
         const FConfigOption* pOption = NULL;
-        for (FInt64 i = 0; i < pConfigParser->optionsCount; i++)
+        for (int64 i = 0; i < pConfigParser->optionsCount; i++)
         {
             if (parsedOption.type == pConfigParser->pOptions[i].type &&
                 FStringCompare(pName, nameLength, pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
@@ -256,7 +256,7 @@ bool FConfigParserGetOption(FConfigParser* pConfigParser, const char* pOptionNam
     }
 
     /* Check if the option exists */
-    for (FInt64 i = 0; i < pConfigParser->parsedOptionsCount; i++)
+    for (int64 i = 0; i < pConfigParser->parsedOptionsCount; i++)
     {
         if (FStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
         {
@@ -282,7 +282,7 @@ void FConfigParserReset(FConfigParser* pConfigParser, const char* pConfigFilenam
         return;
     }
 
-    for (FInt64 i = 0; i < pConfigParser->optionsCount; i++)
+    for (int64 i = 0; i < pConfigParser->optionsCount; i++)
     {
         const char* pConfigFormat = "%s = %s";
         FStringFormatArgument pConfigFormatArgument[] = 
@@ -313,7 +313,7 @@ void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigF
 
     /* Find the option in the config options */
     const char* pDefaultValue = NULL;
-    for (FInt64 i = 0; i < pConfigParser->optionsCount; i++)
+    for (int64 i = 0; i < pConfigParser->optionsCount; i++)
     {
         if (FStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
         {
@@ -329,7 +329,7 @@ void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigF
     }
 
     /* Get the default values length */
-    FInt64 defaultValueLength = FStringLength(pDefaultValue, ENTERPRISE_NAME_MAX_LENGTH);
+    int64 defaultValueLength = FStringLength(pDefaultValue, ENTERPRISE_NAME_MAX_LENGTH);
 
     /* Open the config file */
     FFile* pFile = FFileOpen(pConfigFilename, "r+");
@@ -344,9 +344,9 @@ void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigF
 
         /* Parse the possible option */
         char* pName = NULL;
-        FInt nameLength = 0;
+        int32 nameLength = 0;
         char* pValue = NULL;
-        FInt valueLength = 0;
+        int32 valueLength = 0;
         EConfigType type;
 
         if (!FConfigParseLine(pBuffer, &pName, &nameLength, &pValue, &valueLength, &type))
@@ -354,10 +354,10 @@ void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigF
             continue;
         }
 
-        FInt bufferSize = FStringLength(pBuffer, FSTRING_MAX_LENGTH);
+        int32 bufferSize = FStringLength(pBuffer, FSTRING_MAX_LENGTH);
 
         /* Get the names values position */
-        FInt64 valueOffset = (FInt)(FFileTell(pFile) - bufferSize) + (pValue - pBuffer);
+        int64 valueOffset = (int32)(FFileTell(pFile) - bufferSize) + (pValue - pBuffer);
 
         /* Check if the option name matches */
         if (FStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pBuffer, nameLength) == 0)

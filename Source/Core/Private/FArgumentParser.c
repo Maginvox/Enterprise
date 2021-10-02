@@ -5,7 +5,7 @@
 #include "Core/FString.h"
 #include "Core/FArgumentParser.h"
 
-FArgumentParser* FArgumentParserCreate(const FInt32 optionsCount, const FArgumentOption* pOptions)
+FArgumentParser* FArgumentParserCreate(const int32 optionsCount, const FArgumentOption* pOptions)
 {
     if (pOptions == NULL)
     {
@@ -77,7 +77,7 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
             continue;
         }
 
-        FInt64 argLength = FStringLength(pArg, ENTERPRISE_NAME_MAX_LENGTH);
+        int64 argLength = FStringLength(pArg, ENTERPRISE_NAME_MAX_LENGTH);
 
         /* Make sure that the arguments length is not greater than ENTERPRISE_NAME_MAX_LENGTH */
         if (argLength > ENTERPRISE_NAME_MAX_LENGTH || argLength < 2)
@@ -111,7 +111,7 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
 
         /* Get the name */
         char* pName = pArg;
-        FInt nameLength = (FInt)(pEquals - pName);
+        uint32 nameLength = (uint32)(pEquals - pName);
 
         /* Check the argument name is the same as one of the options */
         FArgumentOption* pOption = NULL;
@@ -142,7 +142,7 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
 
         /* Get the value */
         char* pValue = pEquals + 1;
-        FInt valueLength = FStringLength(pValue, ENTERPRISE_NAME_MAX_LENGTH);
+        int32 valueLength = FStringLength(pValue, ENTERPRISE_NAME_MAX_LENGTH);
         if (valueLength > ENTERPRISE_NAME_MAX_LENGTH)
         {
             FLogWarning("An argument value was too long!");
@@ -150,7 +150,7 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
         }
 
         /* Check the values type */
-        FInt valueInteger = 0;
+        int64 valueInteger = 0;
         float valueFloat = 0.0f;
         bool valueBool = false;
 
@@ -192,7 +192,7 @@ bool FArgumentParserGetOption(FArgumentParser* pArgsParser, const char* pName, F
         return false;
     }
 
-    for (FInt64 i = 0; i < pArgsParser->parsedOptionsCount; i++)
+    for (int64 i = 0; i < pArgsParser->parsedOptionsCount; i++)
     {
         if (FStringCompare(pArgsParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH, pName, ENTERPRISE_NAME_MAX_LENGTH) == 0)
         {

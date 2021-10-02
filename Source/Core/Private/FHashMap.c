@@ -6,7 +6,7 @@
 #include "Core/FHash.h"
 #include "Core/FHashMap.h"
 
-FHashMap* FHashMapCreate(FInt64 size)
+FHashMap* FHashMapCreate(int64 size)
 {
     if (size <= 0)
     {
@@ -59,14 +59,14 @@ bool FHashMapInsert(FHashMap* pHashMapSimple, const char* pKey, void* pValue)
     }
 
     /* Compute the hash, get the index and set the value */
-    FInt64 hash = FHashMultiplicationMethod(pKey);
-    FInt64 index = hash % pHashMapSimple->size;
+    int64 hash = FHashMultiplicationMethod(pKey);
+    int64 index = hash % pHashMapSimple->size;
     pHashMapSimple->ppValues[index] = pValue;
     
     return true;
 }
 
-bool FHashMapInsertWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKey, void* pValue)
+bool FHashMapInsertWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey, void* pValue)
 {
     if (pHashMapSimple == NULL || hashedKey < 0)
     {
@@ -74,7 +74,7 @@ bool FHashMapInsertWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKe
     }
 
     /* Get the index and set the value */
-    FInt64 index = hashedKey % pHashMapSimple->size;
+    int64 index = hashedKey % pHashMapSimple->size;
     pHashMapSimple->ppValues[index] = pValue;
     
     return true;
@@ -87,23 +87,23 @@ void FHashMapRemove(FHashMap* pHashMapSimple, const char* pKey)
         return;
     }
 
-    FInt64 hash = FHashMultiplicationMethod(pKey);
-    FInt64 index = hash % pHashMapSimple->size;
+    int64 hash = FHashMultiplicationMethod(pKey);
+    int64 index = hash % pHashMapSimple->size;
     pHashMapSimple->ppValues[index] = NULL;
 }
 
-void FHashMapRemoveWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKey)
+void FHashMapRemoveWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey)
 {
     if (pHashMapSimple == NULL || hashedKey < 0)
     {
         return;
     }
 
-    FInt64 index = hashedKey % pHashMapSimple->size;
+    int64 index = hashedKey % pHashMapSimple->size;
     pHashMapSimple->ppValues[index] = NULL;
 }
 
-void FHashMapRemoveWithIndex(FHashMap* pHashMapSimple, const FInt64 index)
+void FHashMapRemoveWithIndex(FHashMap* pHashMapSimple, const int64 index)
 {
     if (pHashMapSimple == NULL || index < 0)
     {
@@ -123,14 +123,14 @@ bool FHashMapContains(FHashMap* pHashMapSimple, const char* pKey)
     return FHashMapContainsWithHashedKey(pHashMapSimple, FHashMultiplicationMethod(pKey));
 }
 
-bool FHashMapContainsWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKey)
+bool FHashMapContainsWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey)
 {
     if (pHashMapSimple == NULL)
     {
         return false;
     }
 
-    FInt64 index = hashedKey % pHashMapSimple->size;
+    int64 index = hashedKey % pHashMapSimple->size;
     return (pHashMapSimple->ppValues[index] != NULL);
 }
 
@@ -141,23 +141,23 @@ void* FHashMapGet(FHashMap* pHashMapSimple, const char* pKey)
         return NULL;
     }
 
-    FInt64 hash = FHashMultiplicationMethod(pKey);
-    FInt64 index = hash % pHashMapSimple->size;
+    int64 hash = FHashMultiplicationMethod(pKey);
+    int64 index = hash % pHashMapSimple->size;
     return pHashMapSimple->ppValues[index];
 }
 
-void* FHashMapGetWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKey)
+void* FHashMapGetWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey)
 {
     if (pHashMapSimple == NULL)
     {
         return NULL;
     }
 
-    FInt64 index = hashedKey % pHashMapSimple->size;
+    int64 index = hashedKey % pHashMapSimple->size;
     return pHashMapSimple->ppValues[index];
 }
 
-bool FHashMapEnumerate(FHashMap* pHashMapSimple, FInt64* pIndex, void** ppValue)
+bool FHashMapEnumerate(FHashMap* pHashMapSimple, int64* pIndex, void** ppValue)
 {
     if (pHashMapSimple == NULL || pIndex == NULL || *pIndex < 0 || *pIndex >= pHashMapSimple->size)
     {

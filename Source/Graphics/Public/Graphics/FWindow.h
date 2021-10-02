@@ -38,15 +38,15 @@
 typedef struct
 {
     const char* pTitle;
-    FUInt width;
-    FUInt height;
-    FUInt screen;
+    uint32 width;
+    uint32 height;
+    uint32 screen;
 } FWindowInfo;
 
 bool FWindowInitialize(const FWindowInfo* pInfo);
 void FWindowShutdown();
 bool FWindowShouldClose();
-void FWindowGetSize(FUInt* pWidth, FUInt* pHeight);
+void FWindowGetSize(uint32* pWidth, uint32* pHeight);
 
 #ifdef ENTERPRISE_WINDOWS
     HWND FWindowGetHandle();
@@ -61,9 +61,9 @@ void FWindowGetSize(FUInt* pWidth, FUInt* pHeight);
 
 
 /* On window callbacks */
-void FWindowOnResize(FUInt width, FUInt height);
+void FWindowOnResize(uint32 width, uint32 height);
 
-FUInt FScreenPrimary();
-void FScreenEnumerate(FUInt* pCount, FUInt* pScreens);
+uint32 FScreenPrimary();
+void FScreenEnumerate(uint32* pCount, uint32* pScreens);
 
 #endif

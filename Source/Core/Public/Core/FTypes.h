@@ -3,23 +3,15 @@
 #ifndef __FTYPES_H__
 #define __FTYPES_H__
 
-#ifndef __cplusplus
-    typedef signed long bool;
-    #define true 1
-    #define false 0
-#endif
-
-typedef char FInt8;
-typedef short FInt16;
-typedef long FInt32;
-typedef long long FInt64;
-typedef unsigned char FUInt8;
-typedef unsigned short FUInt16;
-typedef unsigned long FUInt32;
-typedef unsigned long long FUInt64;
-typedef unsigned short FWChar;
-typedef int FInt;
-typedef unsigned int FUInt;
+typedef char int8;
+typedef short int16;
+typedef long int32;
+typedef long long int64;
+typedef unsigned char uint8;
+typedef unsigned short uint16;
+typedef unsigned long uint32;
+typedef unsigned long long uint64;
+typedef unsigned short wchar;
 
 #define FINT8_MAX 127
 #define FINT8_MIN 128
@@ -34,12 +26,18 @@ typedef unsigned int FUInt;
 #define FUINT16_MAX 65535
 #define FUINT32_MAX 4294967295U
 #define FUINT64_MAX 18446744073709551615ULL
-#define FWCHAR_MAX 65535
+#define FWCHAR_MAX FUINT16_MAX
 
 #define FCHAR_BIT 8
 
 #ifndef NULL
     #define NULL ((void*)0)
+#endif
+
+#ifndef __cplusplus
+    typedef signed long bool;
+    #define true 1
+    #define false 0
 #endif
 
 #define FKB 1024

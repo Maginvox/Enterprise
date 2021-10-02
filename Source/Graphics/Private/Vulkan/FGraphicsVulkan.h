@@ -17,7 +17,7 @@ typedef struct FGraphicsVulkan
     VkDebugUtilsMessengerEXT debugMessenger;
 
     VkPhysicalDevice physicalDevice;
-    FInt32 graphicsFamilyIndex, presentFamilyIndex, computeFamilyIndex;
+    int32 graphicsFamilyIndex, presentFamilyIndex, computeFamilyIndex;
     VkQueue graphicsQueue, presentQueue, computeQueue;
     bool bHasCompute;
     VkDevice device;

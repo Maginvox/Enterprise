@@ -3,20 +3,19 @@
 #ifndef __FTIME_H__
 #define __FTIME_H__
 
-#include "FExport.h"
 #include "FTypes.h"
 
 typedef struct FTime
 {
-    FInt32 second;
-    FInt32 minute;
-    FInt32 hour;
-    FInt32 monthDay;
-    FInt32 month;
-    FInt32 year;
-    FInt32 weekDay;
-    FInt32 yearDay;
-    FInt32 isDaylightSavingTime;
+    int32 second;
+    int32 minute;
+    int32 hour;
+    int32 monthDay;
+    int32 month;
+    int32 year;
+    int32 weekDay;
+    int32 yearDay;
+    int32 isDaylightSavingTime;
 } FTime;
 
 void FTimeCurrent(FTime* time);

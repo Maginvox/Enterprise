@@ -10,7 +10,7 @@
 VkSurfaceFormatKHR FWindowVulkanSurfaceFormat()
 {
 
-    FUInt surfaceFormatsCount = 0;
+    uint32 surfaceFormatsCount = 0;
     if (vkGetPhysicalDeviceSurfaceFormatsKHR(graphics_vk.physicalDevice, window_vk.surface, &surfaceFormatsCount, NULL) != VK_SUCCESS)
     {
         return (VkSurfaceFormatKHR){VK_FORMAT_UNDEFINED, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR};
@@ -24,7 +24,7 @@ VkSurfaceFormatKHR FWindowVulkanSurfaceFormat()
 
     vkGetPhysicalDeviceSurfaceFormatsKHR(graphics_vk.physicalDevice, window_vk.surface, &surfaceFormatsCount, pSurfaceFormats);
 
-    for (FUInt i = 0; i < surfaceFormatsCount; i++)
+    for (uint32 i = 0; i < surfaceFormatsCount; i++)
     {
         if (pSurfaceFormats[i].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR || pSurfaceFormats[i].format == VK_FORMAT_R8G8B8A8_SRGB)
         {
@@ -38,7 +38,7 @@ VkSurfaceFormatKHR FWindowVulkanSurfaceFormat()
 VkPresentModeKHR FWindowVulkanPresentMode()
 {
 
-    FUInt presentModesCount;
+    uint32 presentModesCount;
     if (vkGetPhysicalDeviceSurfacePresentModesKHR(graphics_vk.physicalDevice, window_vk.surface, &presentModesCount, NULL) != VK_SUCCESS)
     {
         return VK_PRESENT_MODE_FIFO_KHR;
@@ -52,7 +52,7 @@ VkPresentModeKHR FWindowVulkanPresentMode()
 
     vkGetPhysicalDeviceSurfacePresentModesKHR(graphics_vk.physicalDevice, window_vk.surface, &presentModesCount, pPresentModes);
 
-    for (FUInt32 i = 0; i < presentModesCount; i++)
+    for (uint32 i = 0; i < presentModesCount; i++)
     {
         if (pPresentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
         {

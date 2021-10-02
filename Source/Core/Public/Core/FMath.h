@@ -5,38 +5,38 @@
 
 #include "FTypes.h"
 
-static inline FInt64 FMathPow(FInt64 value, FInt64 power)
+static inline int64 FMathPow(int64 value, int64 power)
 {
-    FInt64 result = 0;
+    int64 result = 0;
 
-    for (FInt64 i = 0; i < power; i++)
+    for (int64 i = 0; i < power; i++)
     {
         result *= value;
     }
     return result;
 }
 
-static inline FInt64 FMathMax(FInt64 a, FInt64 b)
+static inline int64 FMathMax(int64 a, int64 b)
 {
     return (a > b) ? a : b;
 }
 
-static inline FInt64 FMathMin(FInt64 a, FInt64 b)
+static inline int64 FMathMin(int64 a, int64 b)
 {
     return (a < b) ? a : b;
 }
 
-static inline bool FMathIsBetween(FInt64 value, FInt64 min, FInt64 max)
+static inline bool FMathIsBetween(int64 value, int64 min, int64 max)
 {
     return (value >= min && value <= max);
 }
 
-static inline FInt64 FMathBetween(FInt64 value, FInt64 a, FInt64 b)
+static inline int64 FMathBetween(int64 value, int64 a, int64 b)
 {
     return FMathMax(FMathMin(value, b), a);
 }
 
-static inline bool FMathIsMultipleOf8(FInt64 value)
+static inline bool FMathIsMultipleOf8(int64 value)
 {
     return (value % 8) == 0;
 }
@@ -45,7 +45,7 @@ static inline bool FMathIsMultipleOf8(FInt64 value)
 static inline float FFloatMathPow(float power, float value)
 {
     float result = 1.0f;
-    for (FInt64 i = 0; i < power; i++)
+    for (int64 i = 0; i < power; i++)
     {
         result *= value;
     }
@@ -76,7 +76,7 @@ static inline float FMathFloatBetween(float value, float a, float b)
 static inline double FMathDoublePow(double power, double value)
 {
     double result = 1.0f;
-    for (FInt64 i = 0; i < power; i++)
+    for (int64 i = 0; i < power; i++)
     {
         result *= value;
     }

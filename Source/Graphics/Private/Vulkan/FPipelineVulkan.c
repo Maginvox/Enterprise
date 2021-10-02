@@ -1,6 +1,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Core/FMemory.h"
+#include "Core/FLog.h"
 
 #include "Graphics/FVertex.h"
 #include "Graphics/FPipeline.h"
@@ -10,7 +11,7 @@
 
 
 
-FPipeline FPipelineCreate()
+FPipeline FPipelineCreate(FAsset* pVertex, FAsset* pFragment)
 {
 
     FPipelineVulkan* pPipeline = FAllocateZero(1, sizeof(FPipelineVulkan));
@@ -36,11 +37,48 @@ FPipeline FPipelineCreate()
 
     if (vkCreatePipelineLayout(graphics_vk.device, &layoutCreateInfo, NULL, &pPipeline->layout) != VK_SUCCESS)
     {
-        FDeallocate(pPipeline);
+        FPipelineDestroy(pPipeline);
+        FLogError("Could not create a vulkan pipeline layout!");
         return NULL;
     }
 
     /* Create the graphics pipeline */
+    VkShaderModule vertexShader = VK_NULL_HANDLE;
+    VkShaderModule fragmentShader = VK_NULL_HANDLE;
+
+    VkShaderModuleCreateInfo shaderModuleCreateInfos[2] =
+    {
+        {
+            .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+            .pNext = NULL,
+            .flags = 0,
+            .codeSize = pVertex->size,
+            .pCode = (const uint32_t*)pVertex->pData
+        },
+        {
+            .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+            .pNext = NULL,
+            .flags = 0,
+            .codeSize = pFragment->size,
+            .pCode = (const uint32_t*)pFragment->pData
+        }
+    };
+
+    if (vkCreateShaderModule(graphics_vk.device, &shaderModuleCreateInfos[0], NULL, &vertexShader) != VK_SUCCESS)
+    {
+        FPipelineDestroy(pPipeline);
+        FLogError("Could not compile a vulkan vertex shader!");
+        return NULL;
+    }
+
+    if (vkCreateShaderModule(graphics_vk.device, &shaderModuleCreateInfos[1], NULL, &fragmentShader) != VK_SUCCESS)
+    {
+        vkDestroyShaderModule(graphics_vk.device, vertexShader, NULL);
+        FPipelineDestroy(pPipeline);
+        FLogError("Could not compile a vulkan vertex shader!");
+        return NULL;
+    }
+
     VkPipelineShaderStageCreateInfo stages[2] =
     {
         {
@@ -48,6 +86,7 @@ FPipeline FPipelineCreate()
             .pNext = NULL,
             .flags = 0,
             .stage = VK_SHADER_STAGE_VERTEX_BIT,
+            .module = vertexShader,
             .pName = "main",
             .pSpecializationInfo = NULL
         },
@@ -56,6 +95,7 @@ FPipeline FPipelineCreate()
             .pNext = NULL,
             .flags = 0,
             .stage = VK_SHADER_STAGE_FRAGMENT_BIT,
+            .module = fragmentShader,
             .pName = "main",
             .pSpecializationInfo = NULL
         }
@@ -240,12 +280,30 @@ FPipeline FPipelineCreate()
 
     if (vkCreateGraphicsPipelines(graphics_vk.device, VK_NULL_HANDLE, 1, &pipelineCreateInfo, NULL, &pPipeline->pipeline) != VK_SUCCESS)
     {
-        
+        FPipelineDestroy(pPipeline);
+        FLogError("Could not create a vulkan graphics pipeline!");
+        return NULL;
     }
+    
+    vkDestroyShaderModule(graphics_vk.device, vertexShader, NULL);
+    vkDestroyShaderModule(graphics_vk.device, fragmentShader, NULL);
 
+    return pPipeline;
 }
 
-void FPipelineDestroy()
+void FPipelineDestroy(FPipeline pipeline)
 {
+    FPipelineVulkan* pPipeline = pipeline;
 
+    if (pPipeline->pipeline != VK_NULL_HANDLE)
+    {
+        vkDestroyPipeline(graphics_vk.device, pPipeline->pipeline, NULL);
+    }
+
+    if (pPipeline->layout != VK_NULL_HANDLE)
+    {
+        vkDestroyPipelineLayout(graphics_vk.device, pPipeline->layout, NULL);
+    }
+
+    FDeallocate(pPipeline);
 }

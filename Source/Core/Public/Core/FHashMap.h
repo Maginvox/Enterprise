@@ -8,21 +8,21 @@
 typedef struct FHashMap
 {
     void** ppValues;
-    FInt64 size;
-    FInt64 count;
+    int64 size;
+    int64 count;
 } FHashMap;
 
-FHashMap* FHashMapCreate(FInt64 size);
+FHashMap* FHashMapCreate(int64 size);
 void FHashMapDestroy(FHashMap** ppHashMapSimple);
 bool FHashMapInsert(FHashMap* pHashMapSimple, const char* pKey, void* pValue);
-bool FHashMapInsertWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKey, void* pValue); /* Use the FHashMultiplicationMethod */
+bool FHashMapInsertWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey, void* pValue); /* Use the FHashMultiplicationMethod */
 void FHashMapRemove(FHashMap* pHashMapSimple, const char* pKey);
-void FHashMapRemoveWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKey);
-void FHashMapRemoveWithIndex(FHashMap* pHashMapSimple, const FInt64 index);
+void FHashMapRemoveWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey);
+void FHashMapRemoveWithIndex(FHashMap* pHashMapSimple, const int64 index);
 bool FHashMapContains(FHashMap* pHashMapSimple, const char* pKey);
-bool FHashMapContainsWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKey);
+bool FHashMapContainsWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey);
 void* FHashMapGet(FHashMap* pHashMapSimple, const char* pKey);
-void* FHashMapGetWithHashedKey(FHashMap* pHashMapSimple, const FInt64 hashedKey);
-bool FHashMapEnumerate(FHashMap* pHashMapSimple, FInt64* pIndex, void** ppValue);
+void* FHashMapGetWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey);
+bool FHashMapEnumerate(FHashMap* pHashMapSimple, int64* pIndex, void** ppValue);
 
 #endif

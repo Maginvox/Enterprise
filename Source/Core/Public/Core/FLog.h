@@ -4,8 +4,10 @@
 #define __LOG_H__
 
 #include "Core/FExport.h"
+#include "Core/FTypes.h"
 #include "Core/FTime.h"
 #include "Core/FString.h"
+
 
 bool FLogToFile();
 void FLogShutdown();

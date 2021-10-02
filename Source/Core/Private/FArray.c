@@ -3,7 +3,7 @@
 #include "Core/FMemory.h"
 #include "Core/FArray.h"
 
-FArray* FArrayCreate(FInt64 elementSize, FInt32 capacity)
+FArray* FArrayCreate(int64 elementSize, int32 capacity)
 {
     if (elementSize < 1 || capacity < 1)
     {
@@ -45,7 +45,7 @@ void FArrayDestroy(FArray** ppArray)
     *ppArray = NULL;
 }
 
-bool FArrayResize(FArray* pArray, FInt32 newCapacity)
+bool FArrayResize(FArray* pArray, int32 newCapacity)
 {
     if (pArray == NULL || newCapacity < pArray->count) /* You cannot remove elements using this function */
     {
@@ -89,7 +89,7 @@ bool FArrayAdd(FArray* pArray, const void* pData)
     return true;
 }
 
-bool FArrayRemove(FArray* pArray, FInt32 index)
+bool FArrayRemove(FArray* pArray, int32 index)
 {
     if (pArray == NULL || index < 0 || index >= pArray->count)
     {
@@ -110,7 +110,7 @@ bool FArrayRemove(FArray* pArray, FInt32 index)
     return true;
 }
 
-bool FArraySet(FArray* pArray, FInt32 index, const void* pValue)
+bool FArraySet(FArray* pArray, int32 index, const void* pValue)
 {
     if (pArray == NULL || index < 0 || index >= pArray->count)
     {
@@ -122,7 +122,7 @@ bool FArraySet(FArray* pArray, FInt32 index, const void* pValue)
     return FMemoryCopy(pValue, pArrayAtIndex, pArray->elementSize) != NULL;
 }
 
-void* FArrayGet(FArray* pArray, FInt32 index)
+void* FArrayGet(FArray* pArray, int32 index)
 {
     if (pArray == NULL || index < 0 || index >= pArray->count)
     {
@@ -133,7 +133,7 @@ void* FArrayGet(FArray* pArray, FInt32 index)
     return ((unsigned char*)pArray->pArray) + (pArray->elementSize * index);
 }
 
-bool FArrayGetCopy(FArray* pArray, FInt32 index, void* pValue)
+bool FArrayGetCopy(FArray* pArray, int32 index, void* pValue)
 {
     if (pArray == NULL || index < 0 || index >= pArray->count)
     {
@@ -151,7 +151,7 @@ void* FArrayData(FArray* pArray)
     return pArray == NULL ? NULL : pArray->pArray;
 }
 
-FInt32 FArrayCount(FArray* pArray)
+int32 FArrayCount(FArray* pArray)
 {
     return pArray == NULL ? 0 : pArray->count;
 }

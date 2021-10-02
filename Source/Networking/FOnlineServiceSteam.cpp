@@ -171,7 +171,7 @@ void FOnlineServiceFriendRemove(FOnlineService* pService, FOnlineUserId userToRe
 }
 
 /* ====================================================== */
-bool FOnlineServiceFriendCount(FOnlineService* pService, FInt64* pCount)
+bool FOnlineServiceFriendCount(FOnlineService* pService, int64* pCount)
 {
     if (pService == NULL || pCount == NULL)
     {
@@ -185,7 +185,7 @@ bool FOnlineServiceFriendCount(FOnlineService* pService, FInt64* pCount)
 }
 
 /* ====================================================== */
-bool FOnlineServiceFriendAtIndex(FOnlineService* pService, FInt64 index, FOnlineUserId* pFriendId)
+bool FOnlineServiceFriendAtIndex(FOnlineService* pService, int64 index, FOnlineUserId* pFriendId)
 {
     if (pService == NULL || pFriendId == NULL)
     {
@@ -199,7 +199,7 @@ bool FOnlineServiceFriendAtIndex(FOnlineService* pService, FInt64 index, FOnline
 }
 
 /* ====================================================== */ 
-bool FOnlineServiceLobbyCreate(FOnlineService* pService, EOnlineServiceLobbyType lobbyType, FUInt8 maxUsers)
+bool FOnlineServiceLobbyCreate(FOnlineService* pService, EOnlineServiceLobbyType lobbyType, ui8 maxUsers)
 {
     if (pService == NULL || maxUsers == 0)
     {

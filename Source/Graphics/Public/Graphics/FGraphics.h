@@ -7,7 +7,7 @@
 
 typedef struct FGraphicsOptions
 {
-    FInt32 physicalDevice; /* Cannot change while in runtime */
+    int32 physicalDevice; /* Cannot change while in runtime */
 } FGraphicsOptions;
 
 typedef void* FContext;

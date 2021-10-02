@@ -63,9 +63,9 @@ void FLog(const char* pBasis, const char* pContext, const char* pMessage)
         {E_STRING_FORMAT_TYPE_STRING, .value.String = (char*)pMessage}
     };
 
-    FInt64 basisLength = FStringLength(pBasis, FSTRING_MAX_LENGTH);
-    FInt64 contextLength = FStringLength(pContext, FSTRING_MAX_LENGTH);
-    FInt64 messageLength = FStringLength(pMessage, FSTRING_MAX_LENGTH);
+    int64 basisLength = FStringLength(pBasis, FSTRING_MAX_LENGTH);
+    int64 contextLength = FStringLength(pContext, FSTRING_MAX_LENGTH);
+    int64 messageLength = FStringLength(pMessage, FSTRING_MAX_LENGTH);
 
     if (basisLength + contextLength + messageLength + sizeof(pPrintFormat) >= FSTRING_MAX_LENGTH)
     {

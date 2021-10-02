@@ -10,7 +10,6 @@ typedef float FVector3[3];
 typedef float FVector4[4];
 typedef float FQuaternion[4];
 
-
 FVector2* FVector2Add(float* pResult, FVector2 a, FVector2 b);
 FVector2* FVector2Sub(float* pResult, FVector2 a, FVector2 b);
 FVector2* FVector2Mul(float* pResult, FVector2 a, FVector2 b);
@@ -54,7 +53,5 @@ bool FQuaternionIsZero(FQuaternion v);
 FQuaternion* FQuaternionFromAxisAngle(float* pResult, FVector3 axis, float angle);
 FQuaternion* FQuaternionConvertFromEuler(float* pResult, FVector3 euler);
 FVector3* FQuaternionConvertToEuler(float* pResult, FQuaternion q);
-
-
 
 #endif

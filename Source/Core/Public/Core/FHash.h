@@ -5,6 +5,6 @@
 
 #include "FTypes.h"
 
-FUInt32 FHashMultiplicationMethod(const char* pString);
+uint32 FHashMultiplicationMethod(const char* pString);
 
 #endif

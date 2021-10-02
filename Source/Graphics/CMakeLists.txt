@@ -34,7 +34,7 @@ endif()
 
 add_library(EnterpriseGraphics STATIC ${GraphicsSources})
 target_include_directories(EnterpriseGraphics PUBLIC "Public")
-target_link_libraries(EnterpriseGraphics EnterpriseCore)
+target_link_libraries(EnterpriseGraphics EnterpriseCore EnterpriseResource)
 
 # Include ThirdParty Libraries
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")

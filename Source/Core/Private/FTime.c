@@ -15,16 +15,25 @@ void FTimeCurrent(FTime* pTime)
     time_t rawtime = 0;
     time(&rawtime);
 
-    struct tm* pTimeInfo = localtime(&rawtime);
-    
-    pTime->second = (FInt8)pTimeInfo->tm_sec;
-    pTime->minute = (FInt8)pTimeInfo->tm_min;
-    pTime->hour = (FInt8)pTimeInfo->tm_hour;
-    pTime->monthDay = (FInt8)pTimeInfo->tm_mday;
-    pTime->month = (FInt8)pTimeInfo->tm_mon + 1;
-    pTime->year = (FInt32)pTimeInfo->tm_year + 1900;
-    pTime->weekDay = (FInt8)pTimeInfo->tm_wday;
-    pTime->yearDay = (FInt16)pTimeInfo->tm_yday;
-    pTime->isDaylightSavingTime = (FInt8)pTimeInfo->tm_isdst;
+    struct tm* pTimeInfo = NULL;
+    #ifdef ENTERPRISE_WINDOWS
+        if (!localtime_s(pTimeInfo, &rawtime))
+        {
+            *(pTime) = (FTime){0};
+            return;
+        }
+    #else
+        pTimeInfo = localtime(&rawtime);
+    #endif
+
+    pTime->second = (int8)pTimeInfo->tm_sec;
+    pTime->minute = (int8)pTimeInfo->tm_min;
+    pTime->hour = (int8)pTimeInfo->tm_hour;
+    pTime->monthDay = (int8)pTimeInfo->tm_mday;
+    pTime->month = (int8)pTimeInfo->tm_mon + 1;
+    pTime->year = (int32)pTimeInfo->tm_year + 1900;
+    pTime->weekDay = (int8)pTimeInfo->tm_wday;
+    pTime->yearDay = (int16)pTimeInfo->tm_yday;
+    pTime->isDaylightSavingTime = (int8)pTimeInfo->tm_isdst;
 
 }

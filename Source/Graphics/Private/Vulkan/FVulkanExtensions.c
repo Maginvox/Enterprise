@@ -43,7 +43,7 @@ static const char* ppInstanceExtensions[INSTANCE_EXTENSIONS_COUNT] = {
     #endif
 };
 
-const char* const* FVulkanValidationLayers(FInt32* pCount)
+const char* const* FVulkanValidationLayers(uint32* pCount)
 {
 
     if (pCount == NULL)
@@ -73,11 +73,11 @@ const char* const* FVulkanValidationLayers(FInt32* pCount)
     }
 
     /* Loop through all the layers and find out if any are missing. */
-    for (FInt i = 0; i < FCOUNT_OF(ppValidationLayers); i++)
+    for (uint32 i = 0; i < FCOUNT_OF(ppValidationLayers); i++)
     {
         bool found = false;
 
-        for (FUInt32 j = 0; j < propertiesCount; j++)
+        for (uint32 j = 0; j < propertiesCount; j++)
         {
             if (FStringCompare(pProperties[j].layerName, VK_MAX_EXTENSION_NAME_SIZE, ppValidationLayers[i], VK_MAX_EXTENSION_NAME_SIZE) == 0)
             {
@@ -100,7 +100,7 @@ const char* const* FVulkanValidationLayers(FInt32* pCount)
     return (const char* const*)ppValidationLayers;
 }
 
-const char* const* FVulkanInstanceExtensions(FInt32* pCount)
+const char* const* FVulkanInstanceExtensions(uint32* pCount)
 {
 
     if (pCount == NULL)
@@ -126,7 +126,7 @@ const char* const* FVulkanInstanceExtensions(FInt32* pCount)
     vkEnumerateInstanceExtensionProperties(NULL, &propertiesCount, pProperties);
 
     /* Loop over all of the requested extensions and make sure they were found */
-    for (FInt32 i = 0; i < FCOUNT_OF(ppInstanceExtensions); i++)
+    for (int32 i = 0; i < FCOUNT_OF(ppInstanceExtensions); i++)
     {
         bool found = false;
 
@@ -151,7 +151,7 @@ const char* const* FVulkanInstanceExtensions(FInt32* pCount)
     return (const char* const*)ppInstanceExtensions;
 }
 
-const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, FInt32* pCount)
+const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, uint32* pCount)
 {
 
 
@@ -178,7 +178,7 @@ const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, FInt
     vkEnumerateDeviceExtensionProperties(physicalDevice, NULL, &propertiesCount, pProperties);
 
     /* Loop over all of the requested extensions and make sure they were found */
-    for (FInt32 i = 0; i < FCOUNT_OF(ppDeviceExtensions); i++)
+    for (int32 i = 0; i < FCOUNT_OF(ppDeviceExtensions); i++)
     {
         bool found = false;
 

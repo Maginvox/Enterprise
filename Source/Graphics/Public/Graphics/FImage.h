@@ -3,7 +3,6 @@
 #ifndef __FIMAGE_H__
 #define __FIMAGE_H__
 
-#include "Core/FExport.h"
 #include "Core/FTypes.h"
 #include "Graphics/FGraphics.h"
 
@@ -23,11 +22,11 @@ typedef enum FImageLayout
 
 typedef struct FImageCreateInfo
 {
-    FInt32 width;
-    FInt32 hight;
-    FInt32 depth;
+    int32 width;
+    int32 hight;
+    int32 depth;
     FImageFormat format;
-    FInt32 mipMaps;
+    int32 mipMaps;
     FImageLayout layout;
 } FImageCreateInfo;
 

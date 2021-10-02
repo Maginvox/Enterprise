@@ -22,7 +22,7 @@ typedef struct FStringFormatArgument
     EStringFormatType type;
     union
     {
-        FInt Integer;
+        int64 Integer;
         double Double;
         float Float;
         char* String;
@@ -34,48 +34,48 @@ bool FCharacterIsDigit(char Character);
 bool FCharacterIsAlpha(char Character);
 bool FCharacterIsAlphaNumeric(char Character);
 
-FInt FStringLength(const char* pString, FInt maxLength);
-char* FStringSeperate(const char* pSource, FInt sourceMaxLength, const char* pSeparators, FInt separatorsLength);
-bool FStringConcatenate(const char* pSource, FInt sourceMaxLength, char* pDestination, FInt destinationMaxLength);
-FInt FStringCompare(const char* pSource, FInt sourceMaxLength, const char* pCompare, FInt compareMaxLength);
-bool FStringCopy(const char* pSource, FInt sourceMaxLength, char* pDestination, FInt destinationMaxLength);
-bool FStringReverse(char* pString, FInt maxLength);
+uint32 FStringLength(const char* pString, uint32 maxLength);
+char* FStringSeperate(const char* pSource, uint32 sourceMaxLength, const char* pSeparators, uint32 separatorsLength);
+bool FStringConcatenate(const char* pSource, uint32 sourceMaxLength, char* pDestination, uint32 destinationMaxLength);
+uint32 FStringCompare(const char* pSource, uint32 sourceMaxLength, const char* pCompare, uint32 compareMaxLength);
+bool FStringCopy(const char* pSource, uint32 sourceMaxLength, char* pDestination, uint32 destinationMaxLength);
+bool FStringReverse(char* pString, uint32 maxLength);
 void FStringRemoveSpaces(char* pString);
 bool FStringIsAlpha(const char* pString);
 bool FStringIsNumeric(const char* pString);
 bool FStringIsAlphaNumeric(const char* pString);
-bool FStringFormat(char* pDestination, FInt destinationMaxLength, const char* pFormat, const FStringFormatArgument* pFormatArguments, FInt formatArgumentsCount); /* Possible escape formats, %i for int, %f for float, %d for double, and %s  */
+bool FStringFormat(char* pDestination, uint32 destinationMaxLength, const char* pFormat, const FStringFormatArgument* pFormatArguments, uint32 formatArgumentsCount); /* Possible escape formats, %i for int, %f for float, %d for double, and %s for string */
 
-bool FStringConvertFromInt(FInt value, FInt8 base, char* pDestination, FInt destinationMaxLength);
-bool FStringConvertFromFloat(float value, char* pDestination, FInt destinationMaxLength);
-bool FStringConvertFromDouble(double value, char* pDestination, FInt destinationMaxLength);
-bool FStringConvertFromBool(bool value, char* pDestination, FInt destinationMaxLength);
-bool FStringConvertFromTime(const FTime* pValue, char* pDestination, FInt destinationMaxLength); /* Destination must be greater than or equal to 32 characters */
+bool FStringConvertFromInt(int64 value, int32 base, char* pDestination, uint32 destinationMaxLength);
+bool FStringConvertFromFloat(float value, char* pDestination, uint32 destinationMaxLength);
+bool FStringConvertFromDouble(double value, char* pDestination, uint32 destinationMaxLength);
+bool FStringConvertFromBool(bool value, char* pDestination, uint32 destinationMaxLength);
+bool FStringConvertFromTime(const FTime* pValue, char* pDestination, uint32 destinationMaxLength); /* Destination must be greater than or equal to 32 characters */
 
-bool FStringConvertToInt(const char* pSource, FInt sourceMaxLength, FInt* pValue);
-bool FStringConvertToFloat(const char* pSource, FInt sourceMaxLength, float* pValue);
-bool FStringConvertToDouble(const char* pSource, FInt sourceMaxLength, double* pValue);
-bool FStringConvertToBool(const char* pSource, FInt sourceMaxLength, bool* pValue);
+bool FStringConvertToInt(const char* pSource, uint32 sourceMaxLength, int64* pValue);
+bool FStringConvertToFloat(const char* pSource, uint32 sourceMaxLength, float* pValue);
+bool FStringConvertToDouble(const char* pSource, uint32 sourceMaxLength, double* pValue);
+bool FStringConvertToBool(const char* pSource, uint32 sourceMaxLength, bool* pValue);
 
 
 
 /*
-FInt FWideStringLength(const FWChar* pString, FInt MaxLength);
-FWChar* FWideStringTokenize(const FWChar* pSource, FInt* pSourceMaxLength, const FWChar* pDeliminator, FWChar** ppToken);
-bool FWideStringConcatenate(const FWChar* pSource, FInt sourceMaxLength, FWChar* pDestination, FInt destinationMaxLength);
-bool FWideStringCompare(const FWChar* pSource, FInt sourceMaxLength, const FWChar* pCompare, FInt compareMaxLength);
-bool FWideStringCopy(const FWChar* pSource, FInt sourceMaxLength, FWChar* pDestination, FInt destinationMaxLength);
+FInt FWideStringLength(const wchar* pString, FInt MaxLength);
+wchar* FWideStringTokenize(const wchar* pSource, FInt* pSourceMaxLength, const wchar* pDeliminator, wchar** ppToken);
+bool FWideStringConcatenate(const wchar* pSource, FInt sourceMaxLength, wchar* pDestination, FInt destinationMaxLength);
+bool FWideStringCompare(const wchar* pSource, FInt sourceMaxLength, const wchar* pCompare, FInt compareMaxLength);
+bool FWideStringCopy(const wchar* pSource, FInt sourceMaxLength, wchar* pDestination, FInt destinationMaxLength);
 
-bool FWideStringConvertFromBool(const bool value, FWChar* pDestination, FInt destinationMaxLength);
-bool FWideStringConvertFromLong(const FInt32 value, FWChar* pDestination, FInt destinationMaxLength);
-bool FWideStringConvertFromLongLong(const FInt value, FWChar* pDestination, FInt destinationMaxLength);
-bool FWideStringConvertFromUnsignedLong(const FUInt32 value, FWChar* pDestination, FInt destinationMaxLength);
-bool FWideStringConvertFromUnsignedLongLong(const FInt value, FWChar* pDestination, FInt destinationMaxLength);
-bool FWideStringConvertToBool(const FWChar* pSource, FInt sourceMaxLength, bool *pDestination);
-bool FWideStringConvertToLong(const FWChar* pSource, FInt sourceMaxLength, FInt32* pDestination);
-bool FWideStringConvertToLongLong(const FWChar* pSource, FInt sourceMaxLength, FInt* pDestination);
-bool FWideStringConvertToUnsignedLong(const FWChar* pSource, FInt sourceMaxLength, FUInt32* pDestination);
-bool FWideStringConvertToUnsignedLongLong(const FWChar* pSource, FInt sourceMaxLength, FUInt64* pDestination);
+bool FWideStringConvertFromBool(const bool value, wchar* pDestination, FInt destinationMaxLength);
+bool FWideStringConvertFromLong(const int32 value, wchar* pDestination, FInt destinationMaxLength);
+bool FWideStringConvertFromLongLong(const FInt value, wchar* pDestination, FInt destinationMaxLength);
+bool FWideStringConvertFromUnsignedLong(const uint3232 value, wchar* pDestination, FInt destinationMaxLength);
+bool FWideStringConvertFromUnsignedLongLong(const FInt value, wchar* pDestination, FInt destinationMaxLength);
+bool FWideStringConvertToBool(const wchar* pSource, FInt sourceMaxLength, bool *pDestination);
+bool FWideStringConvertToLong(const wchar* pSource, FInt sourceMaxLength, int32* pDestination);
+bool FWideStringConvertToLongLong(const wchar* pSource, FInt sourceMaxLength, FInt* pDestination);
+bool FWideStringConvertToUnsignedLong(const wchar* pSource, FInt sourceMaxLength, uint3232* pDestination);
+bool FWideStringConvertToUnsignedLongLong(const wchar* pSource, FInt sourceMaxLength, uint3264* pDestination);
 */
 
 #endif

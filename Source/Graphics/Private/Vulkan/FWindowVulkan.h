@@ -9,7 +9,7 @@ typedef struct FWindowVulkan
 {
     VkSurfaceKHR surface;
     VkSurfaceFormatKHR surfaceFormat;
-    FUInt32 imageCount;
+    uint32 imageCount;
     VkPresentModeKHR presentMode;
     VkSwapchainKHR swapchain;
 } FWindowVulkan;

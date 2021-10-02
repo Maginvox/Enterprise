@@ -102,7 +102,7 @@ void FThreadJoin(FThread** ppThread)
 	CloseHandle(hThread);
 }
 
-void FThreadSleep(FInt64 milliseconds)
+void FThreadSleep(int64 milliseconds)
 {
     Sleep((DWORD)milliseconds);
 }

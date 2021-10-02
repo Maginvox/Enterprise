@@ -25,17 +25,17 @@ void FOnlineServiceFriendRemove(FOnlineService* pService, const FOnlineUserId us
 
 }
 
-bool FOnlineServiceFriendCount(FOnlineService* pService, FInt64* pCount)
+bool FOnlineServiceFriendCount(FOnlineService* pService, int64* pCount)
 {
 	return false;
 }
 
-bool FOnlineServiceFriendAtIndex(FOnlineService* pService, FInt64 index, FOnlineUserId* pFriendId)
+bool FOnlineServiceFriendAtIndex(FOnlineService* pService, int64 index, FOnlineUserId* pFriendId)
 {
 	return false;
 }
 
-bool FOnlineServiceLobbyCreate(FOnlineService* pService, const EOnlineServiceLobbyType lobbyType, const FUInt8 maxUsers)
+bool FOnlineServiceLobbyCreate(FOnlineService* pService, const EOnlineServiceLobbyType lobbyType, const ui8 maxUsers)
 {
 	return false;
 }

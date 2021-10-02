@@ -6,7 +6,6 @@
 /* Arguments are formatted like this "--name=value" to pass a value, or "--name" to indicate an options is on or off */
 /* Arguments that do not have this format will be excluded from the retrievable options */
 
-#include "Core/FExport.h"
 #include "Core/FMacro.h"
 #include "Core/FTypes.h"
 
@@ -30,7 +29,7 @@ typedef struct FArgumentParsedOption
     EArgumentType type;
     union
     {
-        int Int;
+        int64 Int;
         float Float;
         bool Bool;
         char String[ENTERPRISE_NAME_MAX_LENGTH];
@@ -39,13 +38,13 @@ typedef struct FArgumentParsedOption
 
 typedef struct FArgumentParser
 {
-    FInt64 optionsCount;
+    int64 optionsCount;
     FArgumentOption* pOptions;
-    FInt64 parsedOptionsCount;
+    int64 parsedOptionsCount;
     FArgumentParsedOption* pParsedOptions;
 } FArgumentParser;
 
-FArgumentParser* FArgumentParserCreate(const FInt32 optionsCount, const FArgumentOption* pOptions);
+FArgumentParser* FArgumentParserCreate(const int32 optionsCount, const FArgumentOption* pOptions);
 void FArgumentParserDestroy(FArgumentParser** pArgumentParser);
 bool FArgumentParserParse(FArgumentParser* pArgumentParser, const int argc, const char* const* argv);
 bool FArgumentParserGetOption(FArgumentParser* pArgumentParser, const char* pName, FArgumentParsedOption* pParsedOption);

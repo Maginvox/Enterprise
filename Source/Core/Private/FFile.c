@@ -13,7 +13,15 @@ FFile* FFileOpen(const char* pFilename, const char* pMode)
         return NULL;
     }
 
-    FFile* pFile = (FFile*)fopen(pFilename, pMode);
+    FFile* pFile = NULL;
+    #ifdef ENTERPRISE_WINDOWS
+        if (!fopen_s((FILE**)&pFile, pFilename, pMode))
+        {
+            return NULL;
+        }
+    #else
+        pFile = (FFile*)fopen(pFilename, pMode);
+    #endif
 
     return pFile;
 }
@@ -73,7 +81,7 @@ bool FFileRename(const char* pOldFilename, const char* pNewFilename)
 }
 
 /* ====================================================== */
-bool FFileSeek(FFile* pFile, const FInt64 offset, const EFileSeekOrigin seekOrigin)
+bool FFileSeek(FFile* pFile, const int64 offset, const EFileSeekOrigin seekOrigin)
 {
     if (pFile == NULL)
     {
@@ -100,7 +108,7 @@ bool FFileSeek(FFile* pFile, const FInt64 offset, const EFileSeekOrigin seekOrig
 }
 
 /* ====================================================== */
-FInt64 FFileTell(FFile* pFile)
+int64 FFileTell(FFile* pFile)
 {
     if (pFile == NULL)
     {
@@ -122,7 +130,7 @@ char FFileReadChar(FFile* pFile)
 }
 
 /* ====================================================== */
-bool FFileReadLine(FFile* pFile, char* pBuffer, const FInt64 bufferMaxLength)
+bool FFileReadLine(FFile* pFile, char* pBuffer, const int64 bufferMaxLength)
 {
     if (pFile == NULL || pBuffer == NULL || bufferMaxLength == 0)
     {
@@ -133,7 +141,7 @@ bool FFileReadLine(FFile* pFile, char* pBuffer, const FInt64 bufferMaxLength)
 }
 
 /* ====================================================== */
-FInt64 FFileRead(FFile* pFile, void* pBuffer, const FInt64 bufferMaxLength, const FInt64 elementSize, const FInt64 elementCount)
+int64 FFileRead(FFile* pFile, void* pBuffer, const int64 bufferMaxLength, const int64 elementSize, const int64 elementCount)
 {
     if (pFile == NULL || pBuffer == NULL || bufferMaxLength <= 0 || elementSize <= 0 || elementCount <= 0)
     {
@@ -160,7 +168,7 @@ bool FFileWriteChar(FFile* pFile, const char c)
 }
 
 /* ====================================================== */
-bool FFileWrite(FFile* pFile, const void* pBuffer, const FInt64 bufferLength, const FInt64 elementSize, const FInt64 elementCount)
+bool FFileWrite(FFile* pFile, const void* pBuffer, const int64 bufferLength, const int64 elementSize, const int64 elementCount)
 {
     if (pFile == NULL || pBuffer == NULL || bufferLength <= 0 || elementSize <= 0 || elementCount <= 0)
     {
@@ -172,5 +180,5 @@ bool FFileWrite(FFile* pFile, const void* pBuffer, const FInt64 bufferLength, co
         return false;
     }
 
-    return (FInt64)fwrite(pBuffer, elementSize, elementCount, (FILE*)pFile) == elementCount;
+    return (int64)fwrite(pBuffer, elementSize, elementCount, (FILE*)pFile) == elementCount;
 }

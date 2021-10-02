@@ -1,7 +1,7 @@
 #ifndef __FSOCKET_H__
 #define __FSOCKET_H__
 
-#include "FTypes.h"
+#include "Core/FTypes.h"
 
 typedef struct FSocket FSocket;
 

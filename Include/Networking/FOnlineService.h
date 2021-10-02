@@ -7,7 +7,7 @@
 
 typedef struct FOnlineService FOnlineService;
 
-typedef FUInt64 FOnlineUserId;
+typedef ui64 FOnlineUserId;
 
 typedef enum EOnlineServiceResponse
 {
@@ -31,7 +31,7 @@ typedef struct FOnlineServiceLobbyData
 {
     EOnlineServiceLobbyType lobbyType;
     FOnlineServiceUserData lobbyOwner;
-    FInt32 gameIp;
+    int32 gameIp;
 } FOnlineServiceLobbyData;
 
 FOnlineService* FOnlineServiceCreate(); 
@@ -42,10 +42,10 @@ void FOnlineServiceLoginIsLoggedIn(FOnlineService* pService, EOnlineServiceRespo
 
 void FOnlineServiceFriendAdd(FOnlineService* pService, const FOnlineUserId userToFriend);
 void FOnlineServiceFriendRemove(FOnlineService* pService, const FOnlineUserId user);
-bool FOnlineServiceFriendCount(FOnlineService* pService, FInt64* pCount);
-bool FOnlineServiceFriendAtIndex(FOnlineService* pService, FInt64 index, FOnlineUserId* pFriendId);
+bool FOnlineServiceFriendCount(FOnlineService* pService, int64* pCount);
+bool FOnlineServiceFriendAtIndex(FOnlineService* pService, int64 index, FOnlineUserId* pFriendId);
 
-bool FOnlineServiceLobbyCreate(FOnlineService* pService, const EOnlineServiceLobbyType lobbyType, const FUInt8 maxUsers); /* Get the new FOnlineServiceLobbyId from the FOnlineServiceLobbyCreatedCallback */
+bool FOnlineServiceLobbyCreate(FOnlineService* pService, const EOnlineServiceLobbyType lobbyType, const ui8 maxUsers); /* Get the new FOnlineServiceLobbyId from the FOnlineServiceLobbyCreatedCallback */
 EOnlineServiceResponse FOnlineServiceLobbyCreatedResponse(FOnlineService* pService);
 void FOnlineServiceLobbyLeave(FOnlineService* pService);
 bool FOnlineServiceLobbyIsInLobby(FOnlineService* pService);

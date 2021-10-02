@@ -87,7 +87,7 @@ void FListRemoveNode(FList* pList, FListNode* pNode)
     FDeallocate(pNode);
 }
 
-void* FListGet(FList* pList, FInt64 index)
+void* FListGet(FList* pList, int64 index)
 {
     if (pList == NULL || index < 0 || index > pList->count)
     {

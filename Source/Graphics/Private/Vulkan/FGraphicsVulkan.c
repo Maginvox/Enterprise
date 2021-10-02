@@ -39,10 +39,10 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     };
 
     /* Get the validation layers and instance extensions. */
-    FInt32 validationLayersCount = 0;
+    int32 validationLayersCount = 0;
     const char* const* ppValidationLayers = FVulkanValidationLayers(&validationLayersCount);
 
-    FInt32 instanceExtensionsCount = 0;
+    int32 instanceExtensionsCount = 0;
     const char* const* ppInstanceExtension = FVulkanInstanceExtensions(&instanceExtensionsCount);
 
 #ifdef ENTERPRISE_DEBUG
@@ -141,7 +141,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
 
 
     /* Get the physical devices queues */
-    FUInt queueFamilyPropertiesCount = 0;
+    uint32 queueFamilyPropertiesCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(graphics_vk.physicalDevice, &queueFamilyPropertiesCount, NULL);
 
     VkQueueFamilyProperties* pQueueFamilyProperties = FAllocateZero(queueFamilyPropertiesCount, sizeof(VkQueueFamilyProperties));
@@ -173,9 +173,9 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
 
     /* Find the graphics queue */
     bool foundGraphicsFamily = false, foundPresentFamily = false, foundComputeFamily = false;
-    FUInt32 graphicsFamily = 0, presentFamily = 0, computeFamily = 0;
+    uint32 graphicsFamily = 0, presentFamily = 0, computeFamily = 0;
     
-    for (FUInt32 i = 0; i < queueFamilyPropertiesCount; i++)
+    for (uint32 i = 0; i < queueFamilyPropertiesCount; i++)
     {
         VkQueueFamilyProperties* pFamilyProperties = &pQueueFamilyProperties[i];
 
@@ -244,7 +244,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     const bool bAllQueuesSame = (bGraphicsAndPresentSame && bPresentAndComputeSame);
     const bool bAllQueuesDifferent = (!bGraphicsAndPresentSame && !bPresentAndComputeSame);
 
-    const FUInt32 queueFamilyCount = bAllQueuesSame ? 1 : (bAllQueuesDifferent ? 3 : 2);
+    const uint32 queueFamilyCount = bAllQueuesSame ? 1 : (bAllQueuesDifferent ? 3 : 2);
 
     VkDeviceQueueCreateInfo* pQueueCreateInfos = FAllocateZero(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
     if (pQueueCreateInfos == NULL)
@@ -266,7 +266,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     pQueueCreateInfos[0].queueFamilyIndex = graphicsFamily;
     pQueueCreateInfos[0].queueCount = 1;
     pQueueCreateInfos[0].pQueuePriorities = pQueuePriorities;
-    FInt queueFamiliesUsed = 1;
+    uint32 queueFamiliesUsed = 1;
 
     if (!bGraphicsAndPresentSame)
     {
@@ -291,7 +291,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     }
 
     /* Get the device extensions. */ 
-    FInt32 deviceExtensionsCount = 0;
+    int32 deviceExtensionsCount = 0;
     const char* const* ppDeviceExtension = FVulkanDeviceExtensions(graphics_vk.physicalDevice, &deviceExtensionsCount);
 
     const VkPhysicalDeviceFeatures deviceFeatures = {0};
@@ -394,7 +394,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
         .pNext = NULL,
         .flags = 0,
         .attachmentCount = FCOUNT_OF(generalAttachments),
-        .pAttachments = &generalAttachments,
+        .pAttachments = generalAttachments,
         .subpassCount = FCOUNT_OF(generalSubpasses),
         .pSubpasses = generalSubpasses,
         .dependencyCount = FCOUNT_OF(generalDependencies),
@@ -433,7 +433,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
         FLogError("Could not create the global descriptor layout!");
         return false;
     }
-
+    
     return true;
 }
 

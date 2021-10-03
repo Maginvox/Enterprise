@@ -79,7 +79,8 @@
         "xlib.h": "c",
         "fvulkanformats.h": "c",
         "fexport.h": "c",
-        "fhash.h": "c"
+        "fhash.h": "c",
+        "fmatrix.h": "c"
     },
     "cmake.configureOnOpen": true
 }

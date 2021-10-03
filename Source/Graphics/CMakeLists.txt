@@ -19,6 +19,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         "Private/Window/FWindowXLib.c")
 endif()
 
+list(APPEND GraphicsSources
+    "Private/enMeshParser.c")
 
 # Vulkan API
 if (Vulkan_FOUND)

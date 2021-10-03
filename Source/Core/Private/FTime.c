@@ -17,11 +17,13 @@ void FTimeCurrent(FTime* pTime)
 
     struct tm* pTimeInfo = NULL;
     #ifdef ENTERPRISE_WINDOWS
-        if (!localtime_s(pTimeInfo, &rawtime))
+        struct tm timeInfo = {0};
+        if (!localtime_s(&timeInfo, &rawtime))
         {
             *(pTime) = (FTime){0};
             return;
         }
+        pTimeInfo = &timeInfo;
     #else
         pTimeInfo = localtime(&rawtime);
     #endif

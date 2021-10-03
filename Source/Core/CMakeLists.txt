@@ -12,7 +12,8 @@ list(APPEND CoreSources
 		"Private/FHash.c"
 		"Private/FHashMap.c"
 		"Private/FArgumentParser.c"
-		"Private/FConfigParser.c")
+		"Private/FConfigParser.c"
+		"Private/enJsonParser.c")
 
 add_library(EnterpriseCore STATIC ${CoreSources})
 target_include_directories(EnterpriseCore PUBLIC "Public")

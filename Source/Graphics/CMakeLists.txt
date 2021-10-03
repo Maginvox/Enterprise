@@ -16,7 +16,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
         "Private/Window/FWindowAndroid.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND GraphicsSources
-        "Private/Window/FWindowXcb.c")
+        "Private/Window/FWindowXLib.c")
 endif()
 
 

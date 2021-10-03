@@ -46,7 +46,7 @@ bool FStringIsNumeric(const char* pString);
 bool FStringIsAlphaNumeric(const char* pString);
 bool FStringFormat(char* pDestination, uint32 destinationMaxLength, const char* pFormat, const FStringFormatArgument* pFormatArguments, uint32 formatArgumentsCount); /* Possible escape formats, %i for int, %f for float, %d for double, and %s for string */
 
-bool FStringConvertFromInt(int64 value, int32 base, char* pDestination, uint32 destinationMaxLength);
+bool FStringConvertFromInt(int64 value, int8 base, char* pDestination, uint32 destinationMaxLength);
 bool FStringConvertFromFloat(float value, char* pDestination, uint32 destinationMaxLength);
 bool FStringConvertFromDouble(double value, char* pDestination, uint32 destinationMaxLength);
 bool FStringConvertFromBool(bool value, char* pDestination, uint32 destinationMaxLength);

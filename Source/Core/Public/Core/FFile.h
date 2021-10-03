@@ -3,7 +3,6 @@
 #ifndef __FFILE_H__
 #define __FFILE_H__
 
-#include "Core/FExport.h"
 #include "Core/FTypes.h"
 
 #define FEOF -1

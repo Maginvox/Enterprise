@@ -1,5 +1,6 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
+#include "Core/FTypes.h"
 #include "Core/FMacro.h"
 #include "Core/FMemory.h"
 #include "Core/FMath.h"

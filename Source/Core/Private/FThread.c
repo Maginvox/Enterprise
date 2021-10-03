@@ -233,7 +233,7 @@ void FThreadJoin(FThread** ppThread)
 }
 
 /* ====================================================== */
-void FThreadSleep(FInt64 milliseconds)
+void FThreadSleep(uint64 milliseconds)
 {
     sleep(milliseconds * 1000);
 }

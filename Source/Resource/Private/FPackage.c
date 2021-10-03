@@ -1,10 +1,11 @@
-*/* Copyright © 2021 Caden Miller, All Rights Reserved. */
+/* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#include "Core/FFile.h"
 #include "Core/FMemory.h"
 #include "Core/FHash.h"
 #include "Core/FLog.h"
 #include "Resource/FPackage.h"
+
+#include "Core/FFile.h"
 
 bool FPackageRewriteRecords(const FPackage* pPackage)
 {
@@ -288,7 +289,8 @@ bool FPackageDefragment(FPackage* pPackage)
                 FFileWriteChar(pTempDataFile, c);
             }
             
-            FArrayRemove(pPackage->pRecords, i); i--; /* i-- because we are removing an index, so we dont want to overflow the buffer later */
+            FArrayRemove(pPackage->pRecords, i); 
+            i--; /* i-- because we are removing an index, so we dont want to overflow the buffer later */
             FHashMapRemoveWithHashedKey(pPackage->pRecordsMap, pRecord->recordId);
 
             FPackageRewriteRecords(pPackage);

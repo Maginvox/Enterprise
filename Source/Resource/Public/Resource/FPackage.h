@@ -2,6 +2,7 @@
 #define __FPACKAGE_H__
 
 #include "Core/FTypes.h"
+#include "Core/FFile.h"
 #include "Core/FArray.h"
 #include "Core/FHashMap.h"
 

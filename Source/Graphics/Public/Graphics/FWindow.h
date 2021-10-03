@@ -21,18 +21,16 @@
 #elif ENTERPRISE_ANDROID
     #error NOT IMPLEMENTED
 #elif ENTERPRISE_LINUX
-    #include <xcb/xcb.h>
+    #include <X11/Xlib.h>
 
     typedef struct
     {
-        xcb_connection_t* pConnection;
-        xcb_window_t window;
-        xcb_screen_t* pPrimaryScreen;
-        xcb_screen_t* pScreen;
+        Display* pDisplay;
+        Window window;
         bool shouldClose;
-    } FWindowXcb;
+    } FWindowXLib;
 
-    extern FWindowXcb window_xcb;
+    extern FWindowXLib window_xlib;
 #endif
 
 typedef struct
@@ -55,8 +53,8 @@ void FWindowGetSize(uint32* pWidth, uint32* pHeight);
 #elif ENTERPRISE_ANDROID
     #error NOT_IMPLEMENTED
 #elif ENTERPRISE_LINUX
-    xcb_connection_t* FWindowGetConnection();
-    xcb_window_t FWindowGetHandle();
+    Display* FWindowGetDisplay();
+    Window FWindowGetHandle();
 #endif
 
 

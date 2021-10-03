@@ -35,7 +35,7 @@ typedef unsigned short wchar;
 #endif
 
 #ifndef __cplusplus
-    typedef signed long bool;
+    typedef int32 bool;
     #define true 1
     #define false 0
 #endif

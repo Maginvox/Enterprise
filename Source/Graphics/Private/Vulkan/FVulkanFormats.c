@@ -10,7 +10,7 @@
 VkSurfaceFormatKHR FWindowVulkanSurfaceFormat()
 {
 
-    uint32 surfaceFormatsCount = 0;
+    uint32_t surfaceFormatsCount = 0;
     if (vkGetPhysicalDeviceSurfaceFormatsKHR(graphics_vk.physicalDevice, window_vk.surface, &surfaceFormatsCount, NULL) != VK_SUCCESS)
     {
         return (VkSurfaceFormatKHR){VK_FORMAT_UNDEFINED, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR};

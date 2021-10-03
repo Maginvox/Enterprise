@@ -78,7 +78,8 @@
         "fwindowx11.h": "c",
         "xlib.h": "c",
         "fvulkanformats.h": "c",
-        "fexport.h": "c"
+        "fexport.h": "c",
+        "fhash.h": "c"
     },
     "cmake.configureOnOpen": true
 }

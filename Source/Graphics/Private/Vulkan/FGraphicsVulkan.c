@@ -141,7 +141,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
 
 
     /* Get the physical devices queues */
-    uint32 queueFamilyPropertiesCount = 0;
+    uint32_t queueFamilyPropertiesCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(graphics_vk.physicalDevice, &queueFamilyPropertiesCount, NULL);
 
     VkQueueFamilyProperties* pQueueFamilyProperties = FAllocateZero(queueFamilyPropertiesCount, sizeof(VkQueueFamilyProperties));

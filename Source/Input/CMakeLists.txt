@@ -2,14 +2,14 @@ set(InputSources "")
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     list(APPEND InputSources
-        "Private/FInputWindows.c")
+        "Private/enInputWindows.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND InputSources
-        "Private/FInputXcb.c")
+        "Private/enInputXcb.c")
 endif()
 
 add_library(EnterpriseInput STATIC ${InputSources})

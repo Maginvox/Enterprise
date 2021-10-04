@@ -530,7 +530,7 @@ bool enStringConvertFromTime(const enTime* pTime, char* pDestination, uint32 des
         {enStringFormatType_Int, .value.Integer = pTime->year}
     };
 
-    char timeFormat[] = "%s %s %i %i:%i: %i %i";
+    char timeFormat[] = "%s %s %i %i:%i:%i %i";
     enStringFormat(pDestination, destinationMaxLength, timeFormat, pFormatArguments, COUNT_OF(pFormatArguments));
 
     return true;

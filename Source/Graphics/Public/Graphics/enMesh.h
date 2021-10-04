@@ -5,7 +5,7 @@
 
 typedef void* FMesh;
 
-FMesh FMeshCreate(FMeshData* pParsedMesh);
-void FMeshDestroy(FMesh mesh);
+FMesh enMeshCreate(FMeshData* pParsedMesh);
+void enMeshDestroy(FMesh mesh);
 
 #endif

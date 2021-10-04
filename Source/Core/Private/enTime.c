@@ -18,7 +18,7 @@ void enTimeCurrent(enTime* pTime)
     struct tm* pTimeInfo = NULL;
     #ifdef ENTERPRISE_WINDOWS
         struct tm timeInfo = {0};
-        if (!localtime_s(&timeInfo, &rawtime))
+        if (localtime_s(&timeInfo, &rawtime) < 0)
         {
             *(pTime) = (enTime){0};
             return;

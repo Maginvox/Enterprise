@@ -1,35 +1,34 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#include "Core/FTypes.h"
-#include "Core/FMacro.h"
-#include "Core/FMemory.h"
-#include "Core/FMath.h"
-#include "Core/FString.h"
+#include "Core/enMacro.h"
+#include "Core/enMemory.h"
+#include "Core/enMath.h"
+#include "Core/enString.h"
 
-bool FCharacterIsSpace(char Character)
+bool enCharacterIsSpace(char Character)
 {
     return (Character == ' ');
 }
 
-bool FCharacterIsDigit(char Character)
+bool enCharacterIsDigit(char Character)
 {
-    return FMathIsBetween(Character, '0', '9');
+    return enMathIsBetween(Character, '0', '9');
 }
 
-bool FCharacterIsAlpha(char Character)
+bool enCharacterIsAlpha(char Character)
 {
-    return FMathIsBetween(Character, 'a', 'z') || FMathIsBetween(Character, 'A', 'Z');
+    return enMathIsBetween(Character, 'a', 'z') || enMathIsBetween(Character, 'A', 'Z');
 }
 
-bool FCharacterIsAlphaNumeric(char Character)
+bool enCharacterIsAlphaNumeric(char Character)
 {
-    return FCharacterIsAlpha(Character) || FCharacterIsDigit(Character);
+    return enCharacterIsAlpha(Character) || enCharacterIsDigit(Character);
 }
 
 
 
 /* ====================================================== */
-uint32 FStringLength(const char* pString, uint32 maxLength)
+uint32 enStringLength(const char* pString, uint32 maxLength)
 {
 
     if (pString == NULL || maxLength == 0 || maxLength < 0 || maxLength > FSTRING_MAX_LENGTH)
@@ -51,15 +50,15 @@ uint32 FStringLength(const char* pString, uint32 maxLength)
 }
 
 /* ====================================================== */
-char* FStringSeperate(const char* pSource, uint32 sourceMaxLength, const char* pSeparators, uint32 separatorsLength)
+char* enStringSeperate(const char* pSource, uint32 sourceMaxLength, const char* pSeparators, uint32 separatorsLength)
 {
     if (pSource == NULL || sourceMaxLength <= 0  || pSeparators == NULL || separatorsLength <= 0)
     {
         return NULL;
     }
 
-    //uint32 sourceLength = FStringLength(pSource, sourceMaxLength);
-    //uint32 separatorLength = FStringLength(pSeparators, separatorsLength);
+    //uint32 sourceLength = enStringLength(pSource, sourceMaxLength);
+    //uint32 separatorLength = enStringLength(pSeparators, separatorsLength);
 
     char* pTemporary = (char*)pSource;
     while (pTemporary != NULL && *pTemporary != '\0')
@@ -79,7 +78,7 @@ char* FStringSeperate(const char* pSource, uint32 sourceMaxLength, const char* p
 }
 
 /* ====================================================== */
-bool FStringConcatenate(const char* pSource, uint32 sourceMaxLength, char* pDestination, uint32 destinationMaxLength)
+bool enStringConcatenate(const char* pSource, uint32 sourceMaxLength, char* pDestination, uint32 destinationMaxLength)
 {
     if (pSource == NULL || sourceMaxLength <= 0 || pDestination == NULL || destinationMaxLength <= 0)
     {
@@ -87,8 +86,8 @@ bool FStringConcatenate(const char* pSource, uint32 sourceMaxLength, char* pDest
     }
 
     /* Make sure the destination is large enough */
-    uint32 sourceLength = FStringLength(pSource, sourceMaxLength);
-    uint32 destinationLength = FStringLength(pDestination, destinationMaxLength);
+    uint32 sourceLength = enStringLength(pSource, sourceMaxLength);
+    uint32 destinationLength = enStringLength(pDestination, destinationMaxLength);
 
     if (sourceLength + destinationLength >= destinationMaxLength)
     {
@@ -103,21 +102,21 @@ bool FStringConcatenate(const char* pSource, uint32 sourceMaxLength, char* pDest
     }
 
     /* Copy the source to the destination */
-    FStringCopy(pSource, sourceMaxLength, pTemporary, destinationMaxLength);
+    enStringCopy(pSource, sourceMaxLength, pTemporary, destinationMaxLength);
 
     return true;
 }
 
 /* ====================================================== */
-uint32 FStringCompare(const char* pSource, uint32 sourceMaxLength, const char* pCompare, uint32 compareMaxLength)
+uint32 enStringCompare(const char* pSource, uint32 sourceMaxLength, const char* pCompare, uint32 compareMaxLength)
 {
     if (pSource == NULL || sourceMaxLength <= 0 || pCompare == NULL || compareMaxLength <= 0)
     {
         return -1;
     }
 
-    uint32 sourceLength = FStringLength(pSource, sourceMaxLength);
-    uint32 compareLength = FStringLength(pCompare, compareMaxLength);
+    uint32 sourceLength = enStringLength(pSource, sourceMaxLength);
+    uint32 compareLength = enStringLength(pCompare, compareMaxLength);
 
     char* pSourceTemporary = (char*)pSource;
     char* pCompareTemporary = (char*)pCompare;
@@ -138,27 +137,27 @@ uint32 FStringCompare(const char* pSource, uint32 sourceMaxLength, const char* p
 }
 
 /* ====================================================== */
-bool FStringCopy(const char* pSource, uint32 sourceMaxLength, char* pDestination, uint32 destinationMaxLength)
+bool enStringCopy(const char* pSource, uint32 sourceMaxLength, char* pDestination, uint32 destinationMaxLength)
 {
     if (pSource == NULL || sourceMaxLength <= 0 || pDestination == NULL || destinationMaxLength <= 0)
     {
         return false;
     }
 
-    uint32 sourceLength = FStringLength(pSource, sourceMaxLength);
+    uint32 sourceLength = enStringLength(pSource, sourceMaxLength);
 
     if (sourceLength == 0 || sourceLength > destinationMaxLength)
     {
         return false;
     }
 
-    FMemoryCopy(pSource, pDestination, sourceLength);
+    enMemoryCopy(pSource, pDestination, sourceLength);
     pDestination[sourceLength] = '\0';
     return true;
 }
 
 /* ====================================================== */
-bool FStringReverse(char* pString, uint32 maxLength)
+bool enStringReverse(char* pString, uint32 maxLength)
 {
     if (pString == NULL || maxLength <= 0)
     {
@@ -182,7 +181,7 @@ bool FStringReverse(char* pString, uint32 maxLength)
 }
 
 /* ====================================================== */
-void FStringRemoveSpaces(char* pString)
+void enStringRemoveSpaces(char* pString)
 {
     if (pString == NULL)
     {
@@ -203,16 +202,16 @@ void FStringRemoveSpaces(char* pString)
 }
 
 /* ====================================================== */
-bool FStringIsAlpha(const char* pString)
+bool enStringIsAlpha(const char* pString)
 {
     if (pString == NULL)
     {
         return false;
     }
 
-    uint32 maxLength = FStringLength(pString, FSTRING_MAX_LENGTH);
+    uint32 maxLength = enStringLength(pString, FSTRING_MAX_LENGTH);
 
-    if (!FCharacterIsAlpha(*pString))
+    if (!enCharacterIsAlpha(*pString))
     {
         return false;
     }
@@ -220,7 +219,7 @@ bool FStringIsAlpha(const char* pString)
     char* pStringTemporary = (char*)pString;
     while (*pStringTemporary != '\0' && (pStringTemporary - pString) < maxLength)
     {
-        if (!FCharacterIsAlpha(*pStringTemporary))
+        if (!enCharacterIsAlpha(*pStringTemporary))
         {
             return false;
         }
@@ -232,19 +231,19 @@ bool FStringIsAlpha(const char* pString)
 }
 
 /* ====================================================== */
-bool FStringIsNumeric(const char* pString)
+bool enStringIsNumeric(const char* pString)
 {
     if (pString == NULL)
     {
         return false;
     }
 
-    uint32 maxLength = FStringLength(pString, FSTRING_MAX_LENGTH);
+    uint32 maxLength = enStringLength(pString, FSTRING_MAX_LENGTH);
 
     char* pStringTemporary = (char*)pString;
     while (*pStringTemporary != '\0' && (pStringTemporary - pString) < maxLength)
     {
-        if (!FCharacterIsDigit(*pStringTemporary) && (*pStringTemporary) != '.')
+        if (!enCharacterIsDigit(*pStringTemporary) && (*pStringTemporary) != '.')
         {
             return false;
         }
@@ -255,18 +254,18 @@ bool FStringIsNumeric(const char* pString)
 }
 
 /* ====================================================== */
-bool FStringIsAlphaNumeric(const char* pString)
+bool enStringIsAlphaNumeric(const char* pString)
 {
     if (pString == NULL)
     {
         return false;
     }
 
-    return FStringIsAlpha(pString) || FStringIsNumeric(pString);
+    return enStringIsAlpha(pString) || enStringIsNumeric(pString);
 }
 
 /* ====================================================== */
-bool FStringFormat(char* pDestination, uint32 destinationMaxLength, const char* pFormat, const FStringFormatArgument* pFormatArguments, uint32 formatArgumentsCount)
+bool enStringFormat(char* pDestination, uint32 destinationMaxLength, const char* pFormat, const enStringFormatArgument* pFormatArguments, uint32 formatArgumentsCount)
 {
     if (pDestination == NULL || destinationMaxLength <= 0 || pFormat == NULL || formatArgumentsCount <= 0 || pFormatArguments == NULL)
     {
@@ -277,21 +276,21 @@ bool FStringFormat(char* pDestination, uint32 destinationMaxLength, const char* 
 
     char* pFormatTemporary = (char*)pFormat;
     uint32 usedLength = 0;
-    uint32 formatLength = FStringLength(pFormat, FSTRING_MAX_LENGTH);
+    uint32 formatLength = enStringLength(pFormat, FSTRING_MAX_LENGTH);
 
     /* We have to find each of the arguments in the format string */
     /* We must ensure that the format and the arguments are in order and are the same type */
     for (uint32 i = 0; i < formatArgumentsCount; i++)
     {
-        const FStringFormatArgument* pFormatArgument = &pFormatArguments[i];        
+        const enStringFormatArgument* pFormatArgument = &pFormatArguments[i];        
 
         /* Find the argument in the format string */
-        if (!FMathIsBetween(pFormatArgument->type, 0, E_STRING_FORMAT_TYPE_MAX))
+        if (!FMathIsBetween(pFormatArgument->type, 0, enStringFormatType_Max))
         {
             return false; /* Invalid type */
         }
 
-        char* pFormatType = FStringSeperate(pFormatTemporary, formatLength, "%", sizeof("%"));
+        char* pFormatType = enStringSeperate(pFormatTemporary, formatLength, "%", sizeof("%"));
         if (pFormatType == NULL || pFormatType[1] == '\0' || pFormatType[1] == '%')
         {
             return false; /* Invalid format */
@@ -311,7 +310,7 @@ bool FStringFormat(char* pDestination, uint32 destinationMaxLength, const char* 
             return false; /* Destination is too small */
         }
 
-        FStringCopy(pFormatTemporary, (uint32)(pFormatType - pFormatTemporary), pDestination + usedLength, destinationMaxLength);
+        enStringCopy(pFormatTemporary, (uint32)(pFormatType - pFormatTemporary), pDestination + usedLength, destinationMaxLength);
   
         usedLength += (uint32)(pFormatType - pFormatTemporary);
         pFormatTemporary += (2 + pFormatType - pFormatTemporary);
@@ -321,40 +320,40 @@ bool FStringFormat(char* pDestination, uint32 destinationMaxLength, const char* 
         uint32 stringLength = 0;
         switch (pFormatArgument->type)
         {
-            case E_STRING_FORMAT_TYPE_INT:
-                FStringConvertFromInt(pFormatArgument->value.Integer, 10, pBuffer, sizeof(pBuffer));
-                uint32 integerLength = FStringLength(pBuffer, sizeof(pBuffer));
-                FStringConcatenate(pBuffer, sizeof(pBuffer), pDestination, destinationMaxLength);
+            case enStringFormatType_Int:
+                enStringConvertFromInt(pFormatArgument->value.Integer, 10, pBuffer, sizeof(pBuffer));
+                uint32 integerLength = enStringLength(pBuffer, sizeof(pBuffer));
+                enStringConcatenate(pBuffer, sizeof(pBuffer), pDestination, destinationMaxLength);
                 usedLength += integerLength;
                 break;
-            case E_STRING_FORMAT_TYPE_FLOAT:
-                FStringConvertFromFloat(pFormatArgument->value.Float, pBuffer, sizeof(pBuffer));
-                uint32 floatLength = FStringLength(pBuffer, sizeof(pBuffer));
-                FStringConcatenate(pBuffer, sizeof(pBuffer), pDestination, destinationMaxLength);
+            case enStringFormatType_Float:
+                enStringConvertFromFloat(pFormatArgument->value.Float, pBuffer, sizeof(pBuffer));
+                uint32 floatLength = enStringLength(pBuffer, sizeof(pBuffer));
+                enStringConcatenate(pBuffer, sizeof(pBuffer), pDestination, destinationMaxLength);
                 usedLength += floatLength;
                 break;
-            case E_STRING_FORMAT_TYPE_DOUBLE:
-                FStringConvertFromDouble(pFormatArgument->value.Double, pBuffer, sizeof(pBuffer));
-                uint32 doubleLength = FStringLength(pBuffer, sizeof(pBuffer));
-                FStringConcatenate(pBuffer, sizeof(pBuffer), pDestination, destinationMaxLength);
+            case enStringFormatType_Double:
+                enStringConvertFromDouble(pFormatArgument->value.Double, pBuffer, sizeof(pBuffer));
+                uint32 doubleLength = enStringLength(pBuffer, sizeof(pBuffer));
+                enStringConcatenate(pBuffer, sizeof(pBuffer), pDestination, destinationMaxLength);
                 usedLength += doubleLength;
                 break;
-            case E_STRING_FORMAT_TYPE_STRING:
-                stringLength = FStringLength(pFormatArgument->value.String, FSTRING_MAX_LENGTH);
-                FStringConcatenate(pFormatArgument->value.String, stringLength, pDestination, destinationMaxLength);
+            case enStringFormatType_String:
+                stringLength = enStringLength(pFormatArgument->value.String, FSTRING_MAX_LENGTH);
+                enStringConcatenate(pFormatArgument->value.String, stringLength, pDestination, destinationMaxLength);
                 usedLength += stringLength;
                 break;
         }
     }
 
     /* Copy everything after the arguments */
-    uint32 remainingInFormat = FStringLength(pFormatTemporary, FSTRING_MAX_LENGTH - usedLength);
+    uint32 remainingInFormat = enStringLength(pFormatTemporary, FSTRING_MAX_LENGTH - usedLength);
     if (remainingInFormat + usedLength >= destinationMaxLength)
     {
         return false; /* Destination is too small */
     }
 
-    FStringConcatenate(pFormatTemporary, remainingInFormat, pDestination, destinationMaxLength);
+    enStringConcatenate(pFormatTemporary, remainingInFormat, pDestination, destinationMaxLength);
     usedLength += remainingInFormat;
 
     /* NULL terminate the string */
@@ -364,7 +363,7 @@ bool FStringFormat(char* pDestination, uint32 destinationMaxLength, const char* 
 
 
 /* ====================================================== */
-bool FStringConvertFromInt(int64 value, int8 base, char* pDestination, uint32 destinationMaxLength)
+bool enStringConvertFromInt(int64 value, int8 base, char* pDestination, uint32 destinationMaxLength)
 {
     if (base < 2 || base > 36 || pDestination == NULL || destinationMaxLength <= 0)
     {
@@ -408,7 +407,7 @@ bool FStringConvertFromInt(int64 value, int8 base, char* pDestination, uint32 de
 }
 
 /* ====================================================== */
-bool FStringConvertFromFloat(float value, char* pDestination, uint32 destinationMaxLength)
+bool enStringConvertFromFloat(float value, char* pDestination, uint32 destinationMaxLength)
 {
     if (pDestination == NULL || destinationMaxLength <= 0)
     {
@@ -418,13 +417,13 @@ bool FStringConvertFromFloat(float value, char* pDestination, uint32 destination
     uint32 valueInt = (uint32)value;
     float valueFraction = (value - (float)valueInt);
     
-    if (!FStringConvertFromInt(valueInt, 10, pDestination, destinationMaxLength))
+    if (!enStringConvertFromInt(valueInt, 10, pDestination, destinationMaxLength))
     {
         return false;
     }
 
     /* Get the string length */
-    uint32 stringLength = FStringLength(pDestination, destinationMaxLength);
+    uint32 stringLength = enStringLength(pDestination, destinationMaxLength);
     if (stringLength >= destinationMaxLength)
     {
         return false;
@@ -441,14 +440,14 @@ bool FStringConvertFromFloat(float value, char* pDestination, uint32 destination
         /* Add the fractional part */
         valueFraction = FFloatMathPow(10, valueFraction);
 
-        return FStringConvertFromInt((uint32)valueFraction, 10, pDestination + stringLength + 1, destinationMaxLength);
+        return enStringConvertFromInt((uint32)valueFraction, 10, pDestination + stringLength + 1, destinationMaxLength);
     }
 
     return true;
 }
 
 /* ====================================================== */
-bool FStringConvertFromDouble(double value, char* pDestination, uint32 destinationMaxLength)
+bool enStringConvertFromDouble(double value, char* pDestination, uint32 destinationMaxLength)
 {
     if (pDestination == NULL || destinationMaxLength <= 0)
     {
@@ -458,13 +457,13 @@ bool FStringConvertFromDouble(double value, char* pDestination, uint32 destinati
     uint32 valueInt = (uint32)value;
     double valueFraction = (value - (double)valueInt);
 
-    if (!FStringConvertFromInt(valueInt, 10, pDestination, destinationMaxLength))
+    if (!enStringConvertFromInt(valueInt, 10, pDestination, destinationMaxLength))
     {
         return false;
     }
 
     /* Get the string length */
-    uint32 stringLength = FStringLength(pDestination, destinationMaxLength);
+    uint32 stringLength = enStringLength(pDestination, destinationMaxLength);
     if (stringLength >= destinationMaxLength)
     {
         return false;
@@ -480,14 +479,14 @@ bool FStringConvertFromDouble(double value, char* pDestination, uint32 destinati
 
         /* Add the fractional part */
         valueFraction = FMathDoublePow(10, valueFraction);
-        return FStringConvertFromInt((uint32)valueFraction, 10, pDestination + stringLength + 1, destinationMaxLength);
+        return enStringConvertFromInt((uint32)valueFraction, 10, pDestination + stringLength + 1, destinationMaxLength);
     }
 
     return true;
 }
 
 /* ====================================================== */
-bool FStringConvertFromBool(bool value, char* pDestination, uint32 destinationMaxLength)
+bool enStringConvertFromBool(bool value, char* pDestination, uint32 destinationMaxLength)
 {
     if (pDestination == NULL || destinationMaxLength <= 0)
     {
@@ -500,11 +499,11 @@ bool FStringConvertFromBool(bool value, char* pDestination, uint32 destinationMa
         "False"
     };
 
-    return FStringCopy(pTrueFalse[value ? 0 : 1], sizeof(pTrueFalse[0]), pDestination, destinationMaxLength);    
+    return enStringCopy(pTrueFalse[value ? 0 : 1], sizeof(pTrueFalse[0]), pDestination, destinationMaxLength);    
 }
 
 /* ====================================================== */
-bool FStringConvertFromTime(const FTime* pTime, char* pDestination, uint32 destinationMaxLength)
+bool enStringConvertFromTime(const enTime* pTime, char* pDestination, uint32 destinationMaxLength)
 {
     if (pTime == NULL || pDestination == NULL || destinationMaxLength < 32)
     {
@@ -520,25 +519,25 @@ bool FStringConvertFromTime(const FTime* pTime, char* pDestination, uint32 desti
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" 
     };
 
-    const FStringFormatArgument pFormatArguments[] =
+    const enStringFormatArgument pFormatArguments[] =
     {
-        {E_STRING_FORMAT_TYPE_STRING, .value.String = (char*)dayName[pTime->weekDay]},
-        {E_STRING_FORMAT_TYPE_STRING, .value.String = (char*)monthName[pTime->month - 1]},
-        {E_STRING_FORMAT_TYPE_INT, .value.Integer = pTime->monthDay},
-        {E_STRING_FORMAT_TYPE_INT, .value.Integer = pTime->hour},
-        {E_STRING_FORMAT_TYPE_INT, .value.Integer = pTime->minute},
-        {E_STRING_FORMAT_TYPE_INT, .value.Integer = pTime->second},
-        {E_STRING_FORMAT_TYPE_INT, .value.Integer = pTime->year}
+        {enStringFormatType_String, .value.String = (char*)dayName[pTime->weekDay]},
+        {enStringFormatType_String, .value.String = (char*)monthName[pTime->month - 1]},
+        {enStringFormatType_Int, .value.Integer = pTime->monthDay},
+        {enStringFormatType_Int, .value.Integer = pTime->hour},
+        {enStringFormatType_Int, .value.Integer = pTime->minute},
+        {enStringFormatType_Int, .value.Integer = pTime->second},
+        {enStringFormatType_Int, .value.Integer = pTime->year}
     };
 
     char timeFormat[] = "%s %s %i %i:%i: %i %i";
-    FStringFormat(pDestination, destinationMaxLength, timeFormat, pFormatArguments, FCOUNT_OF(pFormatArguments));
+    enStringFormat(pDestination, destinationMaxLength, timeFormat, pFormatArguments, COUNT_OF(pFormatArguments));
 
     return true;
 }
 
 /* ====================================================== */
-bool FStringConvertToInt(const char* pSource, uint32 sourceMaxLength, int64* pValue)
+bool enStringConvertToInt(const char* pSource, uint32 sourceMaxLength, int64* pValue)
 {
     if (pSource == NULL || sourceMaxLength <= 0 || pValue == NULL)
     {
@@ -603,7 +602,7 @@ bool FStringConvertToInt(const char* pSource, uint32 sourceMaxLength, int64* pVa
 }
 
 /* ====================================================== */
-bool FStringConvertToFloat(const char* pSource, uint32 sourceMaxLength, float* pValue)
+bool enStringConvertToFloat(const char* pSource, uint32 sourceMaxLength, float* pValue)
 {
     if (pSource == NULL || sourceMaxLength <= 0 || pValue == NULL)
     {
@@ -648,7 +647,7 @@ bool FStringConvertToFloat(const char* pSource, uint32 sourceMaxLength, float* p
 }
 
 /* ====================================================== */
-bool FStringConvertToDouble(const char* pSource, uint32 sourceMaxLength, double* pValue)
+bool enStringConvertToDouble(const char* pSource, uint32 sourceMaxLength, double* pValue)
 {
     if (pSource == NULL || sourceMaxLength <= 0 || pValue == NULL)
     {
@@ -695,18 +694,18 @@ bool FStringConvertToDouble(const char* pSource, uint32 sourceMaxLength, double*
 }
 
 /* ====================================================== */
-bool FStringConvertToBool(const char* pSource, uint32 sourceMaxLength, bool* pValue)
+bool enStringConvertToBool(const char* pSource, uint32 sourceMaxLength, bool* pValue)
 {
     if (pSource == NULL || sourceMaxLength <= 0 || pValue == NULL)
     {
         return false;
     }
 
-    if (FStringCompare(pSource, sourceMaxLength, "True", sizeof("True")) == 0)
+    if (enStringCompare(pSource, sourceMaxLength, "True", sizeof("True")) == 0)
     {
         *pValue = true;
     }
-    else if (FStringCompare(pSource, sourceMaxLength, "False", sizeof("False")) == 0)
+    else if (enStringCompare(pSource, sourceMaxLength, "False", sizeof("False")) == 0)
     {
         *pValue = false;
     }

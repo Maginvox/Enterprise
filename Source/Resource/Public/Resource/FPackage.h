@@ -45,7 +45,7 @@ typedef struct FPackage
 {
     char recordsPath[FPATH_MAX], dataPath[FPATH_MAX]; 
 
-    FArray* pRecords;
+    enArray* pRecords;
     FHashMap* pRecordsMap;
 } FPackage;
 

@@ -15,7 +15,7 @@ typedef struct FHashMap
 FHashMap* FHashMapCreate(int64 size);
 void FHashMapDestroy(FHashMap** ppHashMapSimple);
 bool FHashMapInsert(FHashMap* pHashMapSimple, const char* pKey, void* pValue);
-bool FHashMapInsertWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey, void* pValue); /* Use the FHashMultiplicationMethod */
+bool FHashMapInsertWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey, void* pValue); /* Use the enHashMultiplicationMethod */
 void FHashMapRemove(FHashMap* pHashMapSimple, const char* pKey);
 void FHashMapRemoveWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey);
 void FHashMapRemoveWithIndex(FHashMap* pHashMapSimple, const int64 index);

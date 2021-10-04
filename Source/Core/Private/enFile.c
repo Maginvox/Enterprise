@@ -2,34 +2,34 @@
 
 #include <stdio.h>
 
-#include "Core/FFile.h"
-#include "Core/FLog.h"
+#include "Core/enFile.h"
+#include "Core/enLog.h"
 
 /* ====================================================== */
-FFile* FFileOpen(const char* pFilename, const char* pMode)
+enFile* enFileOpen(const char* pFilename, const char* pMode)
 {
     if (pFilename == NULL || pMode == NULL)
     {
         return NULL;
     }
 
-    FFile* pFile = NULL;
+    enFile* pFile = NULL;
     #ifdef ENTERPRISE_WINDOWS
         if (!fopen_s((FILE**)&pFile, pFilename, pMode))
         {
             return NULL;
         }
     #else
-        pFile = (FFile*)fopen(pFilename, pMode);
+        pFile = (enFile*)fopen(pFilename, pMode);
     #endif
 
     return pFile;
 }
 
 /* ====================================================== */
-FFile* FFileOpenOrCreate(const char* pFilename, const char* pMode)
+enFile* enFileOpenOrCreate(const char* pFilename, const char* pMode)
 {
-    FFile* pFile = FFileOpen(pFilename, "r");
+    enFile* pFile = FFileOpen(pFilename, "r");
 
     if (pFile == NULL)
     {
@@ -40,26 +40,26 @@ FFile* FFileOpenOrCreate(const char* pFilename, const char* pMode)
         }
     }
 
-    FFileClose(&pFile);
-    return FFileOpen(pFilename, pMode);
+    enFileClose(&pFile);
+    return enFileOpen(pFilename, pMode);
 }
 
 /* ====================================================== */
-void FFileClose(FFile** ppFile)
+void enFileClose(enFile** ppFile)
 {
     if (ppFile == NULL || *ppFile == NULL)
     {
         return;
     }
 
-    FFile* pFile = *ppFile;
+    enFile* pFile = *ppFile;
 
     fclose((FILE*)pFile);
     *ppFile = NULL;
 }
 
 /* ====================================================== */
-bool FFileRemove(const char* pFilename)
+bool enFileRemove(const char* pFilename)
 {
     if (pFilename == NULL)
     {
@@ -70,7 +70,7 @@ bool FFileRemove(const char* pFilename)
 }
 
 /* ====================================================== */
-bool FFileRename(const char* pOldFilename, const char* pNewFilename)
+bool enFileRename(const char* pOldFilename, const char* pNewFilename)
 {
     if (pOldFilename == NULL || pNewFilename == NULL)
     {
@@ -81,7 +81,7 @@ bool FFileRename(const char* pOldFilename, const char* pNewFilename)
 }
 
 /* ====================================================== */
-bool FFileSeek(FFile* pFile, const int64 offset, const EFileSeekOrigin seekOrigin)
+bool enFileSeek(enFile* pFile, const int64 offset, const enSeek seekOrigin)
 {
     if (pFile == NULL)
     {
@@ -91,13 +91,13 @@ bool FFileSeek(FFile* pFile, const int64 offset, const EFileSeekOrigin seekOrigi
     int seekOriginValue = SEEK_SET;
     switch (seekOrigin)
     {
-    case E_FILE_SEEK_ORIGIN_BEGIN:
+    case enFileSeekOrigin_Begin:
         seekOriginValue = SEEK_SET;
         break;
-    case E_FILE_SEEK_ORIGIN_CURRENT:
+    case enFileSeek_Current:
         seekOriginValue = SEEK_CUR;
         break;
-    case E_FILE_SEEK_ORIGIN_END:
+    case enFileSeek_End:
         seekOriginValue = SEEK_END;
         break;
     default:
@@ -108,7 +108,7 @@ bool FFileSeek(FFile* pFile, const int64 offset, const EFileSeekOrigin seekOrigi
 }
 
 /* ====================================================== */
-int64 FFileTell(FFile* pFile)
+int64 enFileTell(enFile* pFile)
 {
     if (pFile == NULL)
     {
@@ -119,7 +119,7 @@ int64 FFileTell(FFile* pFile)
 }
 
 /* ====================================================== */
-char FFileReadChar(FFile* pFile)
+char FFileReadChar(enFile* pFile)
 {
     if (pFile == NULL)
     {
@@ -130,7 +130,7 @@ char FFileReadChar(FFile* pFile)
 }
 
 /* ====================================================== */
-bool FFileReadLine(FFile* pFile, char* pBuffer, const int64 bufferMaxLength)
+bool enFileReadLine(enFile* pFile, char* pBuffer, const int64 bufferMaxLength)
 {
     if (pFile == NULL || pBuffer == NULL || bufferMaxLength == 0)
     {
@@ -141,7 +141,7 @@ bool FFileReadLine(FFile* pFile, char* pBuffer, const int64 bufferMaxLength)
 }
 
 /* ====================================================== */
-int64 FFileRead(FFile* pFile, void* pBuffer, const int64 bufferMaxLength, const int64 elementSize, const int64 elementCount)
+int64 enFileRead(enFile* pFile, void* pBuffer, const int64 bufferMaxLength, const int64 elementSize, const int64 elementCount)
 {
     if (pFile == NULL || pBuffer == NULL || bufferMaxLength <= 0 || elementSize <= 0 || elementCount <= 0)
     {
@@ -157,7 +157,7 @@ int64 FFileRead(FFile* pFile, void* pBuffer, const int64 bufferMaxLength, const 
 }
 
 /* ====================================================== */
-bool FFileWriteChar(FFile* pFile, const char c)
+bool enFileWriteChar(enFile* pFile, const char c)
 {
     if (pFile == NULL)
     {
@@ -168,7 +168,7 @@ bool FFileWriteChar(FFile* pFile, const char c)
 }
 
 /* ====================================================== */
-bool FFileWrite(FFile* pFile, const void* pBuffer, const int64 bufferLength, const int64 elementSize, const int64 elementCount)
+bool enFileWrite(enFile* pFile, const void* pBuffer, const int64 bufferLength, const int64 elementSize, const int64 elementCount)
 {
     if (pFile == NULL || pBuffer == NULL || bufferLength <= 0 || elementSize <= 0 || elementCount <= 0)
     {

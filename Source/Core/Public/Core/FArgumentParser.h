@@ -6,27 +6,28 @@
 /* Arguments are formatted like this "--name=value" to pass a value, or "--name" to indicate an options is on or off */
 /* Arguments that do not have this format will be excluded from the retrievable options */
 
-#include "Core/FMacro.h"
-#include "Core/FTypes.h"
+#include "Core/enMacro.h"
+#include "Core/enTypes.h"
 
-typedef enum EArgumentType {
-    E_ARGUMENT_TYPE_INT,
-    E_ARGUMENT_TYPE_FLOAT,
-    E_ARGUMENT_TYPE_BOOL,
-    E_ARGUMENT_TYPE_STRING,
-} EArgumentType;
+typedef enum
+{
+    enArgumentType_Int,
+    enArgumentType_Float,
+    enArgumentType_Bool,
+    enArgumentType_String,
+} enArgumentType;
 
-typedef struct FArgumentOption
+typedef struct
 {
     char name[ENTERPRISE_NAME_MAX_LENGTH];
     char description[ENTERPRISE_NAME_MAX_LENGTH];
-    EArgumentType pType;
-} FArgumentOption;
+    enArgumentType pType;
+} enArgumentOption;
 
-typedef struct FArgumentParsedOption
+typedef struct
 {
     char name[ENTERPRISE_NAME_MAX_LENGTH];
-    EArgumentType type;
+    enArgumentType type;
     union
     {
         int64 Int;
@@ -34,19 +35,19 @@ typedef struct FArgumentParsedOption
         bool Bool;
         char String[ENTERPRISE_NAME_MAX_LENGTH];
     } value;
-} FArgumentParsedOption;
+} enArgumentParsedOption;
 
-typedef struct FArgumentParser
+typedef struct
 {
     int64 optionsCount;
-    FArgumentOption* pOptions;
+    enArgumentOption* pOptions;
     int64 parsedOptionsCount;
-    FArgumentParsedOption* pParsedOptions;
-} FArgumentParser;
+    enArgumentParsedOption* pParsedOptions;
+} enArgumentParser;
 
-FArgumentParser* FArgumentParserCreate(const int32 optionsCount, const FArgumentOption* pOptions);
-void FArgumentParserDestroy(FArgumentParser** pArgumentParser);
-bool FArgumentParserParse(FArgumentParser* pArgumentParser, const int argc, const char* const* argv);
-bool FArgumentParserGetOption(FArgumentParser* pArgumentParser, const char* pName, FArgumentParsedOption* pParsedOption);
+enArgumentParser* enArgumentParserCreate(const int32 optionsCount, const enArgumentOption* pOptions);
+void enArgumentParserDestroy(enArgumentParser** pArgumentParser);
+bool enArgumentParserParse(enArgumentParser* pArgumentParser, const int argc, const char* const* argv);
+bool enArgumentParserGetOption(enArgumentParser* pArgumentParser, const char* pName, enArgumentParsedOption* pParsedOption);
 
 #endif

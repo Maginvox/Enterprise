@@ -14,7 +14,7 @@
 FPipeline FPipelineCreate(FAsset* pVertex, FAsset* pFragment)
 {
 
-    FPipelineVulkan* pPipeline = FAllocateZero(1, sizeof(FPipelineVulkan));
+    FPipelineVulkan* pPipeline = enAllocateZero(1, sizeof(FPipelineVulkan));
     if (pPipeline == NULL)
     {
         return NULL;
@@ -38,7 +38,7 @@ FPipeline FPipelineCreate(FAsset* pVertex, FAsset* pFragment)
     if (vkCreatePipelineLayout(graphics_vk.device, &layoutCreateInfo, NULL, &pPipeline->layout) != VK_SUCCESS)
     {
         FPipelineDestroy(pPipeline);
-        FLogError("Could not create a vulkan pipeline layout!");
+        enLogError("Could not create a vulkan pipeline layout!");
         return NULL;
     }
 
@@ -67,7 +67,7 @@ FPipeline FPipelineCreate(FAsset* pVertex, FAsset* pFragment)
     if (vkCreateShaderModule(graphics_vk.device, &shaderModuleCreateInfos[0], NULL, &vertexShader) != VK_SUCCESS)
     {
         FPipelineDestroy(pPipeline);
-        FLogError("Could not compile a vulkan vertex shader!");
+        enLogError("Could not compile a vulkan vertex shader!");
         return NULL;
     }
 
@@ -75,7 +75,7 @@ FPipeline FPipelineCreate(FAsset* pVertex, FAsset* pFragment)
     {
         vkDestroyShaderModule(graphics_vk.device, vertexShader, NULL);
         FPipelineDestroy(pPipeline);
-        FLogError("Could not compile a vulkan vertex shader!");
+        enLogError("Could not compile a vulkan vertex shader!");
         return NULL;
     }
 
@@ -281,7 +281,7 @@ FPipeline FPipelineCreate(FAsset* pVertex, FAsset* pFragment)
     if (vkCreateGraphicsPipelines(graphics_vk.device, VK_NULL_HANDLE, 1, &pipelineCreateInfo, NULL, &pPipeline->pipeline) != VK_SUCCESS)
     {
         FPipelineDestroy(pPipeline);
-        FLogError("Could not create a vulkan graphics pipeline!");
+        enLogError("Could not create a vulkan graphics pipeline!");
         return NULL;
     }
     
@@ -305,5 +305,5 @@ void FPipelineDestroy(FPipeline pipeline)
         vkDestroyPipelineLayout(graphics_vk.device, pPipeline->layout, NULL);
     }
 
-    FDeallocate(pPipeline);
+    enDeallocate(pPipeline);
 }

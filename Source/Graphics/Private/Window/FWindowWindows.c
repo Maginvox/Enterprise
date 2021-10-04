@@ -52,7 +52,7 @@ bool FWindowInitialize(const FWindowInfo* pInfo)
 
     if (window_win.hWnd == NULL)
     {
-        FLogError("Could not create a new window!");
+        enLogError("Could not create a new window!");
         return false;
     }
 

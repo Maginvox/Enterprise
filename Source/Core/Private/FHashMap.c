@@ -13,7 +13,7 @@ FHashMap* FHashMapCreate(int64 size)
         return NULL;
     }
 
-    FHashMap* pHashMap = FAllocateZero(1, sizeof(FHashMap));
+    FHashMap* pHashMap = enAllocateZero(1, sizeof(FHashMap));
     if (pHashMap == NULL)
     {
         return NULL;
@@ -22,7 +22,7 @@ FHashMap* FHashMapCreate(int64 size)
     pHashMap->size = size;
     pHashMap->count = 0;
 
-    pHashMap->ppValues = FAllocateZero(size, sizeof(void*));
+    pHashMap->ppValues = enAllocateZero(size, sizeof(void*));
     if (pHashMap->ppValues == NULL)
     {
         FHashMapDestroy(&pHashMap);
@@ -43,11 +43,11 @@ void FHashMapDestroy(FHashMap** ppHashMap)
 
     if (pHashMap->ppValues != NULL)
     {
-        FDeallocate(pHashMap->ppValues);
+        enDeallocate(pHashMap->ppValues);
         pHashMap->ppValues = NULL;
     }
 
-    FDeallocate(pHashMap);
+    enDeallocate(pHashMap);
     *ppHashMap = NULL;
 }
 
@@ -59,7 +59,7 @@ bool FHashMapInsert(FHashMap* pHashMapSimple, const char* pKey, void* pValue)
     }
 
     /* Compute the hash, get the index and set the value */
-    int64 hash = FHashMultiplicationMethod(pKey);
+    int64 hash = enHashMultiplicationMethod(pKey);
     int64 index = hash % pHashMapSimple->size;
     pHashMapSimple->ppValues[index] = pValue;
     
@@ -87,7 +87,7 @@ void FHashMapRemove(FHashMap* pHashMapSimple, const char* pKey)
         return;
     }
 
-    int64 hash = FHashMultiplicationMethod(pKey);
+    int64 hash = enHashMultiplicationMethod(pKey);
     int64 index = hash % pHashMapSimple->size;
     pHashMapSimple->ppValues[index] = NULL;
 }
@@ -120,7 +120,7 @@ bool FHashMapContains(FHashMap* pHashMapSimple, const char* pKey)
         return false;
     }
 
-    return FHashMapContainsWithHashedKey(pHashMapSimple, FHashMultiplicationMethod(pKey));
+    return FHashMapContainsWithHashedKey(pHashMapSimple, enHashMultiplicationMethod(pKey));
 }
 
 bool FHashMapContainsWithHashedKey(FHashMap* pHashMapSimple, const int64 hashedKey)
@@ -141,7 +141,7 @@ void* FHashMapGet(FHashMap* pHashMapSimple, const char* pKey)
         return NULL;
     }
 
-    int64 hash = FHashMultiplicationMethod(pKey);
+    int64 hash = enHashMultiplicationMethod(pKey);
     int64 index = hash % pHashMapSimple->size;
     return pHashMapSimple->ppValues[index];
 }

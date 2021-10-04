@@ -35,7 +35,7 @@ void FOnlineServiceSteam::OnLobbyCreated(LobbyCreated_t* pLobby, bool bIOFailure
 {
 
     /* Lock the lobby created response variable */
-    FMutexLock(pLobbyCreatedResponseMutex);
+    enMutexLock(pLobbyCreatedResponseMutex);
 
     if (bIOFailure)
     {
@@ -56,13 +56,13 @@ void FOnlineServiceSteam::OnLobbyCreated(LobbyCreated_t* pLobby, bool bIOFailure
     }
 
     /* Unlock the lobby created response variable */
-    FMutexUnlock(pLobbyCreatedResponseMutex);
+    enMutexUnlock(pLobbyCreatedResponseMutex);
 }
 
 /* ====================================================== */ 
 FOnlineService* FOnlineServiceCreate()
 {
-    FOnlineServiceSteam* pService = (FOnlineServiceSteam*)FAllocateZero(1, sizeof(FOnlineServiceSteam));
+    FOnlineServiceSteam* pService = (FOnlineServiceSteam*)enAllocateZero(1, sizeof(FOnlineServiceSteam));
     if (pService == NULL)
     {
         return NULL;
@@ -83,7 +83,7 @@ void FOnlineServiceDestroy(FOnlineService** ppService)
 
     SteamAPI_Shutdown();
 
-    FDeallocate(pService);
+    enDeallocate(pService);
     *ppService = NULL;
 }
 
@@ -248,12 +248,12 @@ EOnlineServiceResponse FOnlineServiceLobbyCreatedResponse(FOnlineService* pServi
     EOnlineServiceResponse response = E_ONLINE_SERVICE_RESPONSE_ERROR;
 
     /* Lock the pLobbyCreatedResponseMutex */
-    FMutexLock(pServiceSteam->pLobbyCreatedResponseMutex);
+    enMutexLock(pServiceSteam->pLobbyCreatedResponseMutex);
 
     /* Check if the response is available */
     response = pServiceSteam->lobbyCreatedResponse;
 
-    FMutexUnlock(pServiceSteam->pLobbyCreatedResponseMutex);
+    enMutexUnlock(pServiceSteam->pLobbyCreatedResponseMutex);
 
     return response;
 }

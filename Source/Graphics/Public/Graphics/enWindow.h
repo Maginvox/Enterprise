@@ -1,7 +1,7 @@
 #ifndef __FWINDOW_H__
 #define __FWINDOW_H__
 
-#include "Core/FTypes.h"
+#include "Core/enTypes.h"
 
 #ifdef ENTERPRISE_WINDOWS
     #include <Windows.h>

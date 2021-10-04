@@ -4,14 +4,14 @@
 
 #include "Core/FTime.h"
 
-void FTimeCurrent(FTime* pTime)
+void enTimeCurrent(enTime* pTime)
 {
     if (pTime == NULL)
     {
         return;
     }
 
-    /* Since the FTime structure is the same as the standard structure */
+    /* Since the enTime structure is the same as the standard structure */
     time_t rawtime = 0;
     time(&rawtime);
 
@@ -20,7 +20,7 @@ void FTimeCurrent(FTime* pTime)
         struct tm timeInfo = {0};
         if (!localtime_s(&timeInfo, &rawtime))
         {
-            *(pTime) = (FTime){0};
+            *(pTime) = (enTime){0};
             return;
         }
         pTimeInfo = &timeInfo;

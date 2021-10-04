@@ -7,7 +7,7 @@
 
 #include <windows.h>
 
-FMutex* FMutexCreate()
+FMutex* enMutexCreate()
 {
     HANDLE hMutex = CreateMutex(NULL, FALSE, NULL);
     if (hMutex == NULL)
@@ -18,7 +18,7 @@ FMutex* FMutexCreate()
     return (FMutex*)hMutex;
 }
 
-void FMutexDestroy(FMutex** ppMutex)
+void enMutexDestroy(FMutex** ppMutex)
 {
     if (*ppMutex == NULL)
     {
@@ -31,7 +31,7 @@ void FMutexDestroy(FMutex** ppMutex)
     *ppMutex = NULL;
 }
 
-void FMutexLock(FMutex* pMutex)
+void enMutexLock(FMutex* pMutex)
 {
     if (pMutex == NULL)
     {
@@ -41,7 +41,7 @@ void FMutexLock(FMutex* pMutex)
     WaitForSingleObject(pMutex, INFINITE);
 }
 
-void FMutexUnlock(FMutex* pMutex)
+void enMutexUnlock(FMutex* pMutex)
 {
     if (pMutex == NULL)
     {
@@ -53,17 +53,17 @@ void FMutexUnlock(FMutex* pMutex)
 
 DWORD WINAPI FThreadWindows(LPVOID lpParam)
 {
-    FThread* pThread = (FThread*)lpParam;
+    enThread* pThread = (enThread*)lpParam;
 
     pThread->pFunction(pThread->pParameter);
 
     return 0;
 }
 
-FThread* FThreadCreate(FThreadFunction pFunction, void* pParameter)
+enThread* enThreadCreate(enThreadFunction pFunction, void* pParameter)
 {
 
-    FThread* pThread = FAllocateZero(1, sizeof(FThread));
+    enThread* pThread = enAllocateZero(1, sizeof(enThread));
     if (pThread == NULL)
     {
         return NULL;
@@ -76,7 +76,7 @@ FThread* FThreadCreate(FThreadFunction pFunction, void* pParameter)
     HANDLE hThread = CreateThread(NULL, 0, FThreadWindows, pThread, 0, NULL);
     if (hThread == NULL)
     {
-        FThreadJoin(&pThread);
+        enThreadJoin(&pThread);
         return NULL;
     }
 	
@@ -85,24 +85,24 @@ FThread* FThreadCreate(FThreadFunction pFunction, void* pParameter)
     return pThread;
 }
 
-void FThreadJoin(FThread** ppThread)
+void enThreadJoin(enThread** ppThread)
 {
     if (ppThread == NULL || *ppThread == NULL)
     {
         return;
     }
 
-    FThread* pThread = *ppThread;
+    enThread* pThread = *ppThread;
     HANDLE hThread = (HANDLE)pThread->pThread;
 
-    FDeallocate(pThread);
+    enDeallocate(pThread);
     *ppThread = NULL;
 
     WaitForSingleObject(hThread, INFINITE);
 	CloseHandle(hThread);
 }
 
-void FThreadSleep(int64 milliseconds)
+void enThreadSleep(int64 milliseconds)
 {
     Sleep((DWORD)milliseconds);
 }
@@ -113,9 +113,9 @@ void FThreadSleep(int64 milliseconds)
 #include <unistd.h> /* For sleep() */
 
 /* ====================================================== */
-FMutex* FMutexCreate()
+FMutex* enMutexCreate()
 {
-    pthread_mutex_t* pMutex = FAllocateZero(1, sizeof(pthread_mutex_t));
+    pthread_mutex_t* pMutex = enAllocateZero(1, sizeof(pthread_mutex_t));
     if (pMutex == NULL)
     {
         return NULL;
@@ -123,7 +123,7 @@ FMutex* FMutexCreate()
 
     if (pthread_mutex_init(pMutex, NULL) != 0)
     {
-        FDeallocate(pMutex);
+        enDeallocate(pMutex);
         return NULL;
     }
 
@@ -131,7 +131,7 @@ FMutex* FMutexCreate()
 }
 
 /* ====================================================== */
-void FMutexDestroy(FMutex** ppMutex)
+void enMutexDestroy(FMutex** ppMutex)
 {
     if (ppMutex == NULL || *ppMutex == NULL)
     {
@@ -142,12 +142,12 @@ void FMutexDestroy(FMutex** ppMutex)
     pthread_mutex_t* pMutex = (pthread_mutex_t*)(*ppMutex);
     pthread_mutex_destroy(pMutex);
 
-    FDeallocate(pMutex);
+    enDeallocate(pMutex);
     *ppMutex = NULL;
 }
 
 /* ====================================================== */
-void FMutexLock(FMutex* pMutex)
+void enMutexLock(FMutex* pMutex)
 {
     if (pMutex == NULL)
     {
@@ -158,7 +158,7 @@ void FMutexLock(FMutex* pMutex)
 }
 
 /* ====================================================== */
-void FMutexUnlock(FMutex* pMutex)
+void enMutexUnlock(FMutex* pMutex)
 {
     if (pMutex == NULL)
     {
@@ -170,35 +170,35 @@ void FMutexUnlock(FMutex* pMutex)
 
 void* FThreadUnix(void* pParameter)
 {
-    FThread* pThread = (FThread*)pParameter;
+    enThread* pThread = (enThread*)pParameter;
     pThread->pFunction(pThread->pParameter);
     return NULL;
 }
 
 /* ====================================================== */
-FThread* FThreadCreate(FThreadFunction pFunction, void* pParameter)
+enThread* enThreadCreate(enThreadFunction pFunction, void* pParameter)
 {
     if (pFunction == NULL)
     {
         return NULL;
     }
     
-    FThread* pThread = FAllocateZero(1, sizeof(FThread));
+    enThread* pThread = enAllocateZero(1, sizeof(enThread));
     if (pThread == NULL)
     {
         return NULL;
     }
 
-    pThread->pThread = FAllocateZero(1, sizeof(pthread_t));
+    pThread->pThread = enAllocateZero(1, sizeof(pthread_t));
     if (pThread->pThread == NULL)
     {
-        FThreadJoin(&pThread);
+        enThreadJoin(&pThread);
         return NULL;
     } 
 
     if (pthread_create(pThread->pThread, NULL, FThreadUnix, pParameter) != 0)
     {
-        FThreadJoin(&pThread);
+        enThreadJoin(&pThread);
         return NULL;
     }
 
@@ -206,34 +206,34 @@ FThread* FThreadCreate(FThreadFunction pFunction, void* pParameter)
 }
 
 /* ====================================================== */
-void FThreadJoin(FThread** ppThread)
+void enThreadJoin(enThread** ppThread)
 {
     if (ppThread == NULL || *ppThread == NULL)
     {
         return;
     }
 
-    FThread* pThread = *ppThread;
+    enThread* pThread = *ppThread;
 
     if (pThread->pThread != NULL)
     {
         pthread_t threadId = *(pthread_t*)pThread->pThread;
 
-        FDeallocate(pThread->pThread);
-        FDeallocate(pThread);
+        enDeallocate(pThread->pThread);
+        enDeallocate(pThread);
         *ppThread = NULL;    
 
         pthread_join(threadId, NULL);
     }
     else    
     {
-        FDeallocate(pThread);
+        enDeallocate(pThread);
         *ppThread = NULL;
     }
 }
 
 /* ====================================================== */
-void FThreadSleep(uint64 milliseconds)
+void enThreadSleep(uint64 milliseconds)
 {
     sleep(milliseconds * 1000);
 }

@@ -72,7 +72,7 @@ bool FWindowInitialize(const FWindowInfo* pInfo)
     xcb_flush(window_xcb.pConnection);
 
     
-    xcb_change_property(window_xcb.pConnection, XCB_PROP_MODE_REPLACE, window_xcb.window, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8, FStringLength(pInfo->pTitle, 64), pInfo->pTitle);
+    xcb_change_property(window_xcb.pConnection, XCB_PROP_MODE_REPLACE, window_xcb.window, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8, enStringLength(pInfo->pTitle, 64), pInfo->pTitle);
 
     /* Configure atoms to allow for a close window event. */
     xcb_intern_atom_cookie_t protocolsCookie = xcb_intern_atom(window_xcb.pConnection, 1, 12, "WM_PROTOCOLS");
@@ -80,7 +80,7 @@ bool FWindowInitialize(const FWindowInfo* pInfo)
     xcb_intern_atom_cookie_t deleteCookie = xcb_intern_atom(window_xcb.pConnection, 0, 16, "WM_DELETE_WINDOW");
     window_xcb.pDeleteReply = xcb_intern_atom_reply(window_xcb.pConnection, deleteCookie, 0);
     xcb_change_property(window_xcb.pConnection, XCB_PROP_MODE_REPLACE, window_xcb.window, pProtocolsReply->atom, 4, 32, 1, &pProtocolsReply->atom);
-    FDeallocate(pProtocolsReply);
+    enDeallocate(pProtocolsReply);
 
     xcb_map_window(window_xcb.pConnection, window_xcb.window);
     xcb_flush(window_xcb.pConnection);

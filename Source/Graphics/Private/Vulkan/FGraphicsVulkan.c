@@ -76,7 +76,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     if (vkCreateInstance(&createInfo, NULL, &graphics_vk.instance) != VK_SUCCESS)
     {
         FGraphicsShutdown();
-        FLogError("Could not create the vulkan instance!");
+        enLogError("Could not create the vulkan instance!");
         return false;
     }
 
@@ -89,14 +89,14 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     if (graphics_vk.pCreateDebugMessenger == NULL || graphics_vk.pDestroyDebugMessenger == NULL)
     {
         FGraphicsShutdown();
-        FLogError("Could not load vulkan debug functions, was the VulkanSDK installed?");
+        enLogError("Could not load vulkan debug functions, was the VulkanSDK installed?");
         return false;
     }
 
     if (graphics_vk.pCreateDebugMessenger(graphics_vk.instance, &messengerCreateInfo, NULL, &graphics_vk.debugMessenger) != VK_SUCCESS)
     {
         FGraphicsShutdown();
-        FLogError("Could not create the vulkan debug messenger!");
+        enLogError("Could not create the vulkan debug messenger!");
         return false;
     }
 #endif
@@ -105,7 +105,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     if (!FWindowVulkanInitialize())
     {
         FGraphicsShutdown();
-        FLogError("Could not initialize the vulkan window!");
+        enLogError("Could not initialize the vulkan window!");
         return false;
     }
 
@@ -114,11 +114,11 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     if (vkEnumeratePhysicalDevices(graphics_vk.instance, &physicalDeviceCount, NULL) != VK_SUCCESS)
     {
         FGraphicsShutdown();
-        FLogError("Could not list the vulkan physical devices!");
+        enLogError("Could not list the vulkan physical devices!");
         return false;
     }
 
-    VkPhysicalDevice* pPhysicalDevices = FAllocateZero(physicalDeviceCount, sizeof(VkPhysicalDevice));
+    VkPhysicalDevice* pPhysicalDevices = enAllocateZero(physicalDeviceCount, sizeof(VkPhysicalDevice));
     if (pPhysicalDevices == NULL)
     {
         FGraphicsShutdown();
@@ -137,14 +137,14 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
         graphics_vk.physicalDevice = pPhysicalDevices[0];
     }
     
-    FDeallocate(pPhysicalDevices);
+    enDeallocate(pPhysicalDevices);
 
 
     /* Get the physical devices queues */
     uint32_t queueFamilyPropertiesCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(graphics_vk.physicalDevice, &queueFamilyPropertiesCount, NULL);
 
-    VkQueueFamilyProperties* pQueueFamilyProperties = FAllocateZero(queueFamilyPropertiesCount, sizeof(VkQueueFamilyProperties));
+    VkQueueFamilyProperties* pQueueFamilyProperties = enAllocateZero(queueFamilyPropertiesCount, sizeof(VkQueueFamilyProperties));
     if (pQueueFamilyProperties == NULL)
     {
         FGraphicsShutdown();
@@ -228,13 +228,13 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
         }
     }
 
-    FDeallocate(pQueueFamilyProperties);
+    enDeallocate(pQueueFamilyProperties);
 
     /* Make sure all of the queue families were found. */ 
     if (!foundGraphicsFamily || !foundPresentFamily || !foundComputeFamily)
     {
         FGraphicsShutdown();
-        FLogError("Could not find a required vulkan queue!");
+        enLogError("Could not find a required vulkan queue!");
         return false;
     }
 
@@ -246,7 +246,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
 
     const uint32 queueFamilyCount = bAllQueuesSame ? 1 : (bAllQueuesDifferent ? 3 : 2);
 
-    VkDeviceQueueCreateInfo* pQueueCreateInfos = FAllocateZero(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
+    VkDeviceQueueCreateInfo* pQueueCreateInfos = enAllocateZero(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
     if (pQueueCreateInfos == NULL)
     {
         FGraphicsShutdown();
@@ -311,13 +311,13 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
 
     if (vkCreateDevice(graphics_vk.physicalDevice, &deviceCreateInfo, NULL, &graphics_vk.device) != VK_SUCCESS)
     {
-        FDeallocate(pQueueCreateInfos);
+        enDeallocate(pQueueCreateInfos);
         FGraphicsShutdown();
-        FLogError("Could not create the Vulkan device!");
+        enLogError("Could not create the Vulkan device!");
         return false;
     }
 
-    FDeallocate(pQueueCreateInfos);
+    enDeallocate(pQueueCreateInfos);
 
     /* We can now create the main windows swapchain */
     if (!FWindowVulkanCreateSwapchain())
@@ -393,18 +393,18 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
         .sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
         .pNext = NULL,
         .flags = 0,
-        .attachmentCount = FCOUNT_OF(generalAttachments),
+        .attachmentCount = COUNT_OF(generalAttachments),
         .pAttachments = generalAttachments,
-        .subpassCount = FCOUNT_OF(generalSubpasses),
+        .subpassCount = COUNT_OF(generalSubpasses),
         .pSubpasses = generalSubpasses,
-        .dependencyCount = FCOUNT_OF(generalDependencies),
+        .dependencyCount = COUNT_OF(generalDependencies),
         .pDependencies = generalDependencies,
     };
 
     if (vkCreateRenderPass(graphics_vk.device, &generalPassCreateInfo, NULL, &graphics_vk.generalPass) != VK_SUCCESS)
     {
         FGraphicsShutdown();
-        FLogError("Could not create the general render pass!");
+        enLogError("Could not create the general render pass!");
         return false;
     }
 
@@ -430,7 +430,7 @@ bool FGraphicsInitialize(const FWindowInfo* pWindowInfo, const FGraphicsOptions*
     if (vkCreateDescriptorSetLayout(graphics_vk.device, &globalLayoutCreateInfo, NULL, &graphics_vk.globalLayout) != VK_SUCCESS)
     {
         FGraphicsShutdown();
-        FLogError("Could not create the global descriptor layout!");
+        enLogError("Could not create the global descriptor layout!");
         return false;
     }
     
@@ -477,13 +477,13 @@ VkBool32 FVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageS
     {
         case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
         case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-            FLogInfo(pCallbackData->pMessage);
+            enLogInfo(pCallbackData->pMessage);
             break;
         case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-            FLogWarning(pCallbackData->pMessage);
+            enLogWarning(pCallbackData->pMessage);
             break;
         case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-            FLogError(pCallbackData->pMessage);
+            enLogError(pCallbackData->pMessage);
         break;
     }
 

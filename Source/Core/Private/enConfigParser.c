@@ -30,13 +30,13 @@ bool FConfigParseLine(const char* pLine, char** ppName, int32* pNameLength, char
     }
     
     /* Don't parse comments or invalid lines */
-    if (*pLineTemporary == '#' || !FCharacterIsAlpha(*pLineTemporary))
+    if (*pLineTemporary == '#' || !enCharacterIsAlpha(*pLineTemporary))
     {
         return false;
     }
 
     /* Find if there is an "=" symbol */
-    char* pEqualsSign = FStringSeperate(pLineTemporary, maxSearchLength, "=", 1);
+    char* pEqualsSign = enStringSeperate(pLineTemporary, maxSearchLength, "=", 1);
     if (pEqualsSign == NULL)
     {
         return false;
@@ -44,7 +44,7 @@ bool FConfigParseLine(const char* pLine, char** ppName, int32* pNameLength, char
 
     /* Find the name */
     pName = pLineTemporary;
-    while(FCharacterIsAlpha(*pLineTemporary) && pLineTemporary < pEqualsSign)
+    while(enCharacterIsAlpha(*pLineTemporary) && pLineTemporary < pEqualsSign)
     {
         pLineTemporary++;
     }
@@ -67,7 +67,7 @@ bool FConfigParseLine(const char* pLine, char** ppName, int32* pNameLength, char
 
     /* Find the value */
     pValue = pLineTemporary;
-    while(FCharacterIsAlphaNumeric(*pLineTemporary))
+    while(enCharacterIsAlphaNumeric(*pLineTemporary))
     {
         pLineTemporary++;
     }
@@ -78,18 +78,18 @@ bool FConfigParseLine(const char* pLine, char** ppName, int32* pNameLength, char
     float valueFloat = 0;
     bool valueBool = false;
 
-    if (FStringIsNumeric(pValue))
+    if (enStringIsNumeric(pValue))
     {
-        if (FStringConvertToInt(pValue, valueLength, &valueInteger))
+        if (enStringConvertToInt(pValue, valueLength, &valueInteger))
         {
             type = E_CONFIG_TYPE_INT;
         }
-        else if (FStringConvertToFloat(pValue, valueLength, &valueFloat))
+        else if (enStringConvertToFloat(pValue, valueLength, &valueFloat))
         {
             type = E_CONFIG_TYPE_FLOAT;
         }
     }
-    else if (FStringConvertToBool(pValue, valueLength, &valueBool))
+    else if (enStringConvertToBool(pValue, valueLength, &valueBool))
     {
         type = E_CONFIG_TYPE_BOOL;
     }
@@ -121,23 +121,23 @@ FConfigParser* FConfigParserCreate(int64 optionsCount, FConfigOption* pOptions)
         return NULL;
     }
 
-    FConfigParser* pConfigParser = FAllocateZero(1, sizeof(FConfigParser));
+    FConfigParser* pConfigParser = enAllocateZero(1, sizeof(FConfigParser));
     if (pConfigParser == NULL)
     {
         return NULL;
     }
 
-    pConfigParser->pOptions = FAllocateZero(optionsCount, sizeof(FConfigOption));
+    pConfigParser->pOptions = enAllocateZero(optionsCount, sizeof(FConfigOption));
     if (pConfigParser->pOptions == NULL)
     {
         return NULL;
     }
 
     pConfigParser->optionsCount = optionsCount;
-    FMemoryCopy(pOptions, pConfigParser->pOptions, optionsCount * sizeof(FConfigOption));
+    enMemoryCopy(pOptions, pConfigParser->pOptions, optionsCount * sizeof(FConfigOption));
 
     /* Allocate the parsed options to be the same as the default options */
-    pConfigParser->pParsedOptions = FAllocateZero(optionsCount, sizeof(FConfigParsedOption));
+    pConfigParser->pParsedOptions = enAllocateZero(optionsCount, sizeof(FConfigParsedOption));
     if (pConfigParser->pParsedOptions == NULL)
     {
         return NULL;
@@ -153,15 +153,15 @@ void FConfigParserDestroy(FConfigParser* pConfigParser)
     {
         if (pConfigParser->pOptions != NULL)
         {
-            FDeallocate(pConfigParser->pOptions);
+            enDeallocate(pConfigParser->pOptions);
             pConfigParser->pOptions = NULL;
         }
         if (pConfigParser->pParsedOptions != NULL)
         {
-            FDeallocate(pConfigParser->pParsedOptions);
+            enDeallocate(pConfigParser->pParsedOptions);
             pConfigParser->pParsedOptions = NULL;
         }
-        FDeallocate(pConfigParser);
+        enDeallocate(pConfigParser);
         pConfigParser = NULL;
     }
 }
@@ -174,7 +174,7 @@ bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilenam
     }
 
     /* Check if the file exists */
-    FFile* pFile = FFileOpenOrCreate(pConfigFilename, "r+");
+    enFile* pFile = FFileOpenOrCreate(pConfigFilename, "r+");
     if (pFile == NULL)
     {
         return false;
@@ -199,7 +199,7 @@ bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilenam
         for (int64 i = 0; i < pConfigParser->optionsCount; i++)
         {
             if (parsedOption.type == pConfigParser->pOptions[i].type &&
-                FStringCompare(pName, nameLength, pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+                enStringCompare(pName, nameLength, pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
             {
                 pOption = &pConfigParser->pOptions[i];
                 break;
@@ -212,23 +212,23 @@ bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilenam
         }
 
         /* Copy the name */
-        FStringCopy(pOption->name, ENTERPRISE_NAME_MAX_LENGTH, parsedOption.name, ENTERPRISE_NAME_MAX_LENGTH);
+        enStringCopy(pOption->name, ENTERPRISE_NAME_MAX_LENGTH, parsedOption.name, ENTERPRISE_NAME_MAX_LENGTH);
     
         /* Convert the type */
         bool conversionResult = false;
         switch (parsedOption.type)
         {
         case E_CONFIG_TYPE_INT:
-            conversionResult = FStringConvertToInt(pValue, valueLength, &parsedOption.value.Int);
+            conversionResult = enStringConvertToInt(pValue, valueLength, &parsedOption.value.Int);
             break;
         case E_CONFIG_TYPE_FLOAT:
-            conversionResult = FStringConvertToFloat(pValue,valueLength, &parsedOption.value.Float);
+            conversionResult = enStringConvertToFloat(pValue,valueLength, &parsedOption.value.Float);
             break;
         case E_CONFIG_TYPE_BOOL:
-            conversionResult = FStringConvertToBool(pValue, valueLength, &parsedOption.value.Bool);
+            conversionResult = enStringConvertToBool(pValue, valueLength, &parsedOption.value.Bool);
             break;
         case E_CONFIG_TYPE_STRING:
-            conversionResult = FStringCopy(pValue, valueLength, parsedOption.value.String, ENTERPRISE_NAME_MAX_LENGTH);
+            conversionResult = enStringCopy(pValue, valueLength, parsedOption.value.String, ENTERPRISE_NAME_MAX_LENGTH);
             break;
         default:
             conversionResult = false;
@@ -241,7 +241,7 @@ bool FConfigParserParse(FConfigParser* pConfigParser, const char* pConfigFilenam
         }
 
         /* Add the parsed option to the parsed options */
-        FMemoryCopy(&parsedOption, &pConfigParser->pParsedOptions[pConfigParser->parsedOptionsCount++], sizeof(FConfigParsedOption));
+        enMemoryCopy(&parsedOption, &pConfigParser->pParsedOptions[pConfigParser->parsedOptionsCount++], sizeof(FConfigParsedOption));
     }
 
     FFileClose(&pFile);
@@ -258,10 +258,10 @@ bool FConfigParserGetOption(FConfigParser* pConfigParser, const char* pOptionNam
     /* Check if the option exists */
     for (int64 i = 0; i < pConfigParser->parsedOptionsCount; i++)
     {
-        if (FStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+        if (enStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
         {
             /* Copy the parsed option */
-            FMemoryCopy(&pConfigParser->pParsedOptions[i], pParsedOption, sizeof(FConfigParsedOption));
+            enMemoryCopy(&pConfigParser->pParsedOptions[i], pParsedOption, sizeof(FConfigParsedOption));
             return true;
         }
     }
@@ -276,7 +276,7 @@ void FConfigParserReset(FConfigParser* pConfigParser, const char* pConfigFilenam
         return;
     }
 
-    FFile* pFile = FFileOpen(pConfigFilename, "w");
+    enFile* pFile = FFileOpen(pConfigFilename, "w");
     if (pFile == NULL)
     {
         return;
@@ -285,19 +285,19 @@ void FConfigParserReset(FConfigParser* pConfigParser, const char* pConfigFilenam
     for (int64 i = 0; i < pConfigParser->optionsCount; i++)
     {
         const char* pConfigFormat = "%s = %s";
-        FStringFormatArgument pConfigFormatArgument[] = 
+        enStringFormatArgument pConfigFormatArgument[] = 
         {
-            {E_STRING_FORMAT_TYPE_STRING, .value.String = pConfigParser->pOptions[i].name},
-            {E_STRING_FORMAT_TYPE_STRING, .value.String = pConfigParser->pOptions[i].defaultValue}
+            {enStringFormatType_String, .value.String = pConfigParser->pOptions[i].name},
+            {enStringFormatType_String, .value.String = pConfigParser->pOptions[i].defaultValue}
         };
 
         char pBuffer[ENTERPRISE_NAME_MAX_LENGTH + sizeof(" = ") + ENTERPRISE_NAME_MAX_LENGTH];
-        if (!FStringFormat(pBuffer, sizeof(pBuffer), pConfigFormat, pConfigFormatArgument, FCOUNT_OF(pConfigFormatArgument)))
+        if (!enStringFormat(pBuffer, sizeof(pBuffer), pConfigFormat, pConfigFormatArgument, COUNT_OF(pConfigFormatArgument)))
         {
             continue; 
         }
 
-        if (!FFileWrite(pFile, pBuffer, sizeof(pBuffer), FStringLength(pBuffer, sizeof(pBuffer)), 1))
+        if (!FFileWrite(pFile, pBuffer, sizeof(pBuffer), enStringLength(pBuffer, sizeof(pBuffer)), 1))
         {
             continue;
         }
@@ -315,7 +315,7 @@ void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigF
     const char* pDefaultValue = NULL;
     for (int64 i = 0; i < pConfigParser->optionsCount; i++)
     {
-        if (FStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+        if (enStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
         {
             /* Get the default value */
             pDefaultValue = pConfigParser->pOptions[i].defaultValue;
@@ -329,10 +329,10 @@ void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigF
     }
 
     /* Get the default values length */
-    int64 defaultValueLength = FStringLength(pDefaultValue, ENTERPRISE_NAME_MAX_LENGTH);
+    int64 defaultValueLength = enStringLength(pDefaultValue, ENTERPRISE_NAME_MAX_LENGTH);
 
     /* Open the config file */
-    FFile* pFile = FFileOpen(pConfigFilename, "r+");
+    enFile* pFile = FFileOpen(pConfigFilename, "r+");
     if (pFile == NULL)
     {
         return;
@@ -354,28 +354,28 @@ void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigF
             continue;
         }
 
-        int32 bufferSize = FStringLength(pBuffer, FSTRING_MAX_LENGTH);
+        int32 bufferSize = enStringLength(pBuffer, FSTRING_MAX_LENGTH);
 
         /* Get the names values position */
         int64 valueOffset = (int32)(FFileTell(pFile) - bufferSize) + (pValue - pBuffer);
 
         /* Check if the option name matches */
-        if (FStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pBuffer, nameLength) == 0)
+        if (enStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pBuffer, nameLength) == 0)
         {
             /* Set the values to the default value */
             char pTemporaryFilePath[ENTERPRISE_PATH_MAX_LENGTH] = {0};
-            FStringCopy(pConfigFilename, ENTERPRISE_PATH_MAX_LENGTH, pTemporaryFilePath, ENTERPRISE_PATH_MAX_LENGTH);
-            FStringConcatenate(".temp", sizeof(".temp"), pTemporaryFilePath, ENTERPRISE_PATH_MAX_LENGTH);
+            enStringCopy(pConfigFilename, ENTERPRISE_PATH_MAX_LENGTH, pTemporaryFilePath, ENTERPRISE_PATH_MAX_LENGTH);
+            enStringConcatenate(".temp", sizeof(".temp"), pTemporaryFilePath, ENTERPRISE_PATH_MAX_LENGTH);
 
             /* Backup the config file */
-            FFile* pTemporaryFile = FFileOpen(pTemporaryFilePath, "w");
+            enFile* pTemporaryFile = FFileOpen(pTemporaryFilePath, "w");
             if (pTemporaryFile == NULL)
             {
                 return;
             }
 
             /* Copy from the start of the config file to the start of the value */
-            FFileSeek(pFile, 0, E_FILE_SEEK_ORIGIN_SET);
+            FFileSeek(pFile, 0, enFileSeek_Set);
 
             char c;
             while ((c = FFileReadChar(pFile)) != FEOF && FFileTell(pFile) < valueOffset)
@@ -387,7 +387,7 @@ void FConfigParserResetOption(FConfigParser* pConfigParser, const char* pConfigF
             FFileWrite(pTemporaryFile, pDefaultValue, defaultValueLength, defaultValueLength, 1);
         
             /* Copy the rest of the file to the new config */
-            FFileSeek(pFile, valueLength, E_FILE_SEEK_ORIGIN_CURRENT);
+            FFileSeek(pFile, valueLength, enFileSeek_Current);
             while ((c = FFileReadChar(pFile)) != FEOF)
             {
                 FFileWriteChar(pTemporaryFile, c);

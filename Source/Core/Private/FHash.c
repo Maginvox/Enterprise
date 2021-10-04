@@ -5,13 +5,13 @@
 #include "Core/FHash.h"
 
 /* ====================================================== */
-uint32 FHashMultiplicationMethod(const char* pString)
+uint32 enHashMultiplicationMethod(const char* pString)
 {
     static const int32 MULTIPLIER = 37;
     uint32 hash = 0;
     unsigned const char* us; 
 
-    int32 stringLength = FStringLength(pString, ENTERPRISE_NAME_MAX_LENGTH);
+    int32 stringLength = enStringLength(pString, ENTERPRISE_NAME_MAX_LENGTH);
 
     /* cast s to unsigned const char * */
     /* this ensures that elements of s will be treated as having values >= 0 */

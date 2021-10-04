@@ -60,7 +60,7 @@ const char* const* FVulkanValidationLayers(uint32* pCount)
         return NULL;
     }
 
-    VkLayerProperties* pProperties = FAllocateZero(propertiesCount, sizeof(VkLayerProperties));
+    VkLayerProperties* pProperties = enAllocateZero(propertiesCount, sizeof(VkLayerProperties));
     if (pProperties == NULL)
     {
         return NULL;
@@ -68,18 +68,18 @@ const char* const* FVulkanValidationLayers(uint32* pCount)
 
     if (vkEnumerateInstanceLayerProperties(&propertiesCount, pProperties) != VK_SUCCESS)
     {
-        FDeallocate(pProperties);
+        enDeallocate(pProperties);
         return NULL;
     }
 
     /* Loop through all the layers and find out if any are missing. */
-    for (uint32 i = 0; i < FCOUNT_OF(ppValidationLayers); i++)
+    for (uint32 i = 0; i < COUNT_OF(ppValidationLayers); i++)
     {
         bool found = false;
 
         for (uint32 j = 0; j < propertiesCount; j++)
         {
-            if (FStringCompare(pProperties[j].layerName, VK_MAX_EXTENSION_NAME_SIZE, ppValidationLayers[i], VK_MAX_EXTENSION_NAME_SIZE) == 0)
+            if (enStringCompare(pProperties[j].layerName, VK_MAX_EXTENSION_NAME_SIZE, ppValidationLayers[i], VK_MAX_EXTENSION_NAME_SIZE) == 0)
             {
                 found = true;
                 break;
@@ -89,12 +89,12 @@ const char* const* FVulkanValidationLayers(uint32* pCount)
         /* If any are missing return NULL */
         if (!found)
         {
-            FDeallocate(pProperties);
+            enDeallocate(pProperties);
             return NULL;
         }
     }
 
-    *pCount = FCOUNT_OF(ppValidationLayers);
+    *pCount = COUNT_OF(ppValidationLayers);
 
     /* None missing, return the string array. */
     return (const char* const*)ppValidationLayers;
@@ -117,7 +117,7 @@ const char* const* FVulkanInstanceExtensions(uint32* pCount)
         return NULL;
     }
 
-    VkExtensionProperties* pProperties = FAllocateZero(propertiesCount, sizeof(VkExtensionProperties));
+    VkExtensionProperties* pProperties = enAllocateZero(propertiesCount, sizeof(VkExtensionProperties));
     if (pProperties == NULL)
     {
         return NULL;
@@ -126,13 +126,13 @@ const char* const* FVulkanInstanceExtensions(uint32* pCount)
     vkEnumerateInstanceExtensionProperties(NULL, &propertiesCount, pProperties);
 
     /* Loop over all of the requested extensions and make sure they were found */
-    for (int32 i = 0; i < FCOUNT_OF(ppInstanceExtensions); i++)
+    for (int32 i = 0; i < COUNT_OF(ppInstanceExtensions); i++)
     {
         bool found = false;
 
         for (uint32_t j = 0; j < propertiesCount; j++)
         {
-            if (FStringCompare(ppInstanceExtensions[i], VK_MAX_EXTENSION_NAME_SIZE, pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
+            if (enStringCompare(ppInstanceExtensions[i], VK_MAX_EXTENSION_NAME_SIZE, pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
             {
                 found = true;
                 break;
@@ -141,12 +141,12 @@ const char* const* FVulkanInstanceExtensions(uint32* pCount)
 
         if (!found)
         {
-            FDeallocate(pProperties);
+            enDeallocate(pProperties);
             return NULL;
         }
     }
 
-    *pCount = FCOUNT_OF(ppInstanceExtensions);
+    *pCount = COUNT_OF(ppInstanceExtensions);
 
     return (const char* const*)ppInstanceExtensions;
 }
@@ -169,7 +169,7 @@ const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, uint
         return NULL;
     }
 
-    VkExtensionProperties* pProperties = FAllocateZero(propertiesCount, sizeof(VkExtensionProperties));
+    VkExtensionProperties* pProperties = enAllocateZero(propertiesCount, sizeof(VkExtensionProperties));
     if (pProperties == NULL)
     {
         return NULL;
@@ -178,13 +178,13 @@ const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, uint
     vkEnumerateDeviceExtensionProperties(physicalDevice, NULL, &propertiesCount, pProperties);
 
     /* Loop over all of the requested extensions and make sure they were found */
-    for (int32 i = 0; i < FCOUNT_OF(ppDeviceExtensions); i++)
+    for (int32 i = 0; i < COUNT_OF(ppDeviceExtensions); i++)
     {
         bool found = false;
 
         for (uint32_t j = 0; j < propertiesCount; j++)
         {
-            if (FStringCompare(ppDeviceExtensions[i], VK_MAX_EXTENSION_NAME_SIZE, pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
+            if (enStringCompare(ppDeviceExtensions[i], VK_MAX_EXTENSION_NAME_SIZE, pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
             {
                 found = true;
                 break;
@@ -193,12 +193,12 @@ const char* const* FVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, uint
 
         if (!found)
         {
-            FDeallocate(pProperties);
+            enDeallocate(pProperties);
             return NULL;
         }
     }
 
-    *pCount = FCOUNT_OF(ppDeviceExtensions);
+    *pCount = COUNT_OF(ppDeviceExtensions);
 
     return (const char* const*)ppDeviceExtensions;
 }

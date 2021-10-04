@@ -1,7 +1,7 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#ifndef __MACRO_H__
-#define __MACRO_H__
+#ifndef __ENTERPRISE_MACRO_H__
+#define __ENTERPRISE_MACRO_H__
 
 #define ENTERPRISE_PATH_MAX_LENGTH 256
 #define ENTERPRISE_NAME_MAX_LENGTH 256

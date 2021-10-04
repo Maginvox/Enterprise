@@ -5,7 +5,7 @@
 #include "Core/FString.h"
 #include "Core/FArgumentParser.h"
 
-FArgumentParser* FArgumentParserCreate(const int32 optionsCount, const FArgumentOption* pOptions)
+enArgumentParser* enArgumentParserCreate(const int32 optionsCount, const enArgumentOption* pOptions)
 {
     if (pOptions == NULL)
     {
@@ -13,36 +13,36 @@ FArgumentParser* FArgumentParserCreate(const int32 optionsCount, const FArgument
     }
 
     /* Allocate the parser, and its new options to copy */
-    FArgumentParser* pArgsParser = FAllocateZero(1, sizeof(FArgumentParser));
+    enArgumentParser* pArgsParser = enAllocateZero(1, sizeof(enArgumentParser));
     if (pArgsParser == NULL)
     {
         return NULL;
     }
 
-    pArgsParser->pOptions = FAllocateZero(optionsCount, sizeof(FArgumentOption));
+    pArgsParser->pOptions = enAllocateZero(optionsCount, sizeof(enArgumentOption));
     if (pArgsParser->pOptions == NULL)
     {
-        FArgumentParserDestroy(&pArgsParser);
+        enArgumentParserDestroy(&pArgsParser);
         return NULL;
     }
 
-    pArgsParser->pParsedOptions = FAllocateZero(optionsCount, sizeof(FArgumentParsedOption));
+    pArgsParser->pParsedOptions = enAllocateZero(optionsCount, sizeof(enArgumentParsedOption));
     if (pArgsParser->pParsedOptions == NULL)
     {
-        FArgumentParserDestroy(&pArgsParser);
+        enArgumentParserDestroy(&pArgsParser);
         return NULL;
     }
 
     /* Copy the options */
     pArgsParser->optionsCount = optionsCount;
-    FMemoryCopy(pOptions, pArgsParser->pOptions, optionsCount * sizeof(FArgumentOption));
+    enMemoryCopy(pOptions, pArgsParser->pOptions, optionsCount * sizeof(enArgumentOption));
 
     return pArgsParser;
 }
 
-void FArgumentParserDestroy(FArgumentParser** ppArgumentParser)
+void enArgumentParserDestroy(enArgumentParser** ppArgumentParser)
 {
-    FArgumentParser* pArgumentParser = *ppArgumentParser;
+    enArgumentParser* pArgumentParser = *ppArgumentParser;
     if (pArgumentParser == NULL)
     {
         return;
@@ -50,15 +50,15 @@ void FArgumentParserDestroy(FArgumentParser** ppArgumentParser)
 
     if (pArgumentParser->pOptions != NULL)
     {
-        FDeallocate(pArgumentParser->pOptions);
+        enDeallocate(pArgumentParser->pOptions);
         pArgumentParser->pOptions = NULL;
     }
 
-    FDeallocate(pArgumentParser);
+    enDeallocate(pArgumentParser);
     *ppArgumentParser = NULL;
 }
 
-bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const char* const* argv)
+bool enArgumentParserParse(enArgumentParser* pArgsParser, const int argc, const char* const* argv)
 {
     if (pArgsParser == NULL || argc == 0 || argv == NULL)
     {
@@ -69,7 +69,7 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
     {
         char* pArg = (char*)argv[i];
 
-        FArgumentParsedOption parsedOption = {0};
+        enArgumentParsedOption parsedOption = {0};
 
         /* Skip empty arguments */
         if (pArg[0] == '\0')
@@ -77,12 +77,12 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
             continue;
         }
 
-        int64 argLength = FStringLength(pArg, ENTERPRISE_NAME_MAX_LENGTH);
+        int64 argLength = enStringLength(pArg, ENTERPRISE_NAME_MAX_LENGTH);
 
         /* Make sure that the arguments length is not greater than ENTERPRISE_NAME_MAX_LENGTH */
         if (argLength > ENTERPRISE_NAME_MAX_LENGTH || argLength < 2)
         {
-            FLogWarning("An argument was too long!");
+            enLogWarning("An argument was too long!");
             continue;
         }
 
@@ -95,17 +95,17 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
         /* Find the "--" before the name */
         if (pArg[0] != '-' || pArg[1] != '-')
         {
-            FLogWarning("Failed to parse an argument!");
+            enLogWarning("Failed to parse an argument!");
             continue;
         }
         pArg += 2;
 
 
         /* Find the "=" */
-        char* pEquals = FStringSeperate(pArg, ENTERPRISE_NAME_MAX_LENGTH, "=", sizeof("="));
+        char* pEquals = enStringSeperate(pArg, ENTERPRISE_NAME_MAX_LENGTH, "=", sizeof("="));
         if (pEquals == NULL)
         {
-            FLogWarning("Could not get an arguments equal sign!");
+            enLogWarning("Could not get an arguments equal sign!");
             continue;
         }
 
@@ -114,10 +114,10 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
         uint32 nameLength = (uint32)(pEquals - pName);
 
         /* Check the argument name is the same as one of the options */
-        FArgumentOption* pOption = NULL;
+        enArgumentOption* pOption = NULL;
         for (int j = 0; j < pArgsParser->optionsCount; j++)
         {
-            if (FStringCompare(pName, ENTERPRISE_NAME_MAX_LENGTH, pArgsParser->pOptions[j].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+            if (enStringCompare(pName, ENTERPRISE_NAME_MAX_LENGTH, pArgsParser->pOptions[j].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
             {   
                 pOption = &pArgsParser->pOptions[j];
                 break;
@@ -126,26 +126,26 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
 
         if (pOption == NULL)
         {
-            FLogWarning("An argument was not found in the options!");
+            enLogWarning("An argument was not found in the options!");
             continue;
         }
 
         /* Set the name in the parsed option */
-        FStringCopy(pOption->name, nameLength, parsedOption.name, ENTERPRISE_NAME_MAX_LENGTH);
+        enStringCopy(pOption->name, nameLength, parsedOption.name, ENTERPRISE_NAME_MAX_LENGTH);
 
         /* Check the argument value is not empty */
         if (pArg[0] == '\0')
         {
-            FLogWarning("An argument value was empty!");
+            enLogWarning("An argument value was empty!");
             continue;
         }
 
         /* Get the value */
         char* pValue = pEquals + 1;
-        int32 valueLength = FStringLength(pValue, ENTERPRISE_NAME_MAX_LENGTH);
+        int32 valueLength = enStringLength(pValue, ENTERPRISE_NAME_MAX_LENGTH);
         if (valueLength > ENTERPRISE_NAME_MAX_LENGTH)
         {
-            FLogWarning("An argument value was too long!");
+            enLogWarning("An argument value was too long!");
             continue;
         }
 
@@ -154,38 +154,38 @@ bool FArgumentParserParse(FArgumentParser* pArgsParser, const int argc, const ch
         float valueFloat = 0.0f;
         bool valueBool = false;
 
-        if (FStringIsNumeric(pValue))
+        if (enStringIsNumeric(pValue))
         {
-            if (FStringConvertToInt(pValue, valueLength, &valueInteger))
+            if (enStringConvertToInt(pValue, valueLength, &valueInteger))
             {
-                parsedOption.type = E_ARGUMENT_TYPE_INT;
+                parsedOption.type = enArgumentType_Int;
                 parsedOption.value.Int = valueInteger;
             }
-            else if (FStringConvertToFloat(pValue, valueLength, &valueFloat))
+            else if (enStringConvertToFloat(pValue, valueLength, &valueFloat))
             {
-                parsedOption.type = E_ARGUMENT_TYPE_FLOAT;
+                parsedOption.type = enArgumentType_Float;
                 parsedOption.value.Float = valueFloat;
             }
         }
-        else if (FStringConvertToBool(pValue, valueLength, &valueBool))
+        else if (enStringConvertToBool(pValue, valueLength, &valueBool))
         {
-            parsedOption.type = E_ARGUMENT_TYPE_BOOL;
+            parsedOption.type = enArgumentType_Bool;
             parsedOption.value.Bool = valueBool;
         }
         else
         {
-            parsedOption.type = E_ARGUMENT_TYPE_STRING;
-            FStringCopy(pValue, valueLength, parsedOption.value.String, ENTERPRISE_NAME_MAX_LENGTH);
+            parsedOption.type = enArgumentType_String;
+            enStringCopy(pValue, valueLength, parsedOption.value.String, ENTERPRISE_NAME_MAX_LENGTH);
         }
 
         /* Copy the parsed option */
-        FMemoryCopy(&parsedOption, &pArgsParser->pParsedOptions[pArgsParser->parsedOptionsCount++], sizeof(FArgumentParsedOption));
+        enMemoryCopy(&parsedOption, &pArgsParser->pParsedOptions[pArgsParser->parsedOptionsCount++], sizeof(enArgumentParsedOption));
     }
 
     return true;
 }
 
-bool FArgumentParserGetOption(FArgumentParser* pArgsParser, const char* pName, FArgumentParsedOption* pParsedOption)
+bool enArgumentParserGetOption(enArgumentParser* pArgsParser, const char* pName, enArgumentParsedOption* pParsedOption)
 {
     if (pArgsParser == NULL || pName == NULL || pParsedOption == NULL)
     {
@@ -194,9 +194,9 @@ bool FArgumentParserGetOption(FArgumentParser* pArgsParser, const char* pName, F
 
     for (int64 i = 0; i < pArgsParser->parsedOptionsCount; i++)
     {
-        if (FStringCompare(pArgsParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH, pName, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+        if (enStringCompare(pArgsParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH, pName, ENTERPRISE_NAME_MAX_LENGTH) == 0)
         {
-            FMemoryCopy(&pArgsParser->pParsedOptions[i], pParsedOption, sizeof(FArgumentParsedOption));
+            enMemoryCopy(&pArgsParser->pParsedOptions[i], pParsedOption, sizeof(enArgumentParsedOption));
             return true;
         }
     }

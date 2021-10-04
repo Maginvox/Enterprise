@@ -1,11 +1,11 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#ifndef __FTIME_H__
-#define __FTIME_H__
+#ifndef __ENTERPRISE_TIME_H__
+#define __ENTERPRISE_TIME_H__
 
-#include "FTypes.h"
+#include "enTypes.h"
 
-typedef struct FTime
+typedef struct enTime
 {
     int32 second;
     int32 minute;
@@ -16,8 +16,8 @@ typedef struct FTime
     int32 weekDay;
     int32 yearDay;
     int32 isDaylightSavingTime;
-} FTime;
+} enTime;
 
-void FTimeCurrent(FTime* time);
+void enTimeCurrent(enTime* time);
 
 #endif

@@ -16,7 +16,7 @@ VkSurfaceFormatKHR FWindowVulkanSurfaceFormat()
         return (VkSurfaceFormatKHR){VK_FORMAT_UNDEFINED, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR};
     }
 
-    VkSurfaceFormatKHR* pSurfaceFormats = FAllocateZero(surfaceFormatsCount, sizeof(VkSurfaceFormatKHR));
+    VkSurfaceFormatKHR* pSurfaceFormats = enAllocateZero(surfaceFormatsCount, sizeof(VkSurfaceFormatKHR));
     if (pSurfaceFormats == NULL)
     {
         return (VkSurfaceFormatKHR){VK_FORMAT_UNDEFINED, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR};
@@ -44,7 +44,7 @@ VkPresentModeKHR FWindowVulkanPresentMode()
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
-    VkPresentModeKHR* pPresentModes = FAllocateZero(presentModesCount, sizeof(VkPresentModeKHR));
+    VkPresentModeKHR* pPresentModes = enAllocateZero(presentModesCount, sizeof(VkPresentModeKHR));
     if (pPresentModes == NULL)
     {
         return VK_PRESENT_MODE_FIFO_KHR;

@@ -24,8 +24,6 @@ typedef enum
     enPrimitiveType_Points
 } enPrimitiveType;
 
-
-
 typedef struct
 {
     char name[64];

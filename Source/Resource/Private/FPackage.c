@@ -14,7 +14,7 @@ bool FPackageRewriteRecords(const FPackage* pPackage)
         return false;
     }
 
-    FFile* pRecordsFile = FFileOpen(pPackage->recordsPath, "w");
+    enFile* pRecordsFile = FFileOpen(pPackage->recordsPath, "w");
     if (pRecordsFile == NULL)
     {
         return false;
@@ -34,8 +34,8 @@ bool FPackageRewriteRecords(const FPackage* pPackage)
     }
 
     /* Write all of the records */
-    FPackageRecord* pRecords = FArrayData(pPackage->pRecords);
-    int32 recordsCount = FArrayCount(pPackage->pRecords);
+    FPackageRecord* pRecords = enArrayData(pPackage->pRecords);
+    int32 recordsCount = enArrayCount(pPackage->pRecords);
 
     if (pRecords != NULL && recordsCount != 0)
     {
@@ -70,10 +70,10 @@ bool FPackageRemapRecords(FPackage* pPackage)
         return false;
     }
 
-    int32 recordsCount = FArrayCount(pPackage->pRecords);
+    int32 recordsCount = enArrayCount(pPackage->pRecords);
     for (int32 i = 0; i < recordsCount; i++)
     {
-        FPackageRecord* pRecord = FArrayGet(pPackage->pRecords, i);
+        FPackageRecord* pRecord = enArrayGet(pPackage->pRecords, i);
         if (!FHashMapInsertWithHashedKey(pPackage->pRecordsMap, pRecord->recordId, pRecord))
         {
             return false;
@@ -92,14 +92,14 @@ FPackage* FPackageCreate(const char* pRecordsPath, const char* pDataPath)
     }
 
 
-    FPackage* pPackage = FAllocateZero(1, sizeof(FPackage));
+    FPackage* pPackage = enAllocateZero(1, sizeof(FPackage));
     if (pPackage == NULL)
     {
         return NULL;
     }
 
     /* Open the records file */
-    FFile* pRecordsFile = FFileOpenOrCreate(pRecordsPath, "r+");
+    enFile* pRecordsFile = FFileOpenOrCreate(pRecordsPath, "r+");
     if (pRecordsFile == NULL)
     {
         return NULL;
@@ -132,7 +132,7 @@ void FPackageDestroy(FPackage** ppPackage)
 
     if (pPackage->pRecords != NULL)
     {
-        FArrayDestroy(&pPackage->pRecords);
+        enArrayDestroy(&pPackage->pRecords);
     }
 
     if (pPackage->pRecordsMap != NULL)
@@ -140,7 +140,7 @@ void FPackageDestroy(FPackage** ppPackage)
         FHashMapDestroy(&pPackage->pRecordsMap);
     }
 
-    FDeallocate(pPackage);
+    enDeallocate(pPackage);
 }
 
 /* ====================================================== */
@@ -152,7 +152,7 @@ bool FPackageRecordAppend(FPackage* pPackage, const FPackageRecord* pRecord)
     }
 
     /* Add the record to the array */
-    FArrayAdd(pPackage->pRecords, pRecord);
+    enArrayAdd(pPackage->pRecords, pRecord);
     FHashMapInsertWithHashedKey(pPackage->pRecordsMap, pRecord->recordId, (void*)pRecord);
 
 
@@ -205,7 +205,7 @@ bool FPackageRecordChange(FPackage* pPackage, const FPackageRecord* pNewRecord)
         return false;
     }
 
-    FMemoryCopy(pNewRecord, pRecord, sizeof(FPackageRecord));
+    enMemoryCopy(pNewRecord, pRecord, sizeof(FPackageRecord));
  
     /* Rewrite the records */
     return FPackageRewriteRecords(pPackage);
@@ -219,7 +219,7 @@ bool FPackageDataAppend(FPackage* pPackage, const void* pData, int64 size, int64
         return false;
     }
 
-    FFile* pDataFile = FFileOpen(pPackage->dataPath, "a");
+    enFile* pDataFile = FFileOpen(pPackage->dataPath, "a");
     if (pDataFile == NULL)
     {
         return false;
@@ -245,7 +245,7 @@ bool FPackageDefragment(FPackage* pPackage)
         return false;
     }
 
-    FFile* pDataFile = FFileOpen(pPackage->dataPath, "r+");
+    enFile* pDataFile = FFileOpen(pPackage->dataPath, "r+");
     if (pDataFile == NULL)
     {
         return false;
@@ -253,10 +253,10 @@ bool FPackageDefragment(FPackage* pPackage)
 
     /* Open a temporary data file */
     char pTempDataFilePath[FPATH_MAX] = {0};
-    FStringCopy(pPackage->dataPath, FPATH_MAX, pTempDataFilePath, FPATH_MAX);
-    FStringConcatenate(".temp", sizeof(".temp"), pTempDataFilePath, FPATH_MAX);
+    enStringCopy(pPackage->dataPath, FPATH_MAX, pTempDataFilePath, FPATH_MAX);
+    enStringConcatenate(".temp", sizeof(".temp"), pTempDataFilePath, FPATH_MAX);
 
-    FFile* pTempDataFile = FFileOpen(pPackage->dataPath, "w");
+    enFile* pTempDataFile = FFileOpen(pPackage->dataPath, "w");
     if (pTempDataFilePath == NULL)
     {
         FFileClose(&pDataFile);
@@ -264,14 +264,14 @@ bool FPackageDefragment(FPackage* pPackage)
     }
 
     /* Write the data to the temporary file */
-    int32 recordsCount = FArrayCount(pPackage->pRecords);
+    int32 recordsCount = enArrayCount(pPackage->pRecords);
     for (int32 i = 0; i < recordsCount; i++)
     {
-        FPackageRecord* pRecord = (FPackageRecord*)FArrayGet(pPackage->pRecords, i);
+        FPackageRecord* pRecord = (FPackageRecord*)enArrayGet(pPackage->pRecords, i);
 
         if (pRecord->recordType == E_RECORD_TYPE_REMOVE)
         {
-            FFileSeek(pDataFile, 0, E_FILE_SEEK_ORIGIN_SET);
+            FFileSeek(pDataFile, 0, enFileSeek_Set);
 
             /* Copy up to the package data */
             char c;
@@ -281,7 +281,7 @@ bool FPackageDefragment(FPackage* pPackage)
             }
 
             /* Seek past the data */
-            FFileSeek(pDataFile, pRecord->dataCompressedSize, E_FILE_SEEK_ORIGIN_SET);
+            FFileSeek(pDataFile, pRecord->dataCompressedSize, enFileSeek_Set);
 
             /* Write the rest of the file back */
             while((c = FFileReadChar(pDataFile)) != FEOF)
@@ -289,7 +289,7 @@ bool FPackageDefragment(FPackage* pPackage)
                 FFileWriteChar(pTempDataFile, c);
             }
             
-            FArrayRemove(pPackage->pRecords, i); 
+            enArrayRemove(pPackage->pRecords, i); 
             i--; /* i-- because we are removing an index, so we dont want to overflow the buffer later */
             FHashMapRemoveWithHashedKey(pPackage->pRecordsMap, pRecord->recordId);
 

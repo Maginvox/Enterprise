@@ -35,7 +35,7 @@ bool FWindowVulkanInitialize()
 
     if (vkCreateWin32SurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &window_vk.surface) != VK_SUCCESS)
     {
-        FLogError("Could not create the vulkan surface!");
+        enLogError("Could not create the vulkan surface!");
         return false; 
     }
 
@@ -55,7 +55,7 @@ bool FWindowVulkanInitialize()
 
     if (vkCreateXcbSurfaceKHR(graphics_vk.instance, &surfaceCreateInfo, NULL, &window_vk.surface) != VK_SUCCESS)
     {
-        FLogError("Could not create the vulkan surface!");
+        enLogError("Could not create the vulkan surface!");
         return false;
     }
 #endif
@@ -66,7 +66,7 @@ bool FWindowVulkanInitialize()
         if (!FWindowVulkanCreateSwapchain())
         {
             FWindowVulkanShutdown();
-            FLogError("Could not create the vulkan surface!");
+            enLogError("Could not create the vulkan surface!");
             return false;
         }
     }

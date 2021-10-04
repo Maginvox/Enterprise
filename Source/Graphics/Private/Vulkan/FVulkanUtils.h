@@ -55,23 +55,23 @@ static inline VkAttachmentStoreOp FRenderPassAttachmentStoreOpToVkAttachmentStor
     }
 }
 
-static inline VkImageLayout FImageLayoutToVkImageLayout(FImageLayout layout)
+static inline VkImageLayout FImageLayoutToVkImageLayout(enImageLayout layout)
 {
     switch (layout)
     {
-        case FImageLayout_General:
+        case enImageLayout_General:
             return VK_IMAGE_LAYOUT_GENERAL;
             break;
-        case FImageLayout_Color:
+        case enImageLayout_Color:
             return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
             break;
-        case FImageLayout_DepthStencil:
+        case enImageLayout_DepthStencil:
             return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
             break;
-        case FImageLayout_ReadShader:
+        case enImageLayout_ReadShader:
             return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             break;
-        case FImageLayout_Present:
+        case enImageLayout_Present:
             return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
             break;
         default:

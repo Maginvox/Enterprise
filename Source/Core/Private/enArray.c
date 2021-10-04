@@ -1,16 +1,16 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#include "Core/FMemory.h"
-#include "Core/FArray.h"
+#include "Core/enMemory.h"
+#include "Core/enArray.h"
 
-FArray* FArrayCreate(int64 elementSize, int32 capacity)
+enArray* enArrayCreate(int64 elementSize, int32 capacity)
 {
     if (elementSize < 1 || capacity < 1)
     {
         return NULL;
     }
     
-    FArray* pArray = FAllocateZero(1, sizeof(FArray));
+    enArray* pArray = enAllocateZero(1, sizeof(enArray));
     if (pArray == NULL)
     {
         return NULL;
@@ -18,34 +18,34 @@ FArray* FArrayCreate(int64 elementSize, int32 capacity)
     
     pArray->elementSize = elementSize;
     
-    if (!FArrayResize(pArray, capacity))
+    if (!enArrayResize(pArray, capacity))
     {
-        FArrayDestroy(&pArray);
+        enArrayDestroy(&pArray);
         return NULL;
     }
 
     return pArray;
 }
 
-void FArrayDestroy(FArray** ppArray)
+void enArrayDestroy(enArray** ppArray)
 {
     if (ppArray == NULL || *ppArray == NULL)
     {
         return;
     }
 
-    FArray* pArray = *ppArray;
+    enArray* pArray = *ppArray;
 
     if (pArray != NULL)
     {
-        FDeallocate(pArray->pArray);
+        enDeallocate(pArray->pArray);
     }
 
-    FDeallocate(pArray);
+    enDeallocate(pArray);
     *ppArray = NULL;
 }
 
-bool FArrayResize(FArray* pArray, int32 newCapacity)
+bool enArrayResize(enArray* pArray, int32 newCapacity)
 {
     if (pArray == NULL || newCapacity < pArray->count) /* You cannot remove elements using this function */
     {
@@ -53,7 +53,7 @@ bool FArrayResize(FArray* pArray, int32 newCapacity)
     }
 
     /* Reallocate the array to be proper size */
-    void* pNewArray = FReallocate(pArray->pArray, pArray->elementSize * newCapacity);
+    void* pNewArray = enReallocate(pArray->pArray, pArray->elementSize * newCapacity);
     if (pNewArray == NULL)
     {
         return false;
@@ -65,7 +65,7 @@ bool FArrayResize(FArray* pArray, int32 newCapacity)
     return true;
 }
 
-bool FArrayAdd(FArray* pArray, const void* pData)
+bool enArrayAdd(enArray* pArray, const void* pData)
 {
     if (pArray == NULL)
     {
@@ -74,22 +74,22 @@ bool FArrayAdd(FArray* pArray, const void* pData)
 
     if (pArray->capacity == pArray->count)
     {
-        FArrayResize(pArray, pArray->capacity + 5);
+        enArrayResize(pArray, pArray->capacity + 5);
     }
 
     if (pData != NULL)
     {
-        FMemoryCopy(pData, &((unsigned char*)pArray->pArray)[pArray->count * pArray->elementSize], pArray->elementSize);
+        enMemoryCopy(pData, &((unsigned char*)pArray->pArray)[pArray->count * pArray->elementSize], pArray->elementSize);
     }
     else
     {
-        FMemorySet(&((unsigned char*)pArray->pArray)[pArray->count * pArray->elementSize], pArray->elementSize, 0);
+        enMemorySet(&((unsigned char*)pArray->pArray)[pArray->count * pArray->elementSize], pArray->elementSize, 0);
     }
 
     return true;
 }
 
-bool FArrayRemove(FArray* pArray, int32 index)
+bool enArrayRemove(enArray* pArray, int32 index)
 {
     if (pArray == NULL || index < 0 || index >= pArray->count)
     {
@@ -104,13 +104,13 @@ bool FArrayRemove(FArray* pArray, int32 index)
     if (index != (pArray->count - 1)) /* If this is not the last index */
     {
         unsigned char* pArrayAtNextIndex = pArrayAtIndex + pArray->elementSize;
-        FMemoryCopy(pArrayAtNextIndex, pArrayAtIndex, ((pArray->count-1) - index) * pArray->elementSize);
+        enMemoryCopy(pArrayAtNextIndex, pArrayAtIndex, ((pArray->count-1) - index) * pArray->elementSize);
     }
 
     return true;
 }
 
-bool FArraySet(FArray* pArray, int32 index, const void* pValue)
+bool enArraySet(enArray* pArray, int32 index, const void* pValue)
 {
     if (pArray == NULL || index < 0 || index >= pArray->count)
     {
@@ -119,10 +119,10 @@ bool FArraySet(FArray* pArray, int32 index, const void* pValue)
 
     unsigned char* pArrayAtIndex = &((unsigned char*)pArray->pArray)[pArray->elementSize * index];
     
-    return FMemoryCopy(pValue, pArrayAtIndex, pArray->elementSize) != NULL;
+    return enMemoryCopy(pValue, pArrayAtIndex, pArray->elementSize) != NULL;
 }
 
-void* FArrayGet(FArray* pArray, int32 index)
+void* enArrayGet(enArray* pArray, int32 index)
 {
     if (pArray == NULL || index < 0 || index >= pArray->count)
     {
@@ -133,25 +133,25 @@ void* FArrayGet(FArray* pArray, int32 index)
     return ((unsigned char*)pArray->pArray) + (pArray->elementSize * index);
 }
 
-bool FArrayGetCopy(FArray* pArray, int32 index, void* pValue)
+bool enArrayGetCopy(enArray* pArray, int32 index, void* pValue)
 {
     if (pArray == NULL || index < 0 || index >= pArray->count)
     {
         return false;
     }
 
-    void* pElement = FArrayGet(pArray, index);
+    void* pElement = enArrayGet(pArray, index);
 
     return pElement == NULL ? 
-        false : FMemoryCopy(pElement, pValue, pArray->elementSize) != NULL;
+        false : enMemoryCopy(pElement, pValue, pArray->elementSize) != NULL;
 }
 
-void* FArrayData(FArray* pArray)
+void* enArrayData(enArray* pArray)
 {
     return pArray == NULL ? NULL : pArray->pArray;
 }
 
-int32 FArrayCount(FArray* pArray)
+int32 enArrayCount(enArray* pArray)
 {
     return pArray == NULL ? 0 : pArray->count;
 }

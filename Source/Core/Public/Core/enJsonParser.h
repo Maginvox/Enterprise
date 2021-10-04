@@ -2,19 +2,18 @@
 #define __EN_JSON_PARSER_H__
 
 
-/* This is a strict json parser and formatter
+/* An incredibly tiny strict json parser based off JSMN
     https://www.json.org/json-en.html */
 
 #include "Core/FTypes.h"
 
 typedef enum
 {
+    enJsonType_Null = 0,
     enJsonType_Object,
     enJsonType_Array,
     enJsonType_String,
-    enJsonType_Number,
-    enJsonType_Boolean,
-    enJsonType_Null
+    enJsonType_Primitive /* bool and number */
 } enJsonType;
 
 typedef struct
@@ -22,7 +21,7 @@ typedef struct
     enJsonType type;
     uint32 start;
     uint32 end;
-    uint32 size;
+    uint32 count;
 } enJsonToken;
 
 /* Parses pJson into a tokenized array of tokens.

@@ -6,7 +6,7 @@
 
 FList* FListCreate()
 {
-    FList* pList = FAllocateZero(1, sizeof(FList));
+    FList* pList = enAllocateZero(1, sizeof(FList));
     return pList;
 }
 
@@ -25,13 +25,13 @@ void FListDestroy(FList** ppList)
         FListRemoveNode(pList, pCurrentNode);
     }
 
-    FDeallocate(pList);
+    enDeallocate(pList);
     *ppList = NULL;
 }
 
 bool FListAdd(FList* pList, void* pData, FListNode** ppNode)
 {
-    FListNode* pNewNode = FAllocateZero(1, sizeof(FListNode));
+    FListNode* pNewNode = enAllocateZero(1, sizeof(FListNode));
     if (pNewNode == NULL)
     {
         return false;
@@ -84,7 +84,7 @@ void FListRemoveNode(FList* pList, FListNode* pNode)
     }
 
     /* Free the node */
-    FDeallocate(pNode);
+    enDeallocate(pNode);
 }
 
 void* FListGet(FList* pList, int64 index)

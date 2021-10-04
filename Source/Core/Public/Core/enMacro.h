@@ -6,6 +6,6 @@
 #define ENTERPRISE_PATH_MAX_LENGTH 256
 #define ENTERPRISE_NAME_MAX_LENGTH 256
 #define NULLABLE
-#define FCOUNT_OF(x) (sizeof(x) / sizeof(x[0]))
+#define COUNT_OF(x) (sizeof(x) / sizeof(x[0]))
 
 #endif

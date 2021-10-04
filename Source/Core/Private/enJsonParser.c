@@ -65,9 +65,9 @@ int32 enJsonParseString(const char* pJson, uint32 size, uint32* pPosition, enJso
 
                     for (uint32 i = 0; i < 4 && pos < size && pJson[pos] != '\0'; i++)
                     {
-                        if (!((pJson[pos] >= 48 && pJson[pos] <= 57) || /* 0-9 */
-                             (pJson[pos] >= 65 && pJson[pos] <= 70) || /* A-F */
-                             (pJson[pos] >= 97 && pJson[pos] <= 102))) /* a-f */
+                        if (!((pJson[pos] >= '0' && pJson[pos] <= '9') ||
+                             (pJson[pos] >= 'A' && pJson[pos] <= 'F') ||
+                             (pJson[pos] >= 'a' && pJson[pos] <= 'f')))
                         {
                             *pPosition = start;
                             return -1;

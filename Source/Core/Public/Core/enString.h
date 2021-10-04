@@ -4,7 +4,7 @@
 #define __FSTRING_H__
 
 #include "Core/enTypes.h"
-#include "Core/FTime.h"
+#include "Core/enTime.h"
 
 #define FSTRING_MAX_LENGTH 1024
 

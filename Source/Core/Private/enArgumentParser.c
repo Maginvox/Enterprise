@@ -1,9 +1,9 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#include "Core/FLog.h"
-#include "Core/FMemory.h"
-#include "Core/FString.h"
-#include "Core/FArgumentParser.h"
+#include "Core/enLog.h"
+#include "Core/enMemory.h"
+#include "Core/enString.h"
+#include "Core/enArgumentParser.h"
 
 enArgumentParser* enArgumentParserCreate(const int32 optionsCount, const enArgumentOption* pOptions)
 {

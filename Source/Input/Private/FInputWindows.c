@@ -1,10 +1,9 @@
 #include "Windows.h"
 
-#include "Input/FInput.h"
+#include "Input/enInput.h"
+#include "Graphics/enWindow.h"
 
-#include "Graphics/FWindow.h"
-
-LRESULT FWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT enWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
@@ -16,7 +15,7 @@ LRESULT FWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-void FInputPoll()
+void enInputPoll()
 {
     MSG msg;
     if (GetMessage(&msg, NULL, 0, 0) != 0)

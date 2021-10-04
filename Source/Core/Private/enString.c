@@ -285,7 +285,7 @@ bool enStringFormat(char* pDestination, uint32 destinationMaxLength, const char*
         const enStringFormatArgument* pFormatArgument = &pFormatArguments[i];        
 
         /* Find the argument in the format string */
-        if (!FMathIsBetween(pFormatArgument->type, 0, enStringFormatType_Max))
+        if (!enMathIsBetween(pFormatArgument->type, 0, enStringFormatType_Max))
         {
             return false; /* Invalid type */
         }
@@ -438,7 +438,7 @@ bool enStringConvertFromFloat(float value, char* pDestination, uint32 destinatio
         }
 
         /* Add the fractional part */
-        valueFraction = FFloatMathPow(10, valueFraction);
+        valueFraction = enFloatMathPow(10, valueFraction);
 
         return enStringConvertFromInt((uint32)valueFraction, 10, pDestination + stringLength + 1, destinationMaxLength);
     }
@@ -478,7 +478,7 @@ bool enStringConvertFromDouble(double value, char* pDestination, uint32 destinat
         }
 
         /* Add the fractional part */
-        valueFraction = FMathDoublePow(10, valueFraction);
+        valueFraction = enMathDoublePow(10, valueFraction);
         return enStringConvertFromInt((uint32)valueFraction, 10, pDestination + stringLength + 1, destinationMaxLength);
     }
 
@@ -578,15 +578,15 @@ bool enStringConvertToInt(const char* pSource, uint32 sourceMaxLength, int64* pV
         }
 
         /* Handle overflowing */
-        if (base > FINT64_MAX / 10 || (base == FINT64_MAX / 10 && pSource[index] - '0' > 7))
+        if (base > ENTERPRISE_INT64_MAX / 10 || (base == ENTERPRISE_INT64_MAX / 10 && pSource[index] - '0' > 7))
         {
             if (signature == 1)
             {
-                *pValue = FINT64_MAX;
+                *pValue = ENTERPRISE_INT64_MAX;
             }
             else
             {
-                *pValue = FINT64_MIN;
+                *pValue = ENTERPRISE_INT64_MIN;
             }
         }
         base = base * 10 + (pSource[index++] - '0');

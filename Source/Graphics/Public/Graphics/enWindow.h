@@ -10,11 +10,11 @@
     {
         HWND hWnd;
         bool shouldClose;
-    } FWindowWindows;
+    } enWindowWindows;
 
-    extern FWindowWindows window_win;
+    extern enWindowWindows window_win;
 
-    LRESULT CALLBACK FWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT CALLBACK enWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 #elif ENTERPRISE_MACOS
     #error NOT IMPLEMENTED
@@ -39,29 +39,29 @@ typedef struct
     uint32 width;
     uint32 height;
     uint32 screen;
-} FWindowInfo;
+} enWindowInfo;
 
-bool FWindowInitialize(const FWindowInfo* pInfo);
-void FWindowShutdown();
-bool FWindowShouldClose();
-void FWindowGetSize(uint32* pWidth, uint32* pHeight);
+bool enWindowInitialize(const enWindowInfo* pInfo);
+void enWindowShutdown();
+bool enWindowShouldClose();
+void enWindowGetSize(uint32* pWidth, uint32* pHeight);
 
 #ifdef ENTERPRISE_WINDOWS
-    HWND FWindowGetHandle();
+    HWND enWindowGetHandle();
 #elif ENTERPRISE_MACOS
     #error NOT IMPLEMENTED
 #elif ENTERPRISE_ANDROID
     #error NOT_IMPLEMENTED
 #elif ENTERPRISE_LINUX
     Display* FWindowGetDisplay();
-    Window FWindowGetHandle();
+    Window enWindowGetHandle();
 #endif
 
 
 /* On window callbacks */
-void FWindowOnResize(uint32 width, uint32 height);
+void enWindowOnResize(uint32 width, uint32 height);
 
-uint32 FScreenPrimary();
-void FScreenEnumerate(uint32* pCount, uint32* pScreens);
+uint32 enScreenPrimary();
+void enScreenEnumerate(uint32* pCount, uint32* pScreens);
 
 #endif

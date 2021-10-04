@@ -7,16 +7,16 @@ set(GraphicsSources "")
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     list(APPEND GraphicsSources
-        "Private/Window/FWindowWindows.c")
+        "Private/Window/enWindowWindows.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     list(APPEND GraphicsSources
-        "Private/Window/FWindowMacOS.c")
+        "Private/Window/enWindowMacOS.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     list(APPEND GraphicsSources
-        "Private/Window/FWindowAndroid.c")
+        "Private/Window/enWindowAndroid.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND GraphicsSources
-        "Private/Window/FWindowXLib.c")
+        "Private/Window/enWindowXLib.c")
 endif()
 
 list(APPEND GraphicsSources
@@ -25,13 +25,13 @@ list(APPEND GraphicsSources
 # Vulkan API
 if (Vulkan_FOUND)
     list(APPEND GraphicsSources
-        "Private/Vulkan/FVulkanExtensions.c"    
-        "Private/Vulkan/FVulkanFormats.c"
-        "Private/Vulkan/FVulkanMemoryAllocator.cpp" 
-        "Private/Vulkan/FWindowVulkan.c"
-        "Private/Vulkan/FGraphicsVulkan.c"
-        "Private/Vulkan/FImageVulkan.c"
-        "Private/Vulkan/FPipelineVulkan.c")
+        "Private/Vulkan/enVulkanExtensions.c"    
+        "Private/Vulkan/enVulkanFormats.c"
+        "Private/Vulkan/enVulkanMemoryAllocator.cpp" 
+        "Private/Vulkan/enWindowVulkan.c"
+        "Private/Vulkan/enGraphicsVulkan.c"
+        "Private/Vulkan/enImageVulkan.c"
+        "Private/Vulkan/enPipelineVulkan.c")
 endif()
 
 add_library(EnterpriseGraphics STATIC ${GraphicsSources})
@@ -41,10 +41,10 @@ target_link_libraries(EnterpriseGraphics EnterpriseCore EnterpriseResource)
 # Include ThirdParty Libraries
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     list(APPEND GraphicsSources
-        "Private/Window/FWindowMacOS.c")
+        "Private/Window/enWindowMacOS.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     list(APPEND GraphicsSources
-        "Private/Window/FWindowAndroid.c")
+        "Private/Window/enWindowAndroid.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_libraries(EnterpriseGraphics xcb)
 endif()

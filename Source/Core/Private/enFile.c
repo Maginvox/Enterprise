@@ -29,11 +29,11 @@ enFile* enFileOpen(const char* pFilename, const char* pMode)
 /* ====================================================== */
 enFile* enFileOpenOrCreate(const char* pFilename, const char* pMode)
 {
-    enFile* pFile = FFileOpen(pFilename, "r");
+    enFile* pFile = enFileOpen(pFilename, "r");
 
     if (pFile == NULL)
     {
-        pFile = FFileOpen(pFilename, "w");
+        pFile = enFileOpen(pFilename, "w");
         if (pFile == NULL)
         {
             return NULL;

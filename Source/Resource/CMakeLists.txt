@@ -1,7 +1,7 @@
 set(ResourceSources "")
 
 list(APPEND ResourceSources
-    "Private/FPackage.c")
+    "Private/enPackage.c")
 
 add_library(EnterpriseResource STATIC ${ResourceSources})
 target_include_directories(EnterpriseResource PUBLIC "Public")

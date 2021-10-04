@@ -2,7 +2,7 @@
 
 #include "Core/enJsonParser.h"
 
-enMesh* enMeshParse(FAsset* pAsset)
+enMesh* enMeshParse(enAsset* pAsset)
 {
 
     

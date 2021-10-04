@@ -1,21 +1,21 @@
-#include "Core/FTypes.h"
-#include "Graphics/FGraphics.h"
-#include "Input/FInput.h"
+#include "Core/enTypes.h"
+#include "Graphics/enGraphics.h"
+#include "Input/enInput.h"
 
 int main(int argc, char** argv)
 {
-    const FWindowInfo winInfo = {"EnterpriseSandbox", 1080, 720};
-    const FGraphicsOptions options = {0};
+    const enWindowInfo winInfo = {"EnterpriseSandbox", 1080, 720};
+    const enGraphicsOptions options = {0};
 
-    if (!FGraphicsInitialize(&winInfo, &options))
+    if (!enGraphicsInitialize(&winInfo, &options))
     {
         return -1;
     }
 
-    while(!FWindowShouldClose())
+    while(!enWindowShouldClose())
     {
-        FInputPoll();
+        enInputPoll();
     }
 
-    FGraphicsShutdown();
+    enGraphicsShutdown();
 }

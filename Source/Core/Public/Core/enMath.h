@@ -69,7 +69,7 @@ static inline bool enMathFloatIsBetween(float value, float a, float b)
 
 static inline float enMathFloatBetween(float value, float a, float b)
 {
-    return enMathFloatMax(FMathFloatMin(value, b), a);
+    return enMathFloatMax(enMathFloatMin(value, b), a);
 }
 
 /* Double precision */

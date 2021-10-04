@@ -81,7 +81,8 @@
         "fexport.h": "c",
         "fhash.h": "c",
         "fmatrix.h": "c",
-        "entypes.h": "c"
+        "entypes.h": "c",
+        "enwindow.h": "c"
     },
     "cmake.configureOnOpen": true
 }

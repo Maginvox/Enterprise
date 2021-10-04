@@ -3,15 +3,15 @@
 #ifndef __FMESH_CONVERSION_H__
 #define __FMESH_CONVERSION_H__
 
-#include "Core/FTypes.h"
-#include "Core/FMatrix.h"
-#include "Resource/FAsset.h"
-#include "FVertex.h"
+#include "Core/enTypes.h"
+#include "Core/enMatrix.h"
+#include "Resource/enAsset.h"
+#include "Graphics/enVertex.h"
 
 typedef enum
 {
-    FVertexType_Static,
-    FVertexType_Skinned
+    enVertexType_Static,
+    enVertexType_Skinned
 } enVertexType;
 
 typedef enum
@@ -42,7 +42,7 @@ typedef struct
     enVertexType type;
     enPrimitiveType primitiveType;
     uint32 vertexCount;
-    FVertex* pVertices;
+    enVertex* pVertices;
 
     uint32 indexCount;
     unsigned int* pIndices;
@@ -51,14 +51,14 @@ typedef struct
 typedef struct enVectorKey
 {
     float time;
-    FVector3 value;
+    enVector3 value;
 } enVectorKey;
 
 
 typedef struct enQuaternionKey
 {
     float time;
-    FQuaternion value;
+    enQuaternion value;
 } enQuaternionKey;
 
 typedef struct
@@ -80,6 +80,6 @@ typedef struct
     enMesh* pMeshes;
 } enMeshScene;
 
-enMesh* enMeshParse(FAsset* pAsset);
+enMesh* enMeshParse(enAsset* pAsset);
 
 #endif

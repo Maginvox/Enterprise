@@ -3,7 +3,7 @@
 #ifndef __FIMAGE_H__
 #define __FIMAGE_H__
 
-#include "Core/FTypes.h"
+#include "Core/enTypes.h"
 #include "Graphics/enGraphics.h"
 
 typedef enum enImageFormat

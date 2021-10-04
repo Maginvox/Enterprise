@@ -1,11 +1,11 @@
-#ifndef __EN_JSON_PARSER_H__
-#define __EN_JSON_PARSER_H__
+#ifndef __ENTERPRISE_JSON_PARSER_H__
+#define __ENTERPRISE_JSON_PARSER_H__
 
 
 /* An incredibly tiny strict json parser based off JSMN
     https://www.json.org/json-en.html */
 
-#include "Core/FTypes.h"
+#include "Core/enTypes.h"
 
 typedef enum
 {

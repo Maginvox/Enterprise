@@ -19,6 +19,6 @@ typedef struct
     enVector2 texCoord;
     enVector4 skinWeights;
     enVector4 skinIndices;
-} FVertexSkinned;
+} enVertexSkinned;
 
 #endif

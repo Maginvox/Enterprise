@@ -16,7 +16,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
         "Private/Window/enWindowAndroid.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND GraphicsSources
-        "Private/Window/enWindowXLib.c")
+        "Private/Window/enWindowXcb.c")
 endif()
 
 list(APPEND GraphicsSources
@@ -56,10 +56,4 @@ if (Vulkan_FOUND)
     target_compile_definitions(EnterpriseGraphics PUBLIC ENTERPRISE_GRAPHICS_VULKAN)
 
     target_link_libraries(EnterpriseGraphics VulkanMemoryAllocator)
-endif()
-
-if (ENTERPRISE_GRAPHICS_X11)
-    target_compile_definitions(EnterpriseGraphics PUBLIC ENTERPRISE_GRAPHICS_X11)
-elseif (ENTERPRISE_GRAPHICS_WAYLAND)
-    target_compile_definitions(EnterpriseGraphics PUBLIC ENTERPRISE_GRAPHICS_WAYLAND)
 endif()

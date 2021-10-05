@@ -1,12 +1,10 @@
-#include "Core/FMemory.h"
-#include "Core/FString.h"
-#include "Graphics/FWindow.h"
+#include "Core/enMemory.h"
+#include "Core/enString.h"
+#include "Core/enLog.h"
 
-/* I'm having some troubles with XCB sending client events and getting the close event. 
-   XLib has a close event while XCB doesn't for some reason. I've attempted to get
-   some kind of event that triggers a close but to no success. I cant any events actually. */
+#include "Graphics/enWindow.h"
 
-FWindowXcb window_xcb = {0};
+enWindowXcb window_xcb = {0};
 
 bool enWindowInitialize(const enWindowInfo* pInfo)
 {
@@ -31,18 +29,19 @@ bool enWindowInitialize(const enWindowInfo* pInfo)
         xcb_screen_next(&iterator);
     }
 
-    window_xcb.pPrimaryScreen = iterator.data;
+    window_xcb.pDefaultScreen = iterator.data;
 
     /* Find the user screen */
     iterator = xcb_setup_roots_iterator(xcb_get_setup(window_xcb.pConnection));
 
-    window_xcb.pScreen = window_xcb.pPrimaryScreen;
+    window_xcb.pScreen = window_xcb.pDefaultScreen;
 
     for (uint32 i = 0; i < pInfo->screen; i++)
     {
         if (iterator.data == NULL)
         {
-            window_xcb.pScreen = window_xcb.pPrimaryScreen;
+            window_xcb.pScreen = window_xcb.pDefaultScreen;
+            enLogWarning("Could not find the specified screen!");
             break;
         }
 
@@ -68,10 +67,8 @@ bool enWindowInitialize(const enWindowInfo* pInfo)
         window_xcb.pScreen->root_visual, 
         XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK, valueList);
 
-
     xcb_flush(window_xcb.pConnection);
 
-    
     xcb_change_property(window_xcb.pConnection, XCB_PROP_MODE_REPLACE, window_xcb.window, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8, enStringLength(pInfo->pTitle, 64), pInfo->pTitle);
 
     /* Configure atoms to allow for a close window event. */
@@ -83,10 +80,8 @@ bool enWindowInitialize(const enWindowInfo* pInfo)
     enFree(pProtocolsReply);
 
     xcb_map_window(window_xcb.pConnection, window_xcb.window);
+
     xcb_flush(window_xcb.pConnection);
-
-    
-
     return true;
 }
 
@@ -115,17 +110,12 @@ void enWindowGetSize(uint32* pWidth, uint32* pHeight)
     *pHeight = pReply->height;
 }
 
-xcb_connection_t* FWindowGetDisplay()
-{
-
-}
-
 xcb_window_t enWindowGetHandle()
 {
     return window_xcb.window;
 }
 
-xcb_connection_t* FWindowGetConnection()
+xcb_connection_t* enWindowGetConnection()
 {
     return window_xcb.pConnection;
 }

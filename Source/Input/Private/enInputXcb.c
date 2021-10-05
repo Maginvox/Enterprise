@@ -1,8 +1,8 @@
 #include <xcb/xcb.h>
 
-#include "Core/FMemory.h"
-#include "Input/FInput.h"
-#include "Graphics/FWindow.h"
+#include "Core/enMemory.h"
+#include "Input/enInput.h"
+#include "Graphics/enWindow.h"
 
 void enInputPoll()
 {
@@ -16,7 +16,7 @@ void enInputPoll()
 
     switch (pEvent->response_type & ~0x80)
     {
-        case XCB_CLIENT_MESSAGE:
+        case XCB_CLIENT_MESSAGE: /* Test for close event */
             xcb_client_message_event_t* pClientEvent = (xcb_client_message_event_t*)pEvent;
 
             if (pClientEvent->data.data32[0] == window_xcb.pDeleteReply->atom) {

@@ -84,7 +84,9 @@
         "entypes.h": "c",
         "enwindow.h": "c",
         "enmemory.h": "c",
-        "enpipelinevulkan.h": "c"
+        "enpipelinevulkan.h": "c",
+        "eninput.h": "c",
+        "enstring.h": "c"
     },
     "cmake.configureOnOpen": true
 }

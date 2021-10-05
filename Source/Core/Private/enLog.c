@@ -81,6 +81,8 @@ void enLog(const char* pBasis, const char* pContext, const char* pMessage)
     {
         fprintf((FILE*)pLogFile, "%s", pBuffer);
     }
+
+    fflush(stdout);
 }
 
 /* ====================================================== */

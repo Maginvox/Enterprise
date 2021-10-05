@@ -110,7 +110,7 @@ enPipeline enPipelineCreate(enAsset* pVertex, enAsset* pFragment)
         },
         {
             .binding = 0,
-            .stride = sizeof(FVertexSkinned),
+            .stride = sizeof(enVertexSkinned),
             .inputRate = VK_VERTEX_INPUT_RATE_VERTEX
         }
     };
@@ -122,7 +122,7 @@ enPipeline enPipelineCreate(enAsset* pVertex, enAsset* pFragment)
                 .location = 0,
                 .binding = 0,
                 .format = VK_FORMAT_R32G32B32_SFLOAT,
-                .offset = 0
+                .offset = offsetof(enVertex, position)
             },
             { /* Normal */
                 .location = 1,
@@ -142,31 +142,31 @@ enPipeline enPipelineCreate(enAsset* pVertex, enAsset* pFragment)
                 .location = 0,
                 .binding = 0,
                 .format = VK_FORMAT_R32G32B32_SFLOAT,
-                .offset = 0
+                .offset = offsetof(enVertexSkinned, position)
             },
             { /* Normal */
                 .location = 1,
                 .binding = 0,
                 .format = VK_FORMAT_R32G32B32_SFLOAT,
-                .offset = offsetof(enVertex, normal)
+                .offset = offsetof(enVertexSkinned, normal)
             },
             { /* TexCoords */
                 .location = 2,
                 .binding = 0,
                 .format = VK_FORMAT_R32G32_SFLOAT,
-                .offset = offsetof(enVertex, texCoord)
+                .offset = offsetof(enVertexSkinned, texCoord)
             },
             { /* SkinWeights */
                 .location = 3,
                 .binding = 0,
                 .format = VK_FORMAT_R32G32B32A32_SFLOAT,
-                .offset = offsetof(FVertexSkinned, skinWeights)
+                .offset = offsetof(enVertexSkinned, skinWeights)
             },
             { /* SkinIndices */
                 .location = 4,
                 .binding = 0,
                 .format = VK_FORMAT_R32G32B32A32_SFLOAT,
-                .offset = offsetof(FVertexSkinned, skinIndices)
+                .offset = offsetof(enVertexSkinned, skinIndices)
             }
         }
     };

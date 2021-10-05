@@ -49,7 +49,7 @@ bool enWindowVulkanInitialize()
         .sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
         .pNext = NULL,
         .flags = 0,
-        .connection = FWindowGetConnection(),
+        .connection = enWindowGetConnection(),
         .window = enWindowGetHandle()
     };
 

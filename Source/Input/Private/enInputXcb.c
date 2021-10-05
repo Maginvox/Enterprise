@@ -21,7 +21,7 @@ void enInputPoll()
 
             if (pClientEvent->data.data32[0] == window_xcb.pDeleteReply->atom) {
                 window_xcb.shouldClose = true;
-                enDeallocate(window_xcb.pDeleteReply);
+                enFree(window_xcb.pDeleteReply);
             }
             break;
     }

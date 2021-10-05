@@ -7,7 +7,10 @@
 #include <vk_mem_alloc.h>
 
 #include "Core/enTypes.h"
+
 #include "Graphics/enGraphics.h"
+
+#include "enVulkanBuffer.h"
 
 typedef struct enGraphicsVulkan
 {
@@ -21,12 +24,14 @@ typedef struct enGraphicsVulkan
     VkQueue graphicsQueue, presentQueue, computeQueue;
     bool bHasCompute;
     VkDevice device;
-    
     VmaAllocator allocator;
 
-    VkRenderPass generalPass;
-
+    VkDescriptorPool globalPool;
     VkDescriptorSetLayout globalLayout;
+    VkDescriptorSet globalSet;
+    enVulkanBuffer globalBuffer;
+
+    VkRenderPass generalPass;
 } enGraphicsVulkan;
 
 extern enGraphicsVulkan graphics_vk;

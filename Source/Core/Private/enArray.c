@@ -10,7 +10,7 @@ enArray* enArrayCreate(int64 elementSize, int32 capacity)
         return NULL;
     }
     
-    enArray* pArray = enAllocateZero(1, sizeof(enArray));
+    enArray* pArray = enCalloc(1, sizeof(enArray));
     if (pArray == NULL)
     {
         return NULL;
@@ -38,10 +38,10 @@ void enArrayDestroy(enArray** ppArray)
 
     if (pArray != NULL)
     {
-        enDeallocate(pArray->pArray);
+        enFree(pArray->pArray);
     }
 
-    enDeallocate(pArray);
+    enFree(pArray);
     *ppArray = NULL;
 }
 
@@ -53,7 +53,7 @@ bool enArrayResize(enArray* pArray, int32 newCapacity)
     }
 
     /* Reallocate the array to be proper size */
-    void* pNewArray = enReallocate(pArray->pArray, pArray->elementSize * newCapacity);
+    void* pNewArray = enRealloc(pArray->pArray, pArray->elementSize * newCapacity);
     if (pNewArray == NULL)
     {
         return false;

@@ -13,7 +13,7 @@ enHashMap* enHashMapCreate(int64 size)
         return NULL;
     }
 
-    enHashMap* pHashMap = enAllocateZero(1, sizeof(enHashMap));
+    enHashMap* pHashMap = enCalloc(1, sizeof(enHashMap));
     if (pHashMap == NULL)
     {
         return NULL;
@@ -22,7 +22,7 @@ enHashMap* enHashMapCreate(int64 size)
     pHashMap->size = size;
     pHashMap->count = 0;
 
-    pHashMap->ppValues = enAllocateZero(size, sizeof(void*));
+    pHashMap->ppValues = enCalloc(size, sizeof(void*));
     if (pHashMap->ppValues == NULL)
     {
         enHashMapDestroy(&pHashMap);
@@ -43,11 +43,11 @@ void enHashMapDestroy(enHashMap** ppHashMap)
 
     if (pHashMap->ppValues != NULL)
     {
-        enDeallocate(pHashMap->ppValues);
+        enFree(pHashMap->ppValues);
         pHashMap->ppValues = NULL;
     }
 
-    enDeallocate(pHashMap);
+    enFree(pHashMap);
     *ppHashMap = NULL;
 }
 

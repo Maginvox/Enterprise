@@ -27,7 +27,8 @@ if (Vulkan_FOUND)
     list(APPEND GraphicsSources
         "Private/Vulkan/enVulkanExtensions.c"    
         "Private/Vulkan/enVulkanFormats.c"
-        "Private/Vulkan/enVulkanMemoryAllocator.cpp" 
+        "Private/Vulkan/enVulkanMemoryAllocator.cpp"
+        "Private/Vulkan/enVulkanBuffer.c" 
         "Private/Vulkan/enWindowVulkan.c"
         "Private/Vulkan/enGraphicsVulkan.c"
         "Private/Vulkan/enImageVulkan.c"

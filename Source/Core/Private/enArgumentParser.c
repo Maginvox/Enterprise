@@ -13,20 +13,20 @@ enArgumentParser* enArgumentParserCreate(const int32 optionsCount, const enArgum
     }
 
     /* Allocate the parser, and its new options to copy */
-    enArgumentParser* pArgsParser = enAllocateZero(1, sizeof(enArgumentParser));
+    enArgumentParser* pArgsParser = enCalloc(1, sizeof(enArgumentParser));
     if (pArgsParser == NULL)
     {
         return NULL;
     }
 
-    pArgsParser->pOptions = enAllocateZero(optionsCount, sizeof(enArgumentOption));
+    pArgsParser->pOptions = enCalloc(optionsCount, sizeof(enArgumentOption));
     if (pArgsParser->pOptions == NULL)
     {
         enArgumentParserDestroy(&pArgsParser);
         return NULL;
     }
 
-    pArgsParser->pParsedOptions = enAllocateZero(optionsCount, sizeof(enArgumentParsedOption));
+    pArgsParser->pParsedOptions = enCalloc(optionsCount, sizeof(enArgumentParsedOption));
     if (pArgsParser->pParsedOptions == NULL)
     {
         enArgumentParserDestroy(&pArgsParser);
@@ -50,11 +50,11 @@ void enArgumentParserDestroy(enArgumentParser** ppArgumentParser)
 
     if (pArgumentParser->pOptions != NULL)
     {
-        enDeallocate(pArgumentParser->pOptions);
+        enFree(pArgumentParser->pOptions);
         pArgumentParser->pOptions = NULL;
     }
 
-    enDeallocate(pArgumentParser);
+    enFree(pArgumentParser);
     *ppArgumentParser = NULL;
 }
 

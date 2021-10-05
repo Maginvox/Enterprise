@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv)
 {
-    const enWindowInfo winInfo = {"EnterpriseSandbox", 1080, 720};
+    const enWindowInfo winInfo = {"Enterprise Sandbox", 1080, 720};
     const enGraphicsOptions options = {0};
 
     if (!enGraphicsInitialize(&winInfo, &options))

@@ -5,7 +5,7 @@
 
 enList* enListCreate()
 {
-    enList* pList = enAllocateZero(1, sizeof(enList));
+    enList* pList = enCalloc(1, sizeof(enList));
     return pList;
 }
 
@@ -24,13 +24,13 @@ void enListDestroy(enList** ppList)
         enListRemoveNode(pList, pCurrentNode);
     }
 
-    enDeallocate(pList);
+    enFree(pList);
     *ppList = NULL;
 }
 
 bool enListAdd(enList* pList, void* pData, enListNode** ppNode)
 {
-    enListNode* pNewNode = enAllocateZero(1, sizeof(enListNode));
+    enListNode* pNewNode = enCalloc(1, sizeof(enListNode));
     if (pNewNode == NULL)
     {
         return false;
@@ -83,7 +83,7 @@ void enListRemoveNode(enList* pList, enListNode* pNode)
     }
 
     /* Free the node */
-    enDeallocate(pNode);
+    enFree(pNode);
 }
 
 void* enListGet(enList* pList, int64 index)

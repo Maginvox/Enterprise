@@ -92,7 +92,7 @@ FPackage* enPackageCreate(const char* pRecordsPath, const char* pDataPath)
     }
 
 
-    FPackage* pPackage = enAllocateZero(1, sizeof(FPackage));
+    FPackage* pPackage = enCalloc(1, sizeof(FPackage));
     if (pPackage == NULL)
     {
         return NULL;
@@ -140,7 +140,7 @@ void enPackageDestroy(FPackage** ppPackage)
         enHashMapDestroy(&pPackage->pRecordsMap);
     }
 
-    enDeallocate(pPackage);
+    enFree(pPackage);
 }
 
 /* ====================================================== */

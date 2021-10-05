@@ -82,7 +82,9 @@
         "fhash.h": "c",
         "fmatrix.h": "c",
         "entypes.h": "c",
-        "enwindow.h": "c"
+        "enwindow.h": "c",
+        "enmemory.h": "c",
+        "enpipelinevulkan.h": "c"
     },
     "cmake.configureOnOpen": true
 }

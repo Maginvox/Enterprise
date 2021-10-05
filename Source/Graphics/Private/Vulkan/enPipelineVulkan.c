@@ -14,7 +14,7 @@
 enPipeline enPipelineCreate(enAsset* pVertex, enAsset* pFragment)
 {
 
-    FPipelineVulkan* pPipeline = enAllocateZero(1, sizeof(FPipelineVulkan));
+    FPipelineVulkan* pPipeline = enCalloc(1, sizeof(FPipelineVulkan));
     if (pPipeline == NULL)
     {
         return NULL;
@@ -305,5 +305,5 @@ void enPipelineDestroy(enPipeline pipeline)
         vkDestroyPipelineLayout(graphics_vk.device, pPipeline->layout, NULL);
     }
 
-    enDeallocate(pPipeline);
+    enFree(pPipeline);
 }

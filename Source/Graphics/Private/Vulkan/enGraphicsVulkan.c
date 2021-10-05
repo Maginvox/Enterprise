@@ -8,8 +8,11 @@
 #include "Core/enBitset.h"
 #include "Core/enLog.h"
 
+#include "Graphics/enPipeline.h"
+
 #include "enVulkanExtensions.h"
 #include "enVulkanFormats.h"
+#include "enVulkanBuffer.h"
 #include "enGraphicsVulkan.h"
 
 enGraphicsVulkan graphics_vk;
@@ -119,7 +122,7 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         return false;
     }
 
-    VkPhysicalDevice* pPhysicalDevices = enAllocateZero(physicalDeviceCount, sizeof(VkPhysicalDevice));
+    VkPhysicalDevice* pPhysicalDevices = enCalloc(physicalDeviceCount, sizeof(VkPhysicalDevice));
     if (pPhysicalDevices == NULL)
     {
         enGraphicsShutdown();
@@ -138,14 +141,14 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         graphics_vk.physicalDevice = pPhysicalDevices[0];
     }
     
-    enDeallocate(pPhysicalDevices);
+    enFree(pPhysicalDevices);
 
 
     /* Get the physical devices queues */
     uint32_t queueFamilyPropertiesCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(graphics_vk.physicalDevice, &queueFamilyPropertiesCount, NULL);
 
-    VkQueueFamilyProperties* pQueueFamilyProperties = enAllocateZero(queueFamilyPropertiesCount, sizeof(VkQueueFamilyProperties));
+    VkQueueFamilyProperties* pQueueFamilyProperties = enCalloc(queueFamilyPropertiesCount, sizeof(VkQueueFamilyProperties));
     if (pQueueFamilyProperties == NULL)
     {
         enGraphicsShutdown();
@@ -229,7 +232,7 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         }
     }
 
-    enDeallocate(pQueueFamilyProperties);
+    enFree(pQueueFamilyProperties);
 
     /* Make sure all of the queue families were found. */ 
     if (!foundGraphicsFamily || !foundPresentFamily || !foundComputeFamily)
@@ -247,7 +250,7 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
 
     const uint32 queueFamilyCount = bAllQueuesSame ? 1 : (bAllQueuesDifferent ? 3 : 2);
 
-    VkDeviceQueueCreateInfo* pQueueCreateInfos = enAllocateZero(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
+    VkDeviceQueueCreateInfo* pQueueCreateInfos = enCalloc(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
     if (pQueueCreateInfos == NULL)
     {
         enGraphicsShutdown();
@@ -312,18 +315,112 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
 
     if (vkCreateDevice(graphics_vk.physicalDevice, &deviceCreateInfo, NULL, &graphics_vk.device) != VK_SUCCESS)
     {
-        enDeallocate(pQueueCreateInfos);
+        enFree(pQueueCreateInfos);
         enGraphicsShutdown();
         enLogError("Could not create the Vulkan device!");
         return false;
     }
 
-    enDeallocate(pQueueCreateInfos);
+    enFree(pQueueCreateInfos);
 
     /* We can now create the main windows swapchain */
     if (!enWindowVulkanCreateSwapchain())
     {
         enGraphicsShutdown();
+        return false;
+    }
+
+    /* Create the allocator */
+    VmaAllocatorCreateInfo allocatorCreateInfo = {
+        .flags = 0,
+        .physicalDevice = graphics_vk.physicalDevice,
+        .device = graphics_vk.device,
+        .preferredLargeHeapBlockSize = 0,
+        .pAllocationCallbacks = NULL,
+        .pAllocationCallbacks = NULL,
+        .pDeviceMemoryCallbacks = NULL,
+        .frameInUseCount = 0,
+        .pHeapSizeLimit = NULL,
+        .pVulkanFunctions = NULL,
+        .pRecordSettings = NULL,
+        .instance = graphics_vk.instance,
+        .vulkanApiVersion = VK_API_VERSION_1_1
+    };
+
+    if (vmaCreateAllocator(&allocatorCreateInfo, &graphics_vk.allocator) != VK_SUCCESS)
+    {
+        enGraphicsShutdown();
+        enLogError("Could not create the Vulkan allocator!");
+        return false;
+    }
+
+        /* Create the global descriptor pool */
+    VkDescriptorPoolSize globalPoolSizes[1] =
+    {
+        {
+            .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            .descriptorCount = 1
+        }
+    };
+
+    VkDescriptorPoolCreateInfo globalPoolCreateInfo =
+    {
+        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+        .pNext = NULL,
+        .flags = 0,
+        .maxSets = 1,
+        .poolSizeCount = COUNT_OF(globalPoolSizes),
+        .pPoolSizes = globalPoolSizes
+    };
+
+    if (vkCreateDescriptorPool(graphics_vk.device, &globalPoolCreateInfo, NULL, &graphics_vk.globalPool) != VK_SUCCESS)
+    {
+        enGraphicsShutdown();
+        enLogError("Could not create the global descriptor pool!");
+        return false;
+    }
+
+    /* Create the global descriptor set */
+    VkDescriptorSetLayoutBinding globalBinding =
+    {
+        .binding = 0,
+        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        .descriptorCount = 1,
+        .stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
+        .pImmutableSamplers = NULL
+    };
+
+    VkDescriptorSetLayoutCreateInfo globalLayoutCreateInfo =
+    {
+        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+        .pNext = NULL,
+        .flags = 0,
+        .bindingCount = 1,
+        .pBindings = &globalBinding
+    };
+
+    if (vkCreateDescriptorSetLayout(graphics_vk.device, &globalLayoutCreateInfo, NULL, &graphics_vk.globalLayout) != VK_SUCCESS)
+    {
+        enGraphicsShutdown();
+        enLogError("Could not create the global descriptor layout!");
+        return false;
+    }
+
+    
+    /* Create the global descriptor set */
+    VkDescriptorSetAllocateInfo globalAllocInfo =
+    {
+        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+        .pNext = NULL,
+        .descriptorPool = graphics_vk.globalPool,
+        .descriptorSetCount = 1,
+        .pSetLayouts = &graphics_vk.globalLayout
+    };
+
+    if (vkAllocateDescriptorSets(graphics_vk.device, &globalAllocInfo, &graphics_vk.globalSet) != VK_SUCCESS)
+    {
+        enGraphicsShutdown();
+        enLogError("Could not allocate the global descriptor set!");
         return false;
     }
 
@@ -409,32 +506,39 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         return false;
     }
 
-    /* Create the global descriptor set */
-    VkDescriptorSetLayoutBinding globalBinding =
-    {
-        .binding = 0,
-        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-        .descriptorCount = 1,
-        .stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
-        .pImmutableSamplers = NULL
-    };
-
-    VkDescriptorSetLayoutCreateInfo globalLayoutCreateInfo =
-    {
-        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-        .pNext = NULL,
-        .flags = 0,
-        .bindingCount = 1,
-        .pBindings = &globalBinding
-    };
-
-    if (vkCreateDescriptorSetLayout(graphics_vk.device, &globalLayoutCreateInfo, NULL, &graphics_vk.globalLayout) != VK_SUCCESS)
+    graphics_vk.globalBuffer = enVulkanBufferCreate(sizeof(enGlobalUniform), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
+    if (graphics_vk.globalBuffer == NULL)
     {
         enGraphicsShutdown();
-        enLogError("Could not create the global descriptor layout!");
+        enLogError("Could not create the global uniform buffer!");
         return false;
     }
-    
+
+    enVulkanBufferUpdate(graphics_vk.globalBuffer, graphics_vk.globalBuffer, sizeof(enGlobalUniform));
+
+    VkDescriptorBufferInfo globalBufferInfo =
+    {
+        .buffer = graphics_vk.globalBuffer->buffer,
+        .offset = 0,
+        .range = sizeof(enGlobalUniform)
+    };
+
+    VkWriteDescriptorSet globalWrite =
+    {
+        .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+        .pNext = NULL,
+        .dstSet = graphics_vk.globalSet,
+        .dstBinding = 0,
+        .dstArrayElement = 0,
+        .descriptorCount = 1,
+        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        .pImageInfo = NULL,
+        .pBufferInfo = &globalBufferInfo,
+        .pTexelBufferView = NULL
+    };
+
+    vkUpdateDescriptorSets(graphics_vk.device, 1, &globalWrite, 0, NULL);
+
     return true;
 }
 
@@ -448,6 +552,11 @@ void enGraphicsShutdown()
     if (graphics_vk.generalPass != VK_NULL_HANDLE)
     {
         vkDestroyRenderPass(graphics_vk.device, graphics_vk.generalPass, NULL);
+    }
+
+    if (graphics_vk.allocator != VK_NULL_HANDLE)
+    {
+        vmaDestroyAllocator(graphics_vk.allocator);
     }
 
     enWindowVulkanShutdown();

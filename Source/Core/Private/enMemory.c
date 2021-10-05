@@ -5,25 +5,25 @@
 #include "Core/enMemory.h"
 
 /* ====================================================== */
-void* enAllocate(uint64 size)
+void* enMalloc(uint64 size)
 {
     return malloc(size);
 }
 
 /* ====================================================== */
-void* enAllocateZero(uint64 count, uint64 size)
+void* enCalloc(uint64 count, uint64 size)
 {
     return calloc(count, size);
 }
 
 /* ====================================================== */
-void* enReallocate(void* pMemory, uint64 size)
+void* enRealloc(void* pMemory, uint64 size)
 {
     return realloc(pMemory, size);
 }
 
 /* ====================================================== */
-void enDeallocate(void* pMemory)
+void enFree(void* pMemory)
 {
     free(pMemory);
 }

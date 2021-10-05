@@ -63,7 +63,7 @@ DWORD WINAPI FThreadWindows(LPVOID lpParam)
 enThread* enThreadCreate(enThreadFunction pFunction, void* pParameter)
 {
 
-    enThread* pThread = enAllocateZero(1, sizeof(enThread));
+    enThread* pThread = enCalloc(1, sizeof(enThread));
     if (pThread == NULL)
     {
         return NULL;
@@ -95,7 +95,7 @@ void enThreadJoin(enThread** ppThread)
     enThread* pThread = *ppThread;
     HANDLE hThread = (HANDLE)pThread->pThread;
 
-    enDeallocate(pThread);
+    enFree(pThread);
     *ppThread = NULL;
 
     WaitForSingleObject(hThread, INFINITE);
@@ -115,7 +115,7 @@ void enThreadSleep(int64 milliseconds)
 /* ====================================================== */
 FMutex* enMutexCreate()
 {
-    pthread_mutex_t* pMutex = enAllocateZero(1, sizeof(pthread_mutex_t));
+    pthread_mutex_t* pMutex = enCalloc(1, sizeof(pthread_mutex_t));
     if (pMutex == NULL)
     {
         return NULL;
@@ -123,7 +123,7 @@ FMutex* enMutexCreate()
 
     if (pthread_mutex_init(pMutex, NULL) != 0)
     {
-        enDeallocate(pMutex);
+        enFree(pMutex);
         return NULL;
     }
 
@@ -142,7 +142,7 @@ void enMutexDestroy(FMutex** ppMutex)
     pthread_mutex_t* pMutex = (pthread_mutex_t*)(*ppMutex);
     pthread_mutex_destroy(pMutex);
 
-    enDeallocate(pMutex);
+    enFree(pMutex);
     *ppMutex = NULL;
 }
 
@@ -183,13 +183,13 @@ enThread* enThreadCreate(enThreadFunction pFunction, void* pParameter)
         return NULL;
     }
     
-    enThread* pThread = enAllocateZero(1, sizeof(enThread));
+    enThread* pThread = enCalloc(1, sizeof(enThread));
     if (pThread == NULL)
     {
         return NULL;
     }
 
-    pThread->pThread = enAllocateZero(1, sizeof(pthread_t));
+    pThread->pThread = enCalloc(1, sizeof(pthread_t));
     if (pThread->pThread == NULL)
     {
         enThreadJoin(&pThread);
@@ -219,15 +219,15 @@ void enThreadJoin(enThread** ppThread)
     {
         pthread_t threadId = *(pthread_t*)pThread->pThread;
 
-        enDeallocate(pThread->pThread);
-        enDeallocate(pThread);
+        enFree(pThread->pThread);
+        enFree(pThread);
         *ppThread = NULL;    
 
         pthread_join(threadId, NULL);
     }
     else    
     {
-        enDeallocate(pThread);
+        enFree(pThread);
         *ppThread = NULL;
     }
 }

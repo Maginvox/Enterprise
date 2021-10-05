@@ -121,13 +121,13 @@ enConfigParser* enConfigParserCreate(int64 optionsCount, enConfigOption* pOption
         return NULL;
     }
 
-    enConfigParser* pConfigParser = enAllocateZero(1, sizeof(enConfigParser));
+    enConfigParser* pConfigParser = enCalloc(1, sizeof(enConfigParser));
     if (pConfigParser == NULL)
     {
         return NULL;
     }
 
-    pConfigParser->pOptions = enAllocateZero(optionsCount, sizeof(enConfigOption));
+    pConfigParser->pOptions = enCalloc(optionsCount, sizeof(enConfigOption));
     if (pConfigParser->pOptions == NULL)
     {
         return NULL;
@@ -137,7 +137,7 @@ enConfigParser* enConfigParserCreate(int64 optionsCount, enConfigOption* pOption
     enMemoryCopy(pOptions, pConfigParser->pOptions, optionsCount * sizeof(enConfigOption));
 
     /* Allocate the parsed options to be the same as the default options */
-    pConfigParser->pParsedOptions = enAllocateZero(optionsCount, sizeof(enConfigParsedOption));
+    pConfigParser->pParsedOptions = enCalloc(optionsCount, sizeof(enConfigParsedOption));
     if (pConfigParser->pParsedOptions == NULL)
     {
         return NULL;
@@ -153,15 +153,15 @@ void enConfigParserDestroy(enConfigParser* pConfigParser)
     {
         if (pConfigParser->pOptions != NULL)
         {
-            enDeallocate(pConfigParser->pOptions);
+            enFree(pConfigParser->pOptions);
             pConfigParser->pOptions = NULL;
         }
         if (pConfigParser->pParsedOptions != NULL)
         {
-            enDeallocate(pConfigParser->pParsedOptions);
+            enFree(pConfigParser->pParsedOptions);
             pConfigParser->pParsedOptions = NULL;
         }
-        enDeallocate(pConfigParser);
+        enFree(pConfigParser);
         pConfigParser = NULL;
     }
 }

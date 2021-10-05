@@ -69,7 +69,6 @@ typedef struct
 typedef struct
 {
     char name[64];
-
 } enMeshAnimation;
 
 typedef struct

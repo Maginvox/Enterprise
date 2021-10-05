@@ -60,7 +60,7 @@ const char* const* enVulkanValidationLayers(uint32* pCount)
         return NULL;
     }
 
-    VkLayerProperties* pProperties = enAllocateZero(propertiesCount, sizeof(VkLayerProperties));
+    VkLayerProperties* pProperties = enCalloc(propertiesCount, sizeof(VkLayerProperties));
     if (pProperties == NULL)
     {
         return NULL;
@@ -68,7 +68,7 @@ const char* const* enVulkanValidationLayers(uint32* pCount)
 
     if (vkEnumerateInstanceLayerProperties(&propertiesCount, pProperties) != VK_SUCCESS)
     {
-        enDeallocate(pProperties);
+        enFree(pProperties);
         return NULL;
     }
 
@@ -89,7 +89,7 @@ const char* const* enVulkanValidationLayers(uint32* pCount)
         /* If any are missing return NULL */
         if (!found)
         {
-            enDeallocate(pProperties);
+            enFree(pProperties);
             return NULL;
         }
     }
@@ -117,7 +117,7 @@ const char* const* enVulkanInstanceExtensions(uint32* pCount)
         return NULL;
     }
 
-    VkExtensionProperties* pProperties = enAllocateZero(propertiesCount, sizeof(VkExtensionProperties));
+    VkExtensionProperties* pProperties = enCalloc(propertiesCount, sizeof(VkExtensionProperties));
     if (pProperties == NULL)
     {
         return NULL;
@@ -141,7 +141,7 @@ const char* const* enVulkanInstanceExtensions(uint32* pCount)
 
         if (!found)
         {
-            enDeallocate(pProperties);
+            enFree(pProperties);
             return NULL;
         }
     }
@@ -169,7 +169,7 @@ const char* const* enVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, uin
         return NULL;
     }
 
-    VkExtensionProperties* pProperties = enAllocateZero(propertiesCount, sizeof(VkExtensionProperties));
+    VkExtensionProperties* pProperties = enCalloc(propertiesCount, sizeof(VkExtensionProperties));
     if (pProperties == NULL)
     {
         return NULL;
@@ -193,7 +193,7 @@ const char* const* enVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, uin
 
         if (!found)
         {
-            enDeallocate(pProperties);
+            enFree(pProperties);
             return NULL;
         }
     }

@@ -62,7 +62,7 @@ void FOnlineServiceSteam::OnLobbyCreated(LobbyCreated_t* pLobby, bool bIOFailure
 /* ====================================================== */ 
 FOnlineService* FOnlineServiceCreate()
 {
-    FOnlineServiceSteam* pService = (FOnlineServiceSteam*)enAllocateZero(1, sizeof(FOnlineServiceSteam));
+    FOnlineServiceSteam* pService = (FOnlineServiceSteam*)enCalloc(1, sizeof(FOnlineServiceSteam));
     if (pService == NULL)
     {
         return NULL;
@@ -83,7 +83,7 @@ void FOnlineServiceDestroy(FOnlineService** ppService)
 
     SteamAPI_Shutdown();
 
-    enDeallocate(pService);
+    enFree(pService);
     *ppService = NULL;
 }
 

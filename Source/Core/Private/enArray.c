@@ -79,7 +79,7 @@ bool enArrayAdd(enArray* pArray, const void* pData)
 
     if (pData != NULL)
     {
-        enMemoryCopy(pData, &((unsigned char*)pArray->pArray)[pArray->count * pArray->elementSize], pArray->elementSize);
+        enMemoryCopy(&((unsigned char*)pArray->pArray)[pArray->count * pArray->elementSize], pData, pArray->elementSize);
     }
     else
     {
@@ -104,7 +104,7 @@ bool enArrayRemove(enArray* pArray, int32 index)
     if (index != (pArray->count - 1)) /* If this is not the last index */
     {
         unsigned char* pArrayAtNextIndex = pArrayAtIndex + pArray->elementSize;
-        enMemoryCopy(pArrayAtNextIndex, pArrayAtIndex, ((pArray->count-1) - index) * pArray->elementSize);
+        enMemoryCopy(pArrayAtIndex, pArrayAtNextIndex, ((pArray->count-1) - index) * pArray->elementSize);
     }
 
     return true;
@@ -119,7 +119,7 @@ bool enArraySet(enArray* pArray, int32 index, const void* pValue)
 
     unsigned char* pArrayAtIndex = &((unsigned char*)pArray->pArray)[pArray->elementSize * index];
     
-    return enMemoryCopy(pValue, pArrayAtIndex, pArray->elementSize) != NULL;
+    return enMemoryCopy(pArrayAtIndex, pValue, pArray->elementSize) != NULL;
 }
 
 void* enArrayGet(enArray* pArray, int32 index)
@@ -143,7 +143,7 @@ bool enArrayGetCopy(enArray* pArray, int32 index, void* pValue)
     void* pElement = enArrayGet(pArray, index);
 
     return pElement == NULL ? 
-        false : enMemoryCopy(pElement, pValue, pArray->elementSize) != NULL;
+        false : enMemoryCopy(pValue, pElement, pArray->elementSize) != NULL;
 }
 
 void* enArrayData(enArray* pArray)

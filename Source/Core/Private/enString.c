@@ -151,7 +151,7 @@ bool enStringCopy(const char* pSource, uint32 sourceMaxLength, char* pDestinatio
         return false;
     }
 
-    enMemoryCopy(pSource, pDestination, sourceLength);
+    enMemoryCopy(pDestination, pSource, sourceLength);
     pDestination[sourceLength] = '\0';
     return true;
 }

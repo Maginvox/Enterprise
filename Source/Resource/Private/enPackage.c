@@ -205,7 +205,7 @@ bool enPackageRecordChange(FPackage* pPackage, const FPackageRecord* pNewRecord)
         return false;
     }
 
-    enMemoryCopy(pNewRecord, pRecord, sizeof(FPackageRecord));
+    enMemoryCopy(pRecord, pNewRecord, sizeof(FPackageRecord));
  
     /* Rewrite the records */
     return FPackageRewriteRecords(pPackage);

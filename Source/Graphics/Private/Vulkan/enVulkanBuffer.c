@@ -64,6 +64,6 @@ void enVulkanBufferUpdate(enVulkanBuffer buffer, void* data, VkDeviceSize size)
     {
         return;
     }
-        enMemoryCopy(data, pMapped, size);
+        enMemoryCopy(pMapped, data, size);
     vmaUnmapMemory(graphics_vk.allocator, buffer->allocation);
 }

@@ -47,7 +47,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     list(APPEND GraphicsSources
         "Private/Window/enWindowAndroid.c")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    target_link_libraries(EnterpriseGraphics xcb)
+    target_link_libraries(EnterpriseGraphics xcb xcb-icccm)
 endif()
 
 if (Vulkan_FOUND)

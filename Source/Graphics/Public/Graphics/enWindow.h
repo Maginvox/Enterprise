@@ -30,7 +30,10 @@
         xcb_screen_t* pDefaultScreen;
         xcb_screen_t* pScreen;
         xcb_window_t window;
-        xcb_intern_atom_reply_t* pDeleteReply;
+        
+        xcb_atom_t deleteWindowAtom;
+        
+
         bool shouldClose;
     } enWindowXcb;
 

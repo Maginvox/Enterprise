@@ -134,7 +134,7 @@ enConfigParser* enConfigParserCreate(int64 optionsCount, enConfigOption* pOption
     }
 
     pConfigParser->optionsCount = optionsCount;
-    enMemoryCopy(pOptions, pConfigParser->pOptions, optionsCount * sizeof(enConfigOption));
+    enMemoryCopy(pConfigParser->pOptions, pOptions, optionsCount * sizeof(enConfigOption));
 
     /* Allocate the parsed options to be the same as the default options */
     pConfigParser->pParsedOptions = enCalloc(optionsCount, sizeof(enConfigParsedOption));
@@ -241,7 +241,7 @@ bool enConfigParserParse(enConfigParser* pConfigParser, const char* pConfigFilen
         }
 
         /* Add the parsed option to the parsed options */
-        enMemoryCopy(&parsedOption, &pConfigParser->pParsedOptions[pConfigParser->parsedOptionsCount++], sizeof(enConfigParsedOption));
+        enMemoryCopy(&pConfigParser->pParsedOptions[pConfigParser->parsedOptionsCount++], &parsedOption, sizeof(enConfigParsedOption));
     }
 
     enFileClose(&pFile);
@@ -261,7 +261,7 @@ bool enConfigParserGetOption(enConfigParser* pConfigParser, const char* pOptionN
         if (enStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
         {
             /* Copy the parsed option */
-            enMemoryCopy(&pConfigParser->pParsedOptions[i], pParsedOption, sizeof(enConfigParsedOption));
+            enMemoryCopy(pParsedOption, &pConfigParser->pParsedOptions[i], sizeof(enConfigParsedOption));
             return true;
         }
     }

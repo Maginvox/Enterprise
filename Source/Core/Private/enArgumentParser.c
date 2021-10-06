@@ -35,7 +35,7 @@ enArgumentParser* enArgumentParserCreate(const int32 optionsCount, const enArgum
 
     /* Copy the options */
     pArgsParser->optionsCount = optionsCount;
-    enMemoryCopy(pOptions, pArgsParser->pOptions, optionsCount * sizeof(enArgumentOption));
+    enMemoryCopy(pArgsParser->pOptions, pOptions, optionsCount * sizeof(enArgumentOption));
 
     return pArgsParser;
 }
@@ -179,7 +179,7 @@ bool enArgumentParserParse(enArgumentParser* pArgsParser, const int argc, const 
         }
 
         /* Copy the parsed option */
-        enMemoryCopy(&parsedOption, &pArgsParser->pParsedOptions[pArgsParser->parsedOptionsCount++], sizeof(enArgumentParsedOption));
+        enMemoryCopy(&pArgsParser->pParsedOptions[pArgsParser->parsedOptionsCount++], &parsedOption, sizeof(enArgumentParsedOption));
     }
 
     return true;

@@ -6,8 +6,7 @@
 
 void enInputPoll()
 {
-    xcb_allow_events(window_xcb.pConnection, XCB_ALLOW_REPLAY_POINTER, XCB_CURRENT_TIME);
-    xcb_generic_event_t* pEvent = xcb_poll_for_event(window_xcb.pConnection);
+    xcb_generic_event_t* pEvent = xcb_wait_for_event(window_xcb.pConnection);
     
     if (pEvent == NULL)
     {
@@ -19,9 +18,8 @@ void enInputPoll()
         case XCB_CLIENT_MESSAGE: /* Test for close event */
             xcb_client_message_event_t* pClientEvent = (xcb_client_message_event_t*)pEvent;
 
-            if (pClientEvent->data.data32[0] == window_xcb.pDeleteReply->atom) {
+            if (pClientEvent->data.data32[0] == window_xcb.deleteWindowAtom) {
                 window_xcb.shouldClose = true;
-                enFree(window_xcb.pDeleteReply);
             }
             break;
     }

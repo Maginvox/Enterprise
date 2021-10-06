@@ -29,7 +29,7 @@ void enFree(void* pMemory)
 }
 
 /* ====================================================== */
-void* enMemoryCopy(const void* pSource, void* pDestination, uint64 size) /* TODO: Make size a constant */
+void* enMemoryCopy(void* pDestination, const void* pSource, uint64 size) /* TODO: Make size a constant */
 {
     if (pSource == NULL || pDestination == NULL || size <= 0)
     {

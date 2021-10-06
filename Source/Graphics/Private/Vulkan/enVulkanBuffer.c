@@ -3,7 +3,7 @@
 
 #include "enVulkanBuffer.h"
 
-enVulkanBuffer enVulkanBufferCreate(VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage)
+enVulkanBuffer enVulkanBufferCreate(VkDeviceSize size, VkMemoryPropertyFlagBits properties, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage)
 {
     enVulkanBuffer buffer = enCalloc(1, sizeof(enVulkanBuffer));
     if (buffer == NULL)
@@ -25,7 +25,7 @@ enVulkanBuffer enVulkanBufferCreate(VkDeviceSize size, VkBufferUsageFlags usage,
     VmaAllocationCreateInfo allocInfo = {
         .flags = 0,
         .usage = memoryUsage,
-        .requiredFlags = 0,
+        .requiredFlags = properties,
         .preferredFlags = 0,
         .memoryTypeBits = 0,
         .pool = VK_NULL_HANDLE,
@@ -54,13 +54,16 @@ void enVulkanBufferDestroy(enVulkanBuffer buffer)
 
 void enVulkanBufferUpdate(enVulkanBuffer buffer, void* data, VkDeviceSize size)
 {
-    if (buffer == NULL)
+    if (buffer == NULL || data == NULL)
     {
         return;
     }
 
     void* pMapped = NULL;
-    vmaMapMemory(graphics_vk.allocator, buffer->allocation, &pMapped);
-        enMemoryCopy(pMapped, data, size);
+    if (vmaMapMemory(graphics_vk.allocator, buffer->allocation, &pMapped) != VK_SUCCESS)
+    {
+        return;
+    }
+        enMemoryCopy(data, pMapped, size);
     vmaUnmapMemory(graphics_vk.allocator, buffer->allocation);
 }

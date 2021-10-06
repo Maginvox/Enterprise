@@ -36,11 +36,12 @@ void* enMemoryCopy(const void* pSource, void* pDestination, uint64 size) /* TODO
         return NULL;
     }
     
-    char* pTemp = (char*)pDestination;
-    const char* pS = (const char*)pSource;
-    while (size--)
+    char* pDest = pDestination;
+    const char* pSrc = pSource;
+
+    for (uint64 i = 0; i < size; i++)
     {
-        *pTemp++ = *pS++;
+        *pDest++ = *pSrc++;
     }
 
     return pDestination;

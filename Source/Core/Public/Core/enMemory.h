@@ -10,7 +10,7 @@ void* enCalloc(uint64 count, uint64 size);
 void* enRealloc(void* pMemory, uint64 size);
 void enFree(void* pMemory);
 
-void* enMemoryCopy(const void* pSource, void* pDestination, uint64 size);
+void* enMemoryCopy(void* pDestination, const void* pSource, uint64 size);
 void* enMemorySet(void* pDestination, uint64 destinationSize, uint8 value);
 
 #endif

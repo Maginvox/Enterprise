@@ -506,7 +506,7 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         return false;
     }
 
-    graphics_vk.globalBuffer = enVulkanBufferCreate(sizeof(enGlobalUniform), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
+    graphics_vk.globalBuffer = enVulkanBufferCreate(sizeof(enGlobalUniform), VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
     if (graphics_vk.globalBuffer == NULL)
     {
         enGraphicsShutdown();
@@ -514,7 +514,9 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         return false;
     }
 
-    enVulkanBufferUpdate(graphics_vk.globalBuffer, graphics_vk.globalBuffer, sizeof(enGlobalUniform));
+    graphics_vk.globalData = (enGlobalUniform){ {0}, {0}, 0.0f, 1.0f };
+
+    enVulkanBufferUpdate(graphics_vk.globalBuffer, &graphics_vk.globalData, sizeof(enGlobalUniform));
 
     VkDescriptorBufferInfo globalBufferInfo =
     {
@@ -547,6 +549,11 @@ void enGraphicsShutdown()
     if (graphics_vk.globalLayout != VK_NULL_HANDLE)
     {
         vkDestroyDescriptorSetLayout(graphics_vk.device, graphics_vk.globalLayout, NULL);
+    }
+
+    if (graphics_vk.globalBuffer != NULL)
+    {
+        enVulkanBufferDestroy(graphics_vk.globalBuffer);
     }
 
     if (graphics_vk.generalPass != VK_NULL_HANDLE)

@@ -10,7 +10,7 @@ typedef struct
     VmaAllocation allocation;
 } *enVulkanBuffer;
 
-enVulkanBuffer enVulkanBufferCreate(VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
+enVulkanBuffer enVulkanBufferCreate(VkDeviceSize size, VkMemoryPropertyFlagBits properties, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
 void enVulkanBufferDestroy(enVulkanBuffer buffer);
 void enVulkanBufferUpdate(enVulkanBuffer buffer, void* data, VkDeviceSize size);
 

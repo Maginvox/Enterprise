@@ -9,6 +9,7 @@
 #include "Core/enTypes.h"
 
 #include "Graphics/enGraphics.h"
+#include "Graphics/enPipeline.h"
 
 #include "enVulkanBuffer.h"
 
@@ -30,6 +31,7 @@ typedef struct enGraphicsVulkan
     VkDescriptorSetLayout globalLayout;
     VkDescriptorSet globalSet;
     enVulkanBuffer globalBuffer;
+    enGlobalUniform globalData;
 
     VkRenderPass generalPass;
 } enGraphicsVulkan;

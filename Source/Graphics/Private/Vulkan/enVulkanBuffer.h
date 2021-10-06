@@ -4,14 +4,14 @@
 #include <vulkan/vulkan.h>
 #include <vk_mem_alloc.h>
 
-typedef struct
+typedef struct enVulkanBuffer
 {
     VkBuffer buffer;
     VmaAllocation allocation;
-} *enVulkanBuffer;
+} enVulkanBuffer;
 
-enVulkanBuffer enVulkanBufferCreate(VkDeviceSize size, VkMemoryPropertyFlagBits properties, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
-void enVulkanBufferDestroy(enVulkanBuffer buffer);
-void enVulkanBufferUpdate(enVulkanBuffer buffer, void* data, VkDeviceSize size);
+enVulkanBuffer* enVulkanBufferCreate(VkDeviceSize size, VkMemoryPropertyFlagBits properties, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage);
+void enVulkanBufferDestroy(enVulkanBuffer* buffer);
+void enVulkanBufferUpdate(enVulkanBuffer* buffer, void* data, VkDeviceSize size);
 
 #endif

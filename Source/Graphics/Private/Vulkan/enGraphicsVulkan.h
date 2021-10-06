@@ -30,7 +30,7 @@ typedef struct enGraphicsVulkan
     VkDescriptorPool globalPool;
     VkDescriptorSetLayout globalLayout;
     VkDescriptorSet globalSet;
-    enVulkanBuffer globalBuffer;
+    enVulkanBuffer* globalBuffer;
     enGlobalUniform globalData;
 
     VkRenderPass generalPass;

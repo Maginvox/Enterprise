@@ -3,9 +3,9 @@
 
 #include "enVulkanBuffer.h"
 
-enVulkanBuffer enVulkanBufferCreate(VkDeviceSize size, VkMemoryPropertyFlagBits properties, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage)
+enVulkanBuffer* enVulkanBufferCreate(VkDeviceSize size, VkMemoryPropertyFlagBits properties, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage)
 {
-    enVulkanBuffer buffer = enCalloc(1, sizeof(enVulkanBuffer));
+    enVulkanBuffer* buffer = enCalloc(1, sizeof(enVulkanBuffer));
     if (buffer == NULL)
     {
         return NULL;
@@ -41,7 +41,7 @@ enVulkanBuffer enVulkanBufferCreate(VkDeviceSize size, VkMemoryPropertyFlagBits 
     return buffer;
 }
 
-void enVulkanBufferDestroy(enVulkanBuffer buffer)
+void enVulkanBufferDestroy(enVulkanBuffer* buffer)
 {
     if (buffer == NULL)
     {
@@ -52,7 +52,7 @@ void enVulkanBufferDestroy(enVulkanBuffer buffer)
     enFree(buffer);
 }
 
-void enVulkanBufferUpdate(enVulkanBuffer buffer, void* data, VkDeviceSize size)
+void enVulkanBufferUpdate(enVulkanBuffer* buffer, void* data, VkDeviceSize size)
 {
     if (buffer == NULL || data == NULL)
     {

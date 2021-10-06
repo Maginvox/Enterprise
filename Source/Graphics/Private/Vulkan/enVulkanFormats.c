@@ -38,7 +38,7 @@ VkSurfaceFormatKHR enWindowVulkanSurfaceFormat()
 VkPresentModeKHR enWindowVulkanPresentMode()
 {
 
-    uint32 presentModesCount;
+    uint32_t presentModesCount;
     if (vkGetPhysicalDeviceSurfacePresentModesKHR(graphics_vk.physicalDevice, window_vk.surface, &presentModesCount, NULL) != VK_SUCCESS)
     {
         return VK_PRESENT_MODE_FIFO_KHR;
@@ -59,6 +59,8 @@ VkPresentModeKHR enWindowVulkanPresentMode()
             return VK_PRESENT_MODE_MAILBOX_KHR;
         }
     }
+
+    enFree(pPresentModes);
 
     return VK_PRESENT_MODE_FIFO_KHR;
 }

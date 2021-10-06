@@ -305,7 +305,7 @@ bool enStringFormat(char* pDestination, uint32 destinationMaxLength, const char*
         }
 
         /* Copy everything before the "%" into the destination */
-        if ((pFormatTemporary - pFormatType) + usedLength >= destinationMaxLength)
+        if ((pFormatType - pFormatTemporary) + usedLength >= destinationMaxLength)
         {
             return false; /* Destination is too small */
         }

@@ -25,19 +25,15 @@
 
     typedef struct
     {
-        xcb_connection_t* pConnection;
-        uint32 defaultScreen;
-        xcb_screen_t* pDefaultScreen;
-        xcb_screen_t* pScreen;
+        xcb_connection_t* connection;
+        int defaultIndex;
         xcb_window_t window;
+        xcb_atom_t deleteAtom;
+        bool close;
         
-        xcb_atom_t deleteWindowAtom;
-        
-
-        bool shouldClose;
     } enWindowXcb;
 
-    extern enWindowXcb window_xcb;
+    extern enWindowXcb win;
 #endif
 
 typedef struct

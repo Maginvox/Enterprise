@@ -1,114 +1,82 @@
-#include <xcb/xcb_icccm.h>
-
 #include "Core/enMemory.h"
 #include "Core/enString.h"
 #include "Core/enLog.h"
 
 #include "Graphics/enWindow.h"
 
-enWindowXcb window_xcb = {0};
+enWindowXcb win = {0};
 
 bool enWindowInitialize(const enWindowInfo* pInfo)
 {
-    if (pInfo->pTitle == NULL /*|| !FMathIsBetween(style, 0, FWindowStyle_Max) */)
+    /* Connect to X11 */
+    win.connection = xcb_connect(NULL, &win.defaultIndex);
+    if (xcb_connection_has_error(win.connection))
     {
         return false;
     }
 
-    window_xcb.pConnection = xcb_connect(NULL, (int*)&window_xcb.defaultScreen);
-    if (xcb_connection_has_error(window_xcb.pConnection))
-    {
-        enLogError("Failed to connect to X server");
-        return false;
-    }
-
-    /* Get the screens */
-    xcb_screen_iterator_t iterator = xcb_setup_roots_iterator(xcb_get_setup(window_xcb.pConnection));
-
-    for (uint32 i = 0; i < window_xcb.defaultScreen; i++)
+    xcb_screen_iterator_t iterator = xcb_setup_roots_iterator(xcb_get_setup(win.connection));
+    for (uint32 i = 0; i < win.defaultIndex; i++)
     {
         xcb_screen_next(&iterator);
     }
 
-    window_xcb.pDefaultScreen = iterator.data;
+    /* Create the X window */
+    xcb_screen_t* defaultScreen = iterator.data;
+    win.window = xcb_generate_id(win.connection);
 
-    /* Find the user screen */
-    iterator = xcb_setup_roots_iterator(xcb_get_setup(window_xcb.pConnection));
-
-    window_xcb.pScreen = window_xcb.pDefaultScreen;
-
-    for (uint32 i = 0; i < pInfo->screen; i++)
+    uint32_t mask = XCB_CW_BACK_PIXEL | XCB_CW_BORDER_PIXEL | XCB_CW_EVENT_MASK;
+    uint32_t values[] =
     {
-        if (iterator.data == NULL)
-        {
-            window_xcb.pScreen = window_xcb.pDefaultScreen;
-            enLogWarning("Could not find the specified screen!");
-            break;
-        }
-
-        window_xcb.pScreen = iterator.data;
-        xcb_screen_next(&iterator);
-    }
-
-    /* Create an xcb window. */
-    window_xcb.window = xcb_generate_id(window_xcb.pConnection);
-
-    uint32 valueList[] =
-    {
-        window_xcb.pScreen->white_pixel,
-        XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_STRUCTURE_NOTIFY | XCB_EVENT_MASK_NO_EVENT
+        defaultScreen->white_pixel,
+        defaultScreen->black_pixel,
+        XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_KEY_PRESS | XCB_EVENT_MASK_STRUCTURE_NOTIFY
     };
 
     xcb_create_window(
-        window_xcb.pConnection, 
-        XCB_COPY_FROM_PARENT, 
-        window_xcb.window, window_xcb.pScreen->root, 
-        0, 0, pInfo->width, pInfo->height, 
-        0, XCB_WINDOW_CLASS_INPUT_OUTPUT, 
-        window_xcb.pScreen->root_visual,
-        XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK, valueList);
+        win.connection, XCB_COPY_FROM_PARENT,
+        win.window, defaultScreen->root,
+        0, 0, pInfo->width, pInfo->height,
+        1, XCB_WINDOW_CLASS_INPUT_OUTPUT,
+        defaultScreen->root_visual,
+        mask, values);
 
-    xcb_flush(window_xcb.pConnection);
-
-    xcb_change_property(window_xcb.pConnection, XCB_PROP_MODE_REPLACE, window_xcb.window, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8, enStringLength(pInfo->pTitle, 64), pInfo->pTitle);
-
-    /* Configure atoms to allow for a close window event. */
-    char deleteWindowName[] = "WM_DELETE_WINDOW";
-    xcb_intern_atom_cookie_t deleteWindowAtomCookie = xcb_intern_atom(window_xcb.pConnection, false, sizeof(deleteWindowName), deleteWindowName);
-    xcb_intern_atom_reply_t* pDeleteWindowAtomReply = xcb_intern_atom_reply(window_xcb.pConnection, deleteWindowAtomCookie, NULL);
-
+    /* Get the window close atoms */
     char protocolsName[] = "WM_PROTOCOLS";
-    xcb_intern_atom_cookie_t protocolsAtomCookie = xcb_intern_atom(window_xcb.pConnection, false, sizeof(protocolsName), protocolsName);
-    xcb_intern_atom_reply_t* pProtocolsAtomReply = xcb_intern_atom_reply(window_xcb.pConnection, protocolsAtomCookie, NULL);
+    xcb_intern_atom_cookie_t protocolsCookie = xcb_intern_atom(win.connection, true, sizeof(protocolsName) - 1, protocolsName);
+    xcb_intern_atom_reply_t* protocolsReply = xcb_intern_atom_reply(win.connection, protocolsCookie, NULL);
 
-    if (pDeleteWindowAtomReply == NULL || pProtocolsAtomReply == NULL)
+    char deleteName[] = "WM_DELETE_WINDOW";
+    xcb_intern_atom_cookie_t deleteCookie = xcb_intern_atom(win.connection, false, sizeof(deleteName) - 1, deleteName);
+    xcb_intern_atom_reply_t* deleteReply = xcb_intern_atom_reply(win.connection, deleteCookie, NULL);
+
+    if (protocolsReply == NULL || deleteReply == NULL)
     {
         enWindowShutdown();
-        enLogError("Could not get the WM_DELETE_WINDOW and WM_PROTOCOLS atoms!");
+        enLogError("Could not get the window protocols/delete atoms!");
         return false;
     }
 
-    xcb_icccm_set_wm_protocols(window_xcb.pConnection, window_xcb.window, pProtocolsAtomReply->atom, 1, &pDeleteWindowAtomReply->atom);
-    window_xcb.deleteWindowAtom = pDeleteWindowAtomReply->atom;
+    xcb_change_property(win.connection, XCB_PROP_MODE_REPLACE, win.window, protocolsReply->atom, XCB_ATOM_ATOM, 32, 1, &deleteReply->atom);
+    win.deleteAtom = deleteReply->atom;
 
-    enFree(pProtocolsAtomReply);
-    enFree(pDeleteWindowAtomReply);
+    enFree(protocolsReply);
+    enFree(deleteReply);
 
-    xcb_map_window(window_xcb.pConnection, window_xcb.window);
-
-    xcb_flush(window_xcb.pConnection);
-    return true;
+    /* Map the window and flush */
+    xcb_map_window(win.connection, win.window);
+    xcb_flush(win.connection);
 }
 
 void enWindowShutdown()
 {
-    xcb_destroy_window(window_xcb.pConnection, window_xcb.window);
-    xcb_disconnect(window_xcb.pConnection);
+    xcb_destroy_window(win.connection, win.window);
+    xcb_disconnect(win.connection);
 }
 
 bool enWindowShouldClose()
 {
-    return window_xcb.shouldClose;
+    return win.close;
 }
 
 void enWindowGetSize(uint32* pWidth, uint32* pHeight)
@@ -118,8 +86,8 @@ void enWindowGetSize(uint32* pWidth, uint32* pHeight)
         return;
     }
 
-    xcb_get_geometry_cookie_t cookie = xcb_get_geometry(window_xcb.pConnection, window_xcb.window);
-    xcb_get_geometry_reply_t* pReply = xcb_get_geometry_reply(window_xcb.pConnection, cookie, NULL);
+    xcb_get_geometry_cookie_t cookie = xcb_get_geometry(win.connection, win.window);
+    xcb_get_geometry_reply_t* pReply = xcb_get_geometry_reply(win.connection, cookie, NULL);
 
     *pWidth = pReply->width;
     *pHeight = pReply->height;
@@ -127,10 +95,10 @@ void enWindowGetSize(uint32* pWidth, uint32* pHeight)
 
 xcb_window_t enWindowGetHandle()
 {
-    return window_xcb.window;
+    return win.window;
 }
 
 xcb_connection_t* enWindowGetConnection()
 {
-    return window_xcb.pConnection;
+    return win.connection;
 }

@@ -4,6 +4,9 @@ find_package(Vulkan REQUIRED)
 
 set(GraphicsSources "")
 
+list(APPEND GraphicsSources
+    "Private/Mesh/enMeshParser.c"
+    "Private/Mesh/enMeshParserGLTF.c")
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     list(APPEND GraphicsSources
@@ -18,9 +21,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND GraphicsSources
         "Private/Window/enWindowXcb.c")
 endif()
-
-list(APPEND GraphicsSources
-    "Private/enMeshParser.c")
 
 # Vulkan API
 if (Vulkan_FOUND)

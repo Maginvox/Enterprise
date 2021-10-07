@@ -8,54 +8,55 @@
 
 #define ENTERPRISE_PACKAGE_LATEST_VERSION 2
 #define ENTERPRISE_PACKAGE_MAGIC_NUMBER 0x3DE2920ED93
+#define ENTERPRISE_PACKAGE_MAX_RECORDS 65536
 
-typedef enum ERecordType
+typedef enum enRecordType
 {
-    E_RECORD_TYPE_REMOVE, /* Used for defragmenting */
-    E_RECORD_TYPE_DATA, /* Bytes that can be stored as data */
-    E_RECORD_TYPE_AUDIO, /* Must be a .wav file */
-    E_RECORD_TYPE_MESH, /* Must be a .glb file */
-    E_RECORD_TYPE_TEXTURE, /* Must be a .png file */
-    E_RECORD_TYPE_FONT, /* Type undetermined yet */
-} ERecordType;
+    enRecordType_Remove, /* Used for defragmenting */
+    enRecordType_Data, /* Bytes that can be stored as data */
+    enRecordType_Audio, /* Must be a .wav file */
+    enRecordType_Mesh, /* Must be a .glb file */
+    enRecordType_Texture, /* Must be a .png file */
+    enRecordType_Font, /* Type undetermined yet */
+} enRecordType;
 
-typedef struct FPackageHeader
+typedef struct enPackageHeader
 {
     int64 magicNumber;
     int64 version;
     int64 recordCount; 
-} FPackageHeader;
+} enPackageHeader;
 
-typedef struct FPackageFooter
+typedef struct enPackageFooter
 {
     int64 magicNumber;
     int32 version;
-} FPackageFooter;
+} enPackageFooter;
 
-typedef struct FPackageRecord
+typedef struct enPackageRecord
 {
     int32 recordId; /* A hash of the records name */
     int16 recordType;
     int64 dataCompressedSize; /* 0 if it is not compressed */
     int64 dataSize;
     int64 dataOffset;
-} FPackageRecord;
+} enPackageRecord;
 
-typedef struct FPackage
+typedef struct enPackage
 {
     char recordsPath[FPATH_MAX], dataPath[FPATH_MAX]; 
 
-    enArray* pRecords;
-    enHashMap* pRecordsMap;
-} FPackage;
+    enPackageRecord* records;
+    enHashMap* recordsMap;
+} enPackage;
 
-FPackage* enPackageCreate(const char* pRecordsPath, const char* pDataPath);
-void enPackageDestroy(FPackage** ppPackage);
-bool enPackageRecordAppend(FPackage* pPackage, const FPackageRecord* pRecord);
-bool enPackageRecordMarkRemove(FPackage* pPackage, const char* pNameId);
-bool enPackageRecordChange(FPackage* pPackage, const FPackageRecord* pRecord);
-bool enPackageDataAppend(FPackage* pPackage, const void* pData, int64 size, int64* pOffset);
-const FPackageRecord* enPackageGetRecord(FPackage* pPackage, const char* pName);
-bool enPackageDefragment(FPackage* pPackage); /* Removes the marked records and removes them from data in the package file */
+enPackage* enPackageOpen(const char* pRecordsPath, const char* pDataPath);
+void enPackageClose(enPackage* pPackage);
+bool enPackageRecordAppend(enPackage* pPackage, const enPackageRecord* pRecord);
+bool enPackageRecordMarkRemove(enPackage* pPackage, const char* pNameId);
+bool enPackageRecordChange(enPackage* pPackage, const enPackageRecord* pRecord);
+bool enPackageDataAppend(enPackage* pPackage, const void* pData, int64 size, int64* pOffset);
+const enPackageRecord* enPackageGetRecord(enPackage* pPackage, const char* pName);
+bool enPackageDefragment(enPackage* pPackage); /* Removes the marked records and removes them from data in the package file */
 
 #endif

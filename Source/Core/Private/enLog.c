@@ -43,7 +43,7 @@ void FLogShutdown()
 {
     if(pLogFile != NULL)
     {
-        enFileClose(&pLogFile);
+        enFileClose(pLogFile);
     }
 }
 

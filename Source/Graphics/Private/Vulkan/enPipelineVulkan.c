@@ -11,10 +11,10 @@
 
 
 
-enPipeline enPipelineCreate(enAsset* pVertex, enAsset* pFragment)
+enPipeline enPipelineCreate(enPipelinePass pass, enAsset* pVertex, enAsset* pFragment)
 {
 
-    FPipelineVulkan* pPipeline = enCalloc(1, sizeof(FPipelineVulkan));
+    enPipelineVulkan* pPipeline = enCalloc(1, sizeof(enPipelineVulkan));
     if (pPipeline == NULL)
     {
         return NULL;
@@ -293,7 +293,7 @@ enPipeline enPipelineCreate(enAsset* pVertex, enAsset* pFragment)
 
 void enPipelineDestroy(enPipeline pipeline)
 {
-    FPipelineVulkan* pPipeline = pipeline;
+    enPipelineVulkan* pPipeline = pipeline;
 
     if (pPipeline->pipeline != VK_NULL_HANDLE)
     {

@@ -1,5 +1,5 @@
-#ifndef __FCONTEXT_VULKAN_H__
-#define __FCONTEXT_VULKAN_H__
+#ifndef __ENTERPRISE_WINDOW_VULKAN_H__
+#define __ENTERPRISE_WINDOW_VULKAN_H__
 
 #include <vulkan/vulkan.h>
 

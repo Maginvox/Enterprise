@@ -40,22 +40,19 @@ enFile* enFileOpenOrCreate(const char* pFilename, const char* pMode)
         }
     }
 
-    enFileClose(&pFile);
+    enFileClose(pFile);
     return enFileOpen(pFilename, pMode);
 }
 
 /* ====================================================== */
-void enFileClose(enFile** ppFile)
+void enFileClose(enFile* pFile)
 {
-    if (ppFile == NULL || *ppFile == NULL)
+    if (pFile == NULL)
     {
         return;
     }
 
-    enFile* pFile = *ppFile;
-
     fclose((FILE*)pFile);
-    *ppFile = NULL;
 }
 
 /* ====================================================== */
@@ -119,7 +116,7 @@ int64 enFileTell(enFile* pFile)
 }
 
 /* ====================================================== */
-char FFileReadChar(enFile* pFile)
+char enFileReadChar(enFile* pFile)
 {
     if (pFile == NULL)
     {

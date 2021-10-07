@@ -19,7 +19,7 @@ typedef void* enFile;
 
 enFile* enFileOpen(const char* pFilename, const char* pMode);
 enFile* enFileOpenOrCreate(const char* pFilename, const char* pMode);
-void    enFileClose(enFile** ppFile);
+void    enFileClose(enFile* pFile);
 bool    enFileRemove(const char* pFilename);
 bool    enFileRename(const char* pOldFilename, const char* pNewFilename);
 bool    enFileSeek(enFile* pFile, const int64 offset, const enSeek origin);

@@ -244,7 +244,7 @@ bool enConfigParserParse(enConfigParser* pConfigParser, const char* pConfigFilen
         enMemoryCopy(&pConfigParser->pParsedOptions[pConfigParser->parsedOptionsCount++], &parsedOption, sizeof(enConfigParsedOption));
     }
 
-    enFileClose(&pFile);
+    enFileClose(pFile);
     return true;
 }
 
@@ -394,8 +394,8 @@ void enConfigParserResetOption(enConfigParser* pConfigParser, const char* pConfi
             }
             
             /* Delete the original config and rename the temporary config */
-            enFileClose(&pFile);
-            enFileClose(&pTemporaryFile);
+            enFileClose(pFile);
+            enFileClose(pTemporaryFile);
 
             enFileRemove(pConfigFilename);
             enFileRename(pTemporaryFilePath, pConfigFilename);

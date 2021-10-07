@@ -1,7 +1,7 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
-#ifndef __FVULKAN_VALIDATION_H__
-#define __FVULKAN_VALIDATION_H__
+#ifndef __ENTERPRISE_VULKAN_VALIDATION_H__
+#define __ENTERPRISE_VULKAN_VALIDATION_H__
 
 #include <vulkan/vulkan.h>
 

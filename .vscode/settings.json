@@ -86,7 +86,8 @@
         "enmemory.h": "c",
         "enpipelinevulkan.h": "c",
         "eninput.h": "c",
-        "enstring.h": "c"
+        "enstring.h": "c",
+        "enasset.h": "c"
     },
     "cmake.configureOnOpen": true
 }

@@ -20,7 +20,7 @@ typedef struct enPackageHeader
     int32 magic;
     int32 version;
     int32 count;
-} enPackageManifestHeader;
+} enPackageHeader;
 
 typedef struct enPackageRecord
 {
@@ -29,7 +29,7 @@ typedef struct enPackageRecord
     int32 length; /* If compressed or not compressed this is the actual length */
     int32 uncompressedLength; /* If compressed this is length before compression */
     int32 offset; /* Offset in data file */
-} enPackageManifestRecord;
+} enPackageRecord;
 
 typedef struct enPackageFooter
 {

@@ -19,8 +19,8 @@ typedef struct enPackage
     char recordsPath[FPATH_MAX];
     char dataPath[FPATH_MAX]; 
 
-    enArray* records;
-    enAsset* loadedAssets;
+    uint32 recordsCount;
+    enPackageRecord* records;
     int32 hashToRecordMap[ENTERPRISE_PACKAGE_MAX_RECORDS];
 } enPackage;
 

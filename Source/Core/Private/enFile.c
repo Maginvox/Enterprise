@@ -13,17 +13,12 @@ enFile* enFileOpen(const char* pFilename, const char* pMode)
         return NULL;
     }
 
-    enFile* pFile = NULL;
     #ifdef ENTERPRISE_WINDOWS
-        if (!fopen_s((FILE**)&pFile, pFilename, pMode))
-        {
-            return NULL;
-        }
+        FILE* fp = NULL;
+        return fopen_s(&fp, pFilename, pMode) == 0 ? (enFile*)fp : NULL;
     #else
-        pFile = (enFile*)fopen(pFilename, pMode);
+        return (enFile*)fopen(pFilename, pMode);
     #endif
-
-    return pFile;
 }
 
 /* ====================================================== */
@@ -160,12 +155,12 @@ bool enFileWriteChar(enFile* pFile, const char c)
 }
 
 /* ====================================================== */
-bool enFileWrite(enFile* pFile, const void* pBuffer, const int64 elementSize, const int64 elementCount)
+int64 enFileWrite(enFile* pFile, const void* pBuffer, const int64 elementSize, const int64 elementCount)
 {
     if (pFile == NULL || pBuffer == NULL || elementSize <= 0 || elementCount <= 0)
     {
         return false;
     }
 
-    return (int64)fwrite(pBuffer, elementSize, elementCount, (FILE*)pFile) == elementCount;
+    return (int64)fwrite(pBuffer, elementSize, elementCount, (FILE*)pFile);
 }

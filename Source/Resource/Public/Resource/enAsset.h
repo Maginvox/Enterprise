@@ -17,30 +17,30 @@ typedef enum enAssetType
 
 typedef struct enPackageHeader
 {
-    int32 magic;
-    int32 version;
-    int32 count;
+    uint32 magic;
+    uint32 version;
+    uint32 count;
 } enPackageHeader;
 
 typedef struct enPackageRecord
 {
-    int32 hash; /* A hash asset name */
-    int32 type;
-    int32 length; /* If compressed or not compressed this is the actual length */
-    int32 uncompressedLength; /* If compressed this is length before compression */
-    int32 offset; /* Offset in data file */
+    uint32 hash; /* A hash asset name */
+    uint32 type;
+    uint32 length; /* If compressed or not compressed this is the actual length */
+    uint32 uncompressedLength; /* If compressed this is length before compression */
+    uint32 offset; /* Offset in data file */
 } enPackageRecord;
 
 typedef struct enPackageFooter
 {
-    int64 magic;
-    int64 version;
+    uint64 magic;
+    uint64 version;
 } enPackageFooter;
 
 typedef struct enAsset
 {
     const void* pData;
-    int64 size;
+    uint64 size;
     enAssetType type;
 } enAsset;
 

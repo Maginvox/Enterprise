@@ -28,6 +28,6 @@ char    enFileReadChar(enFile* pFile);
 bool    enFileReadLine(enFile* pFile, char* pBuffer, const int64 bufferMaxLength);
 int64   enFileRead(enFile* pFile, void* pBuffer, const int64 elementSize, const int64 elementCount);
 bool    enFileWriteChar(enFile* pFile, const char c);
-bool    enFileWrite(enFile* pFile, const void* pBuffer, const int64 elementSize, const int64 elementCount);
+int64   enFileWrite(enFile* pFile, const void* pBuffer, const int64 elementSize, const int64 elementCount);
 
 #endif

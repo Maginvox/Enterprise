@@ -1,5 +1,7 @@
 /* Copyright © 2021 Caden Miller, All Rights Reserved. */
 
+#include "lz4.h"
+
 #include "Core/enMemory.h"
 #include "Core/enMath.h"
 #include "Core/enHash.h"
@@ -57,7 +59,6 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
 
     enFileClose(packageFile); /* We don't need this file right now. We just have to make sure it can exist for later */
 
-
     /* Allocate the package */
     enPackage* package = enCalloc(1, sizeof(enPackage));
     if (!package)
@@ -67,6 +68,7 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
 
     enStringCopy(recordPath, FPATH_MAX, package->recordsPath, FPATH_MAX);
     enStringCopy(packagePath, FPATH_MAX, package->dataPath, FPATH_MAX);
+    enMemorySet(package->hashToRecordMap, sizeof(package->hashToRecordMap), -1);
 
     /* Read the record header */
     enPackageHeader header = {0};
@@ -149,3 +151,176 @@ void enPackageClose(enPackage* package)
     }
     enFree(package);
 }
+
+bool enPackageAdd(enPackage* package, const char* name, const enAssetType type, const uint32 length, const void* data)
+{
+
+    if (package == NULL || !enMathIsBetween(type, 0, enAssetType_Max) || length == 0 || data == NULL)
+    {
+        return false;        
+    }
+
+    uint32 hash = enHashMultiplicationMethod(name);
+    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
+
+    /* Make sure that the record does not exist */
+    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || package->hashToRecordMap[hash] != -1)
+    {
+        return false;
+    }
+
+    enPackageRecord record = {
+        .hash = hash,
+        .type = type,
+        .uncompressedLength = length
+    };
+
+    /* Compress the data if possible */
+    uint32 compressedSize = LZ4_compressBound(length);
+    uint8* compressedBytes = enMalloc(compressedSize);
+    if (!compressedBytes)
+    {
+        return false;
+    }
+
+    bool compressed = true;
+    compressedSize = LZ4_compress_default(data, compressedBytes, length, compressedSize);
+    if (compressedSize <= 0)
+    {
+        enFree(compressedBytes);
+        enLogError("Could not compress an asset!");
+        return false;
+    }
+
+    if (compressedSize >= length)
+    {
+        enLogWarning("Could not compress an asset, its size is greater than when not compressed!");
+        compressed = false;
+    }
+
+    record.length = compressedSize;
+
+    enFile* pDataFile = enFileOpen(package->dataPath, "a");
+    if (!pDataFile)
+    {
+        return false;
+    }
+
+    /* Write the data to the file */
+    record.offset = (uint32)enFileTell(pDataFile);
+    if (enFileWrite(pDataFile, (compressed) ? compressedBytes : data, record.length, 1) != 1)
+    {
+        enFileClose(pDataFile);
+        return false;
+    }
+
+    enFree(compressedBytes);
+    enFileClose(pDataFile);
+
+
+    /* Write the record to the record file */
+    enFile* recordFile = enFileOpen(package->recordsPath, "a");
+    if (!recordFile)
+    {
+        return false;
+    }
+
+    if (enFileWrite(recordFile, &record, sizeof(enPackageRecord), 1) != 1)
+    {
+        enFileClose(recordFile);
+        return false;
+    }
+
+    enFileClose(recordFile);
+
+    /* Update the package */
+    package->recordsCount++;
+    package->records = enRealloc(package->records, sizeof(enPackageRecord) * package->recordsCount);
+    package->records[package->recordsCount - 1] = record;
+    package->hashToRecordMap[hash] = package->recordsCount - 1;
+    
+    return true;
+}
+
+bool enPackageAddFile(enPackage* package, const char* path, const enAssetType type)
+{
+    if (package == NULL || path == NULL || !enMathIsBetween(type, 0, enAssetType_Max))
+    {
+        return false;
+    }
+
+    enFile* file = enFileOpen(path, "rb");
+    if (!file)
+    {
+        return false;
+    }
+
+    /* Get the file size */
+    enFileSeek(file, 0, enFileSeek_End);
+    uint32 length = (uint32)enFileTell(file);
+    enFileSeek(file, 0, enFileSeek_Set);
+
+    /* Read the file data */
+    uint8* data = enMalloc(length);
+    if (!data)
+    {
+        enFileClose(file);
+        return false;
+    }
+
+    if (enFileRead(file, data, length, 1) != 1)
+    {
+        enFileClose(file);
+        enFree(data);
+        return false;
+    }
+
+    enFileClose(file);
+
+    /* Add the asset */
+    return enPackageAdd(package, path, type, length, data);
+}
+
+bool enPackageRemove(enPackage* package, const char* name)
+{
+    if (package == NULL)
+    {
+        return false;
+    }
+
+    uint32 hash = enHashMultiplicationMethod(name);
+    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
+
+    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || package->hashToRecordMap[hash] == -1)
+    {
+        return false;
+    }
+
+    enPackageRecord* record = &package->records[package->hashToRecordMap[hash]];
+    record->type = enAssetType_Remove;
+
+    /* Record this in the record file */
+    enFile* recordFile = enFileOpen(package->recordsPath, "r+");
+    if (!recordFile)
+    {
+        return false;
+    }
+
+    uint32 offset = sizeof(enPackageHeader) + (package->hashToRecordMap[hash] * sizeof(enPackageRecord));
+
+    if (enFileSeek(recordFile, offset, enFileSeek_Set) != record->offset)
+    {
+        enFileClose(recordFile);
+        return false;
+    }
+
+    if (enFileWrite(recordFile, record, sizeof(enPackageRecord), 1) != 1)
+    {
+        enFileClose(recordFile);
+        return false;
+    }
+
+    enFileClose(recordFile);
+    return true;
+}
+

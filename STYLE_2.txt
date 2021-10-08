@@ -1,8 +1,0 @@
-Verbs
-    Create
-    Destroy
-    Initialize
-    Shutdown
-    Get
-    Set
-    Enumerate

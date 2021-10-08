@@ -10,6 +10,8 @@
 
 typedef enum enAssetType
 {
+    enAssetType_Remove = 0,
+    enAssetType_None,
     enAssetType_GltfBinary = 0,
     enAssetType_Wav,
     enAssetType_Max = enAssetType_Wav

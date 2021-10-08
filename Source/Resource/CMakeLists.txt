@@ -6,4 +6,4 @@ list(APPEND ResourceSources
 add_library(EnterpriseResource STATIC ${ResourceSources})
 target_include_directories(EnterpriseResource PUBLIC "Public")
 
-target_link_libraries(EnterpriseResource EnterpriseCore)
+target_link_libraries(EnterpriseResource EnterpriseCore lz4)

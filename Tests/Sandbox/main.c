@@ -25,4 +25,6 @@ int main(int argc, char** argv)
     }
 
     enGraphicsShutdown();
+
+    enPackageClose(pPackage);
 }

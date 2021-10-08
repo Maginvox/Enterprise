@@ -12,29 +12,23 @@
 
 #define ENTERPRISE_PACKAGE_LATEST_VERSION   2
 #define ENTERPRISE_PACKAGE_MAGIC_NUMBER     0x454E5452
-#define ENTERPRISE_PACKAGE_MAX_RECORDS      65536
+#define ENTERPRISE_PACKAGE_MAX_RECORDS      32768
 
 typedef struct enPackage
 {
     char recordsPath[FPATH_MAX];
     char dataPath[FPATH_MAX]; 
 
-    enPackageRecord* records;
-    enHashMap* recordsMap;
+    enArray* records;
+    enAsset* loadedAssets;
+    int32 hashToRecordMap[ENTERPRISE_PACKAGE_MAX_RECORDS];
 } enPackage;
 
 enPackage* enPackageOpen(const char* pRecordsPath, const char* pDataPath);
 void enPackageClose(enPackage* pPackage);
-bool enPackageRegister(enPackage* pPackage, const enPackageRecord* record);
-void enPackageUnRegister(enPackage* pPackage, const uint32 hash);
-
-
-
-bool enPackageRecordUpdate(enPackage* pPackage, uint32 hash, const enPackageRecord* record);
-bool enPackageDataWrite(enPackage* pPackage, uint32 hash, const void* data);
-
-bool enPackageRepack(enPackage* pPackage);
-
+void enPackageAdd(enPackage* package, const enPackageRecord* record, const void* data);
+void enPackageRemove(enPackage* package, uint32 hash);
+void enPackageRepack(enPackage* package); /* Removes any records marked as remove. */
 void enPackageReadAsset(enPackage* pPackage, uint32 hash);
 
 #endif

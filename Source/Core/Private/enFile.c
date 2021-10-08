@@ -138,14 +138,9 @@ bool enFileReadLine(enFile* pFile, char* pBuffer, const int64 bufferMaxLength)
 }
 
 /* ====================================================== */
-int64 enFileRead(enFile* pFile, void* pBuffer, const int64 bufferMaxLength, const int64 elementSize, const int64 elementCount)
+int64 enFileRead(enFile* pFile, void* pBuffer, const int64 elementSize, const int64 elementCount)
 {
-    if (pFile == NULL || pBuffer == NULL || bufferMaxLength <= 0 || elementSize <= 0 || elementCount <= 0)
-    {
-        return 0;
-    }
-
-    if (elementSize * elementCount > bufferMaxLength)
+    if (pFile == NULL || pBuffer == NULL || elementSize <= 0 || elementCount <= 0)
     {
         return 0;
     }
@@ -165,14 +160,9 @@ bool enFileWriteChar(enFile* pFile, const char c)
 }
 
 /* ====================================================== */
-bool enFileWrite(enFile* pFile, const void* pBuffer, const int64 bufferLength, const int64 elementSize, const int64 elementCount)
+bool enFileWrite(enFile* pFile, const void* pBuffer, const int64 elementSize, const int64 elementCount)
 {
-    if (pFile == NULL || pBuffer == NULL || bufferLength <= 0 || elementSize <= 0 || elementCount <= 0)
-    {
-        return false;
-    }
-
-    if (elementSize * elementCount > bufferLength)
+    if (pFile == NULL || pBuffer == NULL || elementSize <= 0 || elementCount <= 0)
     {
         return false;
     }

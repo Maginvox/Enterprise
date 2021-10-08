@@ -26,8 +26,8 @@ bool    enFileSeek(enFile* pFile, const int64 offset, const enSeek origin);
 int64   enFileTell(enFile* pFile);
 char    enFileReadChar(enFile* pFile);
 bool    enFileReadLine(enFile* pFile, char* pBuffer, const int64 bufferMaxLength);
-int64   enFileRead(enFile* pFile, void* pBuffer, const int64 bufferMaxLength, const int64 elementSize, const int64 elementCount);
+int64   enFileRead(enFile* pFile, void* pBuffer, const int64 elementSize, const int64 elementCount);
 bool    enFileWriteChar(enFile* pFile, const char c);
-bool    enFileWrite(enFile* pFile, const void* pBuffer, const int64 bufferLength, const int64 elementSize, const int64 elementCount);
+bool    enFileWrite(enFile* pFile, const void* pBuffer, const int64 elementSize, const int64 elementCount);
 
 #endif

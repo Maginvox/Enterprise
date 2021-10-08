@@ -20,29 +20,26 @@ enArray* enArrayCreate(int64 elementSize, int32 capacity)
     
     if (!enArrayResize(pArray, capacity))
     {
-        enArrayDestroy(&pArray);
+        enArrayDestroy(pArray);
         return NULL;
     }
 
     return pArray;
 }
 
-void enArrayDestroy(enArray** ppArray)
+void enArrayDestroy(enArray* pArray)
 {
-    if (ppArray == NULL || *ppArray == NULL)
+    if (pArray == NULL)
     {
         return;
     }
 
-    enArray* pArray = *ppArray;
-
-    if (pArray != NULL)
+    if (pArray->pArray != NULL)
     {
         enFree(pArray->pArray);
     }
 
     enFree(pArray);
-    *ppArray = NULL;
 }
 
 bool enArrayResize(enArray* pArray, int32 newCapacity)

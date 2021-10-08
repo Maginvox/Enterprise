@@ -14,7 +14,7 @@ typedef struct enArray
 } enArray;
 
 enArray*    enArrayCreate(int64 elementSize, int32 capacity);
-void        enArrayDestroy(enArray** ppArray);
+void        enArrayDestroy(enArray* pArray);
 bool        enArrayResize(enArray* pArray, int32 newCapacity); /* Can only resize not filled element slots */
 bool        enArrayAdd(enArray* pArray, const void* pValue);
 bool        enArrayRemove(enArray* pArray, int32 index);

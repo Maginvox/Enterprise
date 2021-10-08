@@ -87,7 +87,9 @@
         "enpipelinevulkan.h": "c",
         "eninput.h": "c",
         "enstring.h": "c",
-        "enasset.h": "c"
+        "enasset.h": "c",
+        "engraphics.h": "c",
+        "enpackage.h": "c"
     },
     "cmake.configureOnOpen": true
 }

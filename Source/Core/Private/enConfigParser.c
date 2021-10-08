@@ -297,7 +297,7 @@ void enConfigParserReset(enConfigParser* pConfigParser, const char* pConfigFilen
             continue; 
         }
 
-        if (!enFileWrite(pFile, pBuffer, sizeof(pBuffer), enStringLength(pBuffer, sizeof(pBuffer)), 1))
+        if (!enFileWrite(pFile, pBuffer, sizeof(pBuffer), 1))
         {
             continue;
         }
@@ -384,7 +384,7 @@ void enConfigParserResetOption(enConfigParser* pConfigParser, const char* pConfi
             }
 
             /* Write the default config value */
-            enFileWrite(pTemporaryFile, pDefaultValue, defaultValueLength, defaultValueLength, 1);
+            enFileWrite(pTemporaryFile, pDefaultValue, defaultValueLength, 1);
         
             /* Copy the rest of the file to the new config */
             enFileSeek(pFile, valueLength, enFileSeek_Current);

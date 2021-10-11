@@ -375,7 +375,7 @@ void enConfigParserResetOption(enConfigParser* pConfigParser, const char* pConfi
             }
 
             /* Copy from the start of the config file to the start of the value */
-            enFileSeek(pFile, 0, enFileSeek_Set);
+            enFileSeek(pFile, 0, enSeek_Set);
 
             char c;
             while ((c = enFileReadChar(pFile)) != FEOF && enFileTell(pFile) < valueOffset)
@@ -387,7 +387,7 @@ void enConfigParserResetOption(enConfigParser* pConfigParser, const char* pConfi
             enFileWrite(pTemporaryFile, pDefaultValue, defaultValueLength, 1);
         
             /* Copy the rest of the file to the new config */
-            enFileSeek(pFile, valueLength, enFileSeek_Current);
+            enFileSeek(pFile, valueLength, enSeek_Current);
             while ((c = enFileReadChar(pFile)) != FEOF)
             {
                 enFileWriteChar(pTemporaryFile, c);

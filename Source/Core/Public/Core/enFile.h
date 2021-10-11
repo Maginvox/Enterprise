@@ -9,10 +9,10 @@
 #define FPATH_MAX 256
 
 typedef enum enSeek {
-    enFileSeekOrigin_Begin = 0,
-    enFileSeek_Current = 1,
-    enFileSeek_End = 2,
-    enFileSeek_Set = enFileSeekOrigin_Begin
+    enSeek_Begin = 0,
+    enSeek_Current = 1,
+    enSeek_End = 2,
+    enSeek_Set = enSeek_Begin
 } enSeek;
 
 typedef void* enFile;

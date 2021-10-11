@@ -83,13 +83,13 @@ bool enFileSeek(enFile* pFile, const int64 offset, const enSeek seekOrigin)
     int seekOriginValue = SEEK_SET;
     switch (seekOrigin)
     {
-    case enFileSeekOrigin_Begin:
+    case enSeek_Begin:
         seekOriginValue = SEEK_SET;
         break;
-    case enFileSeek_Current:
+    case enSeek_Current:
         seekOriginValue = SEEK_CUR;
         break;
-    case enFileSeek_End:
+    case enSeek_End:
         seekOriginValue = SEEK_END;
         break;
     default:

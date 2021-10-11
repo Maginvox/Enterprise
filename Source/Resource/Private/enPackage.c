@@ -12,8 +12,9 @@
 
 bool enPackageRewrite(enPackage* package) /* Rewrites currently loaded records into the file */
 {
+
     enFile* recordsFile = enFileOpen(package->recordsPath, "w");
-    if (!recordsFile)
+    if (recordsFile == NULL)
     {
         return false;
     }
@@ -36,6 +37,32 @@ bool enPackageRewrite(enPackage* package) /* Rewrites currently loaded records i
     return true;
 }
 
+int32 enPackageDataAppend(enPackage* package, uint32 length, void* data) /* Returns offset, if -1 error occured */
+{
+    if (package == NULL || length == 0 || data == NULL)
+    {
+        return -1;
+    }
+
+    /* Open in append mode */
+    enFile* dataFile = enFileOpen(package->dataPath, "a");
+    if (dataFile == NULL)
+    {
+        return -1;
+    }
+
+    /* Get our offset and write the data */
+    int32 offset = enFileTell(dataFile);
+    if (enFileWrite(dataFile, data, length, 1) != 1)
+    {
+        enFileClose(dataFile);
+        return -1;
+    }
+
+    enFileClose(dataFile);
+    return offset;
+}
+
 enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
 {
     if (recordPath == NULL || packagePath == NULL)
@@ -44,7 +71,7 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
     }
 
     /* Create or open the files */
-    enFile* recordFile = enFileOpenOrCreate(recordPath, "r");
+    enFile* recordFile = enFileOpenOrCreate(recordPath, "r+");
     if (!recordFile)
     {
         return NULL;
@@ -74,17 +101,16 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
     enPackageHeader header = {0};
     if (!enFileRead(recordFile, &header, sizeof(enPackageHeader), 1))
     {
-        enFileClose(recordFile); /* We must close the file first before executing a function that will reopen it */
+        enFileClose(recordFile); /* enPackageRewrite opens the record file again so we must close it here */
+
         if (!enPackageRewrite(package))
         {
-            enFileClose(recordFile);
             enPackageClose(package);
             enLogError("Could not write default header to package file!");
             return NULL;
         }
         else
         {
-            recordFile = enFileOpen(recordPath, "r");
             header = (enPackageHeader){
                 .magic = ENTERPRISE_PACKAGE_MAGIC_NUMBER,
                 .version = ENTERPRISE_PACKAGE_LATEST_VERSION,
@@ -103,24 +129,29 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
 
     package->recordsCount = header.count;
 
-    /* Read the records */
-    package->records = enCalloc(package->recordsCount, sizeof(enPackageRecord));
-    if (!package->records)
+    if (header.count > 0)
     {
-        enFileClose(recordFile);
-        enPackageClose(package);
-        return NULL;
-    }
+    
+        /* Read the records */
+        package->records = enCalloc(package->recordsCount, sizeof(enPackageRecord));
+        if (!package->records)
+        {
+            enFileClose(recordFile);
+            enPackageClose(package);
+            return NULL;
+        }
+        
 
-    if (enFileRead(recordFile, package->records, sizeof(enPackageRecord), package->recordsCount) != package->recordsCount)
-    {
-        enFileClose(recordFile);
-        enPackageClose(package);
-        enLogError("Could not read package records!");
-        return NULL;
-    }
+        if (enFileRead(recordFile, package->records, sizeof(enPackageRecord), package->recordsCount) != package->recordsCount)
+        {
+            enFileClose(recordFile);
+            enPackageClose(package);
+            enLogError("Could not read package records!");
+            return NULL;
+        }
 
-    enFileClose(recordFile);
+        enFileClose(recordFile);
+    }
 
     /* Map the record hashes to indices */
     for (uint32 i = 0; i < package->recordsCount; i++)
@@ -129,7 +160,9 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
 
         if (record->hash > ENTERPRISE_PACKAGE_MAX_RECORDS)
         {
-            continue; /* The record is malformed. */
+            enLogError("A package record is malformed!");
+            enPackageClose(package);
+            return NULL; /* The record is malformed. */
         }
 
         package->hashToRecordMap[record->hash] = i;
@@ -169,12 +202,6 @@ bool enPackageAdd(enPackage* package, const char* name, const enAssetType type, 
         return false;
     }
 
-    enPackageRecord record = {
-        .hash = hash,
-        .type = type,
-        .uncompressedLength = length
-    };
-
     /* Compress the data if possible */
     uint32 compressedSize = LZ4_compressBound(length);
     uint8* compressedBytes = enMalloc(compressedSize);
@@ -194,52 +221,43 @@ bool enPackageAdd(enPackage* package, const char* name, const enAssetType type, 
 
     if (compressedSize >= length)
     {
-        enLogWarning("Could not compress an asset, its size is greater than when not compressed!");
+        enLogInfo("Could not compress an asset, its size is greater than when not compressed!");
         compressed = false;
     }
 
-    record.length = compressedSize;
-
-    enFile* pDataFile = enFileOpen(package->dataPath, "a");
-    if (!pDataFile)
+    /* Add the record */
+    int32 offset = enPackageDataAppend(package, compressedSize, compressedBytes);
+    if (offset == -1)
     {
-        return false;
-    }
-
-    /* Write the data to the file */
-    record.offset = (uint32)enFileTell(pDataFile);
-    if (enFileWrite(pDataFile, (compressed) ? compressedBytes : data, record.length, 1) != 1)
-    {
-        enFileClose(pDataFile);
+        enFree(compressedBytes);
+        enLogError("Could not append data to package!");
         return false;
     }
 
     enFree(compressedBytes);
-    enFileClose(pDataFile);
 
+    const enPackageRecord record = {
+        .hash = hash,
+        .type = type,
+        .length = (compressed ? compressedSize : length),
+        .uncompressedLength = length,
+        .offset = offset
+    };
 
-    /* Write the record to the record file */
-    enFile* recordFile = enFileOpen(package->recordsPath, "a");
-    if (!recordFile)
-    {
-        return false;
-    }
-
-    if (enFileWrite(recordFile, &record, sizeof(enPackageRecord), 1) != 1)
-    {
-        enFileClose(recordFile);
-        return false;
-    }
-
-    enFileClose(recordFile);
-
-    /* Update the package */
+    /* Add the record to the package */
     package->recordsCount++;
-    package->records = enRealloc(package->records, sizeof(enPackageRecord) * package->recordsCount);
+    enPackageRecord* newRecords = enRealloc(package->records, sizeof(enPackageRecord) * package->recordsCount);
+    if (newRecords == NULL)
+    {
+        enLogError("Could not reallocate package records!");
+        return false;
+    }
+
+    package->records = newRecords;
     package->records[package->recordsCount - 1] = record;
     package->hashToRecordMap[hash] = package->recordsCount - 1;
-    
-    return true;
+
+    return enPackageRewrite(package);
 }
 
 bool enPackageAddFile(enPackage* package, const char* path, const enAssetType type)
@@ -256,9 +274,9 @@ bool enPackageAddFile(enPackage* package, const char* path, const enAssetType ty
     }
 
     /* Get the file size */
-    enFileSeek(file, 0, enFileSeek_End);
+    enFileSeek(file, 0, enSeek_End);
     uint32 length = (uint32)enFileTell(file);
-    enFileSeek(file, 0, enFileSeek_Set);
+    enFileSeek(file, 0, enSeek_Set);
 
     /* Read the file data */
     uint8* data = enMalloc(length);
@@ -300,27 +318,32 @@ bool enPackageRemove(enPackage* package, const char* name)
     record->type = enAssetType_Remove;
 
     /* Record this in the record file */
-    enFile* recordFile = enFileOpen(package->recordsPath, "r+");
-    if (!recordFile)
-    {
-        return false;
-    }
-
-    uint32 offset = sizeof(enPackageHeader) + (package->hashToRecordMap[hash] * sizeof(enPackageRecord));
-
-    if (enFileSeek(recordFile, offset, enFileSeek_Set) != record->offset)
-    {
-        enFileClose(recordFile);
-        return false;
-    }
-
-    if (enFileWrite(recordFile, record, sizeof(enPackageRecord), 1) != 1)
-    {
-        enFileClose(recordFile);
-        return false;
-    }
-
-    enFileClose(recordFile);
-    return true;
+    return enPackageRewrite(package);
 }
 
+bool enPackageRepack(enPackage* package)
+{
+
+    /* Open the data file */
+    enFile* dataFile = enFileOpen(package->dataPath, "r+");
+    if (dataFile == NULL)
+    {
+        return false;
+    }
+
+    /* Check for assets that have remove type */
+    for (uint32 i = 0; i < package->recordsCount; i++)
+    {
+        enPackageRecord* record = &package->records[i];
+        if (record->type == enAssetType_Remove)
+        {
+            
+        }
+    }
+
+}
+
+bool enPackageUpdate(enPackage* package,  const enPackageRecord* record, const void* data)
+{
+
+}

@@ -30,6 +30,7 @@ bool enPackageAdd(enPackage* package, const char* name, const enAssetType type, 
 bool enPackageAddFile(enPackage* package, const char* path, const enAssetType type); /* Should only be used when developing or patching */
 bool enPackageRemove(enPackage* package, const char* name); /* Should only be used when developing or patching */
 bool enPackageUpdate(enPackage* package, const enPackageRecord* record, const void* data); /* Should only be used when developing or patching */
+bool enPackageUpdateFile(enPackage* package, const char* path); /* Use only in development */
 bool enPackageRepack(enPackage* package); /* Removes any records marked as remove. */
 const enAsset* enPackageReadAsset(enPackage* pPackage, const char* name);
 bool enPackagePatch(enPackage* package, const char* patchRecordsPath, const char* patchDataPath);

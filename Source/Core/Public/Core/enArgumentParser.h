@@ -46,8 +46,8 @@ typedef struct
 } enArgumentParser;
 
 enArgumentParser* enArgumentParserCreate(const int32 optionsCount, const enArgumentOption* pOptions);
-void enArgumentParserDestroy(enArgumentParser** pArgumentParser);
-bool enArgumentParserParse(enArgumentParser* pArgumentParser, const int argc, const char* const* argv);
+void enArgumentParserDestroy(enArgumentParser* pArgumentParser);
+bool enArgumentParserParse(enArgumentParser* pArgumentParser, const int argc, char** argv);
 bool enArgumentParserGetOption(enArgumentParser* pArgumentParser, const char* pName, enArgumentParsedOption* pParsedOption);
 
 #endif

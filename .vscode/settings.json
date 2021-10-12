@@ -89,7 +89,8 @@
         "enstring.h": "c",
         "enasset.h": "c",
         "engraphics.h": "c",
-        "enpackage.h": "c"
+        "enpackage.h": "c",
+        "enargumentparser.h": "c"
     },
     "cmake.configureOnOpen": true
 }

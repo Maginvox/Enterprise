@@ -5,14 +5,14 @@
 
 int main(int argc, char** argv)
 {
-    const enWindowInfo winInfo = {"Enterprise Sandbox", 1080, 720};
-    const enGraphicsOptions options = {0};
-
     enPackage* pPackage = enPackageOpen("resources.rec", "resources.pak");
     if (pPackage == NULL)
     {
         return -1;
     }
+
+    const enWindowInfo winInfo = {"Enterprise Sandbox", 1080, 720};
+    const enGraphicsOptions options = {0};
 
     if (!enGraphicsInitialize(&winInfo, &options))
     {

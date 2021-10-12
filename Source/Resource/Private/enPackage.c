@@ -117,6 +117,8 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
                 .count = 0,
             };
         }
+
+       recordFile = enFileOpen(package->recordsPath, "r");
     }
 
     /* Check the magic and version */
@@ -130,8 +132,7 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
     package->recordsCount = header.count;
 
     if (header.count > 0)
-    {
-    
+    {  
         /* Read the records */
         package->records = enCalloc(package->recordsCount, sizeof(enPackageRecord));
         if (!package->records)
@@ -140,7 +141,6 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
             enPackageClose(package);
             return NULL;
         }
-        
 
         if (enFileRead(recordFile, package->records, sizeof(enPackageRecord), package->recordsCount) != package->recordsCount)
         {
@@ -149,9 +149,9 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
             enLogError("Could not read package records!");
             return NULL;
         }
+   }
 
-        enFileClose(recordFile);
-    }
+    enFileClose(recordFile);
 
     /* Map the record hashes to indices */
     for (uint32 i = 0; i < package->recordsCount; i++)
@@ -176,6 +176,15 @@ void enPackageClose(enPackage* package)
     if (!package)
     {
         return;
+    }
+
+    for (uint32 i = 0; i < ENTERPRISE_PACKAGE_MAX_RECORDS; i++)
+    {
+        if (package->assets[i] != NULL)
+        {
+            enFree(package->assets[i]->data);
+            enFree(package->assets[i]);
+        }
     }
 
     if (package->records != NULL)

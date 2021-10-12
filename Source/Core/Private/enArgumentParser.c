@@ -22,14 +22,14 @@ enArgumentParser* enArgumentParserCreate(const int32 optionsCount, const enArgum
     pArgsParser->pOptions = enCalloc(optionsCount, sizeof(enArgumentOption));
     if (pArgsParser->pOptions == NULL)
     {
-        enArgumentParserDestroy(&pArgsParser);
+        enArgumentParserDestroy(pArgsParser);
         return NULL;
     }
 
     pArgsParser->pParsedOptions = enCalloc(optionsCount, sizeof(enArgumentParsedOption));
     if (pArgsParser->pParsedOptions == NULL)
     {
-        enArgumentParserDestroy(&pArgsParser);
+        enArgumentParserDestroy(pArgsParser);
         return NULL;
     }
 
@@ -40,9 +40,8 @@ enArgumentParser* enArgumentParserCreate(const int32 optionsCount, const enArgum
     return pArgsParser;
 }
 
-void enArgumentParserDestroy(enArgumentParser** ppArgumentParser)
+void enArgumentParserDestroy(enArgumentParser* pArgumentParser)
 {
-    enArgumentParser* pArgumentParser = *ppArgumentParser;
     if (pArgumentParser == NULL)
     {
         return;
@@ -55,10 +54,9 @@ void enArgumentParserDestroy(enArgumentParser** ppArgumentParser)
     }
 
     enFree(pArgumentParser);
-    *ppArgumentParser = NULL;
 }
 
-bool enArgumentParserParse(enArgumentParser* pArgsParser, const int argc, const char* const* argv)
+bool enArgumentParserParse(enArgumentParser* pArgsParser, const int argc, char** argv)
 {
     if (pArgsParser == NULL || argc == 0 || argv == NULL)
     {

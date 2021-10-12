@@ -22,6 +22,7 @@ typedef struct enPackage
     uint32 recordsCount;
     enPackageRecord* records;
     int32 hashToRecordMap[ENTERPRISE_PACKAGE_MAX_RECORDS];
+    enAsset* assets[ENTERPRISE_PACKAGE_MAX_RECORDS];
 } enPackage;
 
 enPackage* enPackageOpen(const char* pRecordsPath, const char* pDataPath);
@@ -32,7 +33,8 @@ bool enPackageUpdate(enPackage* package, const enPackageRecord* record, const vo
 bool enPackageUpdateFile(enPackage* package, const char* path); /* Use only in development */
 bool enPackageRemove(enPackage* package, const char* name); /* Should only be used when developing or patching */
 bool enPackageRepack(enPackage* package); /* Removes any records marked as remove. */
-const enAsset* enPackageReadAsset(enPackage* pPackage, const char* name);
+const enAsset* enPackageLoadAsset(enPackage* pPackage, const char* name);
+void enPackageUnLoadAsset(enPackage* pPackage, const char* name);
 bool enPackagePatch(enPackage* package, const char* patchRecordsPath, const char* patchDataPath);
 
 #endif

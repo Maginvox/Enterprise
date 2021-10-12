@@ -427,3 +427,93 @@ bool enPackageRepack(enPackage* package)
     return true;
 }
 
+const enAsset* enPackageLoadAsset(enPackage* package, const char* name)
+{
+    if (package == NULL || name == NULL)
+    {
+        return NULL;
+    }
+
+    uint32 hash = enHashMultiplicationMethod(name);
+    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
+
+    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || package->hashToRecordMap[hash] == -1)
+    {
+        return NULL;
+    }
+
+    if (package->assets[hash] != NULL) /* Check if the data is already loaded */
+    {
+        return package->assets[hash];
+    }
+
+    enPackageRecord* record = &package->records[package->hashToRecordMap[hash]];
+
+    if (record->type == enAssetType_Remove)
+    {
+        return NULL;
+    }
+
+    enFile* dataFile = enFileOpen(package->dataPath, "rb");
+    if (dataFile == NULL)
+    {
+        return NULL;
+    }
+
+    enFileSeek(dataFile, record->offset, enSeek_Set);
+
+    enAsset* asset = enMalloc(sizeof(enAsset));
+    if (asset == NULL)
+    {
+        enFileClose(dataFile);
+        return NULL;
+    }
+
+    asset->type = record->type;
+    asset->size = record->length;
+    asset->data = enMalloc(record->length);
+    if (asset->data == NULL)
+    {
+        enFileClose(dataFile);
+        enFree(asset);
+        return NULL;
+    }
+
+    if (enFileRead(dataFile, asset->data, record->length, 1) != 1)
+    {
+        enFileClose(dataFile);
+        enFree(asset->data);
+        enFree(asset);
+        return NULL;
+    }
+
+    enFileClose(dataFile);
+
+    package->assets[hash] = asset;
+    return asset;
+}
+
+void enPackageUnLoadAsset(enPackage* pPackage, const char* name)
+{
+    if (pPackage == NULL || name == NULL)
+    {
+        return;
+    }
+
+    uint32 hash = enHashMultiplicationMethod(name);
+    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
+
+    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || pPackage->hashToRecordMap[hash] == -1)
+    {
+        return;
+    }
+
+    if (pPackage->assets[hash] == NULL)
+    {
+        return;
+    }
+
+    enFree(pPackage->assets[hash]->data);
+    enFree(pPackage->assets[hash]);
+    pPackage->assets[hash] = NULL;
+}

@@ -24,7 +24,7 @@ typedef struct enGLTFChunk
 
 bool enMeshParserGLTF(enAsset* pAsset, enMesh* pMesh)
 {
-    const char* pData = pAsset->pData;
+    const char* pData = pAsset->data;
 
     /* Read for header */
     if (pAsset->size < sizeof(enGLTFHeader) + sizeof(enGLTFChunk))

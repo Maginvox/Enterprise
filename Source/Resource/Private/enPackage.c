@@ -20,7 +20,7 @@ bool enPackageRewrite(enPackage* package) /* Rewrites currently loaded records i
     }
 
     /* Write the header */
-    enPackageHeader header = {
+    const enPackageHeader header = {
         .magic = ENTERPRISE_PACKAGE_MAGIC_NUMBER,
         .version = ENTERPRISE_PACKAGE_LATEST_VERSION,
         .count = package->recordsCount,
@@ -52,7 +52,7 @@ int32 enPackageDataAppend(enPackage* package, uint32 length, void* data) /* Retu
     }
 
     /* Get our offset and write the data */
-    int32 offset = enFileTell(dataFile);
+    int32 offset = (int32)enFileTell(dataFile);
     if (enFileWrite(dataFile, data, length, 1) != 1)
     {
         enFileClose(dataFile);
@@ -296,7 +296,14 @@ bool enPackageAddFile(enPackage* package, const char* path, const enAssetType ty
     enFileClose(file);
 
     /* Add the asset */
-    return enPackageAdd(package, path, type, length, data);
+    if (!enPackageAdd(package, path, type, length, data))
+    {
+        enFree(data);
+        return false;
+    }
+
+    enFree(data);
+    return true;
 }
 
 bool enPackageRemove(enPackage* package, const char* name)
@@ -324,6 +331,38 @@ bool enPackageRemove(enPackage* package, const char* name)
 bool enPackageRepack(enPackage* package)
 {
 
+    /* Count the number of records that will be left over */
+    uint32 recordsLeft = 0;
+    for (uint32 i = 0; i < package->recordsCount; i++)
+    {
+        if (package->records[i].type != enAssetType_Remove)
+        {
+            recordsLeft++;
+        }
+    }
+
+    /* Allocate the new records */
+    enPackageRecord* newRecords = enMalloc(sizeof(enPackageRecord) * recordsLeft);
+    if (newRecords == NULL)
+    {
+        return false;
+    }
+
+    /* Copy the records */
+    uint32 newRecordsIndex = 0;
+    for (uint32 i = 0; i < package->recordsCount; i++)
+    {
+        if (package->records[i].type != enAssetType_Remove)
+        {
+            newRecords[newRecordsIndex] = package->records[i];
+            newRecordsIndex++;
+        }
+    }
+
+    enFree(package->records);
+    package->records = newRecords;
+    package->recordsCount = recordsLeft;
+
     /* Open the data file */
     enFile* dataFile = enFileOpen(package->dataPath, "r+");
     if (dataFile == NULL)
@@ -331,19 +370,60 @@ bool enPackageRepack(enPackage* package)
         return false;
     }
 
-    /* Check for assets that have remove type */
+    /* Create a copy of the data file */
+    char copyPath[256] = {0};
+    enStringCopy(package->dataPath, 256, copyPath, 256);
+    enStringCopy(".temp", sizeof(".temp"), copyPath, 256);
+
+    enFile* copyFile = enFileOpen(package->dataPath, "w");
+    if (copyFile == NULL)
+    {
+        enFileClose(dataFile);
+        return false;
+    }
+    
     for (uint32 i = 0; i < package->recordsCount; i++)
     {
         enPackageRecord* record = &package->records[i];
-        if (record->type == enAssetType_Remove)
+
+        if (record->type != enAssetType_Remove)
         {
-            
+            enFileSeek(dataFile, record->offset, enSeek_Set);
+
+            /* Update the record offset */
+            record->offset = (uint32)enFileTell(copyFile);
+
+            /* Copy the record data to the new file */
+            char c = 0;
+            for (uint32 j = 0; j < record->length; j++)
+            {
+                if ((c = enFileReadChar(dataFile)) == FEOF)
+                {
+                    enFileClose(dataFile);
+                    enFileClose(copyFile);
+                    return false;
+                }
+
+                enFileWriteChar(copyFile, c);
+            }
         }
     }
 
+    /* Rewrite the records, with new offsets and removed records */
+    if (!enPackageRewrite(package))
+    {
+        enFileClose(dataFile);
+        enFileClose(copyFile);
+        return false;
+    }
+
+    enFileClose(dataFile);
+    enFileClose(copyFile);
+
+    /* Delete the data file and rename the copy */
+    enFileRemove(package->dataPath);
+    enFileRename(copyPath, package->dataPath);
+    
+    return true;
 }
 
-bool enPackageUpdate(enPackage* package,  const enPackageRecord* record, const void* data)
-{
-
-}

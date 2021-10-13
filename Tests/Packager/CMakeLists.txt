@@ -1,2 +1,2 @@
 add_executable(EnterprisePackager "main.c")
-target_link_libraries(EnterprisePackager EnterpriseCore EnterpriseResources)
+target_link_libraries(EnterprisePackager EnterpriseCore EnterpriseResource)

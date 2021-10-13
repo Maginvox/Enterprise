@@ -9,7 +9,7 @@
 #include "Core/enMacro.h"
 #include "Core/enTypes.h"
 
-typedef enum
+typedef enum enArgumentType
 {
     enArgumentType_Int,
     enArgumentType_Float,
@@ -17,14 +17,14 @@ typedef enum
     enArgumentType_String,
 } enArgumentType;
 
-typedef struct
+typedef struct enArgumentOption
 {
     char name[ENTERPRISE_NAME_MAX_LENGTH];
     char description[ENTERPRISE_NAME_MAX_LENGTH];
     enArgumentType pType;
 } enArgumentOption;
 
-typedef struct
+typedef struct enArgumentParsedOption
 {
     char name[ENTERPRISE_NAME_MAX_LENGTH];
     enArgumentType type;

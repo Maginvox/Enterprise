@@ -90,7 +90,27 @@
         "enasset.h": "c",
         "engraphics.h": "c",
         "enpackage.h": "c",
-        "enargumentparser.h": "c"
+        "enargumentparser.h": "c",
+        "array": "c",
+        "bit": "c",
+        "charconv": "c",
+        "compare": "c",
+        "cstddef": "c",
+        "format": "c",
+        "fstream": "c",
+        "functional": "c",
+        "iterator": "c",
+        "limits": "c",
+        "memory": "c",
+        "mutex": "c",
+        "sstream": "c",
+        "type_traits": "c",
+        "vector": "c",
+        "xhash": "c",
+        "xiosbase": "c",
+        "xlocbuf": "c",
+        "xtree": "c",
+        "xutility": "c"
     },
     "cmake.configureOnOpen": true
 }

@@ -194,7 +194,7 @@ bool enArgumentParserGetOption(enArgumentParser* pArgsParser, const char* pName,
     {
         if (enStringCompare(pArgsParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH, pName, ENTERPRISE_NAME_MAX_LENGTH) == 0)
         {
-            enMemoryCopy(&pArgsParser->pParsedOptions[i], pParsedOption, sizeof(enArgumentParsedOption));
+            enMemoryCopy(pParsedOption, &pArgsParser->pParsedOptions[i], sizeof(enArgumentParsedOption));
             return true;
         }
     }

@@ -1,0 +1,9 @@
+{
+    "Assets": [
+        {
+            "Name": "MyFile.txt",
+            "Path": "Resources/MyFile.txt",
+            "Type": "Undefined"
+        }
+    ]
+}

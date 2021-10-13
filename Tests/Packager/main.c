@@ -1,6 +1,9 @@
-#include "Core/enLog.h"
+#include "Core/enMemory.h"
 #include "Core/enString.h"
+#include "Core/enLog.h"
 #include "Core/enArgumentParser.h"
+#include "Core/enJsonParser.h"
+
 
 #include "Resource/enPackage.h"
 
@@ -14,9 +17,9 @@ void pkShowHelp()
 
 int main(int argc, char** argv)
 {
-    char manifestPath[256];
-    char outputRecordsPath[256];
-    char outputDataPath[256];
+    char manifestPath[256] = {0};
+    char outputRecordsPath[256] = {0};
+    char outputDataPath[256] = {0};
     bool repack = false;
 
     /* Parse the passed options */
@@ -43,8 +46,10 @@ int main(int argc, char** argv)
     enArgumentParsedOption outputNameOption = {0};
     enArgumentParsedOption repackOption = {0};
     
-    if (enArgumentParserGetOption(argsParser, "ManifestPath", &manifestOption) || 
-        enArgumentParserGetOption(argsParser, "OutputName", &outputNameOption))
+    if (!enArgumentParserGetOption(argsParser, "ManifestPath", &manifestOption) ||
+        manifestOption.type != enArgumentType_String ||
+        !enArgumentParserGetOption(argsParser, "OutputName", &outputNameOption) ||
+        outputNameOption.type != enArgumentType_String)
     {
         enLogError("Could not find required parameters.");
         pkShowHelp();
@@ -57,8 +62,8 @@ int main(int argc, char** argv)
     enStringCopy(outputNameOption.value.String, 256, outputRecordsPath, 256);
     enStringCopy(outputNameOption.value.String, 256, outputDataPath, 256);
 
-    enStringConcatenate(outputRecordsPath, 256, ".recpak", sizeof(".recpak"));
-    enStringConcatenate(outputDataPath, 256, ".datpak", sizeof(".datpak"));
+    enStringConcatenate(".recpak", sizeof(".recpak"), outputRecordsPath, 256);
+    enStringConcatenate(".datpak", sizeof(".datpak"), outputDataPath, 256);
 
     if (enArgumentParserGetOption(argsParser, "Repack", &repackOption))
     {
@@ -72,13 +77,63 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    enStringCopy(manifestOption.value.String, 256, manifestPath, 256);
-    
     char message[512] = "Manifest Path: ";
     enStringConcatenate(manifestOption.value.String, 256, message, 512);
     enLogInfo(message);
 
+    /* Read the manifest JSON */
+    enFile* manifestFile = enFileOpen(manifestPath, "r");
+    if (!manifestFile)
+    {
+        enLogError("Manifest file path invalid.");
+        return -1;
+    }
 
+    enFileSeek(manifestFile, 0, enSeek_End);
+    uint32 manifestFileSize = enFileTell(manifestFile);
+    enFileSeek(manifestFile, 0, enSeek_Begin);
+
+    uint8* manifestFileBuffer = enMalloc(manifestFileSize);
+    if (!manifestFileBuffer)
+    {
+        enFileClose(manifestFile);
+        return -1;
+    }
+
+    if (enFileRead(manifestFile, manifestFileBuffer, manifestFileSize, 1) != 1)
+    {
+        enFree(manifestFileBuffer);
+        enFileClose(manifestFile);
+        return -1;
+    }
+
+    /* Parse the manifest */
+    int32 manifestParseResult = enJsonParse(manifestFileBuffer, manifestFileSize, 0, NULL);
+    if (manifestParseResult < 1)
+    {
+        enLogError("Could not parse the manifest file.");
+        enFree(manifestFileBuffer);
+        enFileClose(manifestFile);
+        return -1;
+    }
+
+    enJsonToken* manifestTokens = enCalloc(manifestParseResult, sizeof(enJsonToken));
+    if (!manifestTokens)
+    {
+        enFree(manifestFileBuffer);
+        enFileClose(manifestFile);
+        return -1;
+    }
+
+    manifestParseResult = enJsonParse(manifestFileBuffer, manifestFileSize, manifestParseResult, manifestTokens);
+    if (manifestParseResult < 1)
+    {
+        enLogError("Could not parse the manifest file.");
+        enFree(manifestTokens);
+        enFree(manifestFileBuffer);
+        enFileClose(manifestFile);
+        return -1;
+    }
 
     return 0;
 }

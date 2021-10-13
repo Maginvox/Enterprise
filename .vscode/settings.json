@@ -110,7 +110,14 @@
         "xiosbase": "c",
         "xlocbuf": "c",
         "xtree": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "deque": "c",
+        "list": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "string_view": "c",
+        "initializer_list": "c"
     },
     "cmake.configureOnOpen": true
 }

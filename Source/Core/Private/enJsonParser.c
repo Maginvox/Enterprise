@@ -1,9 +1,10 @@
 #include "Core/enJsonParser.h"
 
-inline enJsonToken* enJsonFresh(uint32* nextToken, uint32 tokensCount, enJsonToken* pTokens)
+enJsonToken* enJsonFresh(uint32* nextToken, uint32 tokensCount, enJsonToken* pTokens)
 {
-    if (*nextToken >= tokensCount)
+    if ((*nextToken) >= tokensCount)
     {
+        (*nextToken)++;
         return NULL;
     }
 
@@ -15,7 +16,6 @@ inline enJsonToken* enJsonFresh(uint32* nextToken, uint32 tokensCount, enJsonTok
     pFresh->count = 0;
 
     *nextToken++;
-    
     return pFresh;
 }
 
@@ -34,11 +34,18 @@ int32 enJsonParseString(const char* pJson, uint32 size, uint32* pPosition, enJso
         /* End of string */
         if (c == '\"')
         {
+            *pPosition = pos;
+         
+            if (pToken == NULL)
+            {
+                return 0;
+            }
+
             pToken->type = enJsonType_String;
             pToken->start = start;
             pToken->end = pos;
             pToken->count = 0;
-            *pPosition = pos;
+            
             return 0;
         }
 
@@ -147,7 +154,7 @@ int32 enJsonParse(const char* pJson, uint32 size, uint32 tokensCount, enJsonToke
     int32 superToken = -1;
     uint32 nextToken = 0;
 
-    for (; pos < size && pJson[pos] == '\0'; pos++)
+    for (; pos < size && pJson[pos] != '\0'; pos++)
     {
         char c = pJson[pos];
 
@@ -247,15 +254,16 @@ int32 enJsonParse(const char* pJson, uint32 size, uint32 tokensCount, enJsonToke
             case '\"': /* Parse string */
             {
                 enJsonToken* pFresh = enJsonFresh(&nextToken, tokensCount, pTokens);
-                if (pFresh == NULL)
-                {
-                    return -1;
-                }
-
                 if (enJsonParseString(pJson, size, &pos, pFresh) < 0)
                 {
                     return -1; /* Could not parse a string */
                 }
+
+                /* If this is a key set it as the super token */
+                if (superToken != -1 && pTokens != NULL) {
+                    pTokens[superToken].count++;
+                }
+
                 break;
             }
 
@@ -339,18 +347,20 @@ int32 enJsonParse(const char* pJson, uint32 size, uint32 tokensCount, enJsonToke
         }
 
 
-        if (pTokens != NULL)
+
+    }
+
+    if (pTokens != NULL)
+    {
+        /* Check for opened objects or arrays */
+        for (uint32 i = nextToken - 1; i >= 0; i--)
         {
-            /* Check for opened objects or arrays */
-            for (uint32 i = nextToken - 1; i >= 0; i--)
+            if (pTokens[i].start != -1 && pTokens[i].end == -1)
             {
-                if (pTokens[i].start != -1 && pTokens[i].end == -1)
-                {
-                    return -1;
-                }
+                return -1; /* There was an open object or array */
             }
         }
     }
 
-    return tokenCount;
+    return tokensCount;
 }

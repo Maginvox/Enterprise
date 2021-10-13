@@ -19,8 +19,8 @@ typedef enum
 typedef struct
 {
     enJsonType type;
-    uint32 start;
-    uint32 end;
+    int32 start;
+    int32 end;
     uint32 count;
 } enJsonToken;
 

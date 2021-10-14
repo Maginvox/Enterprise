@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     enLogInfo(message);
 
     /* Read the manifest JSON */
-    enFile* manifestFile = enFileOpen(manifestPath, "r");
+    enFile* manifestFile = enFileOpen(manifestPath, "rb");
     if (!manifestFile)
     {
         enLogError("Manifest file path invalid.");
@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     uint32 manifestFileSize = enFileTell(manifestFile);
     enFileSeek(manifestFile, 0, enSeek_Begin);
 
-    uint8* manifestFileBuffer = enMalloc(manifestFileSize);
+    uint8* manifestFileBuffer = enCalloc(1, manifestFileSize);
     if (!manifestFileBuffer)
     {
         enFileClose(manifestFile);
@@ -102,6 +102,7 @@ int main(int argc, char** argv)
 
     if (enFileRead(manifestFile, manifestFileBuffer, manifestFileSize, 1) != 1)
     {
+        enLogError("Could not read the manifest file!");
         enFree(manifestFileBuffer);
         enFileClose(manifestFile);
         return -1;

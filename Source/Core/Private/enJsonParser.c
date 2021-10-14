@@ -197,7 +197,7 @@ int32 enJsonParse(const char* pJson, uint32 size, uint32 tokensCount, enJsonToke
                 pToken->start = pos;
                 
                 /* Set this object or array as the superior token */
-                superToken = (nextToken)++;
+                superToken = nextToken - 1;
                 break;
             }
 
@@ -345,9 +345,6 @@ int32 enJsonParse(const char* pJson, uint32 size, uint32 tokensCount, enJsonToke
             default:
                 return -1; /* Found an unexpected character */
         }
-
-
-
     }
 
     if (pTokens != NULL)
@@ -362,5 +359,5 @@ int32 enJsonParse(const char* pJson, uint32 size, uint32 tokensCount, enJsonToke
         }
     }
 
-    return tokensCount;
+    return nextToken;
 }

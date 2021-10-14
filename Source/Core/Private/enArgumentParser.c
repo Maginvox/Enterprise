@@ -68,6 +68,12 @@ bool enArgumentParserParse(enArgumentParser* pArgsParser, const int argc, char**
         char* pArg = (char*)argv[i];
 
         enArgumentParsedOption parsedOption = {0};
+        
+        /* Skip the first argument */
+        if (i == 0)
+        {
+            continue;
+        }
 
         /* Skip empty arguments */
         if (pArg[0] == '\0')
@@ -81,12 +87,6 @@ bool enArgumentParserParse(enArgumentParser* pArgsParser, const int argc, char**
         if (argLength > ENTERPRISE_NAME_MAX_LENGTH || argLength < 2)
         {
             enLogWarning("An argument was too long!");
-            continue;
-        }
-
-        /* Skip the first argument */
-        if (pArg[0] == '\\' || pArg[0] == '/')
-        {
             continue;
         }
 

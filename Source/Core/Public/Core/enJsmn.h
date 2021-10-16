@@ -57,6 +57,6 @@ typedef struct enJsmnParser {
 } enJsmnParser;
 
 void enJsmnInit(enJsmnParser* parser);
-uint32 enJsmnParse(enJsmnParser* parser, const char* js, const uint32 len, enJsmnToken* tokens, const uint32 num_tokens);
+int32 enJsmnParse(enJsmnParser *parser, const char *js, const uint32 len, enJsmnToken *tokens, const int32 num_tokens);
 
 #endif

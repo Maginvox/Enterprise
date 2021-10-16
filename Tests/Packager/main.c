@@ -90,7 +90,7 @@ int main(int argc, char** argv)
     }
 
     enFileSeek(manifestFile, 0, enSeek_End);
-    uint32 manifestFileSize = enFileTell(manifestFile);
+    uint32 manifestFileSize = (uint32)enFileTell(manifestFile);
     enFileSeek(manifestFile, 0, enSeek_Begin);
 
     uint8* manifestFileBuffer = enCalloc(1, manifestFileSize);
@@ -128,7 +128,8 @@ int main(int argc, char** argv)
         enFileClose(manifestFile);
         return -1;
     }
-
+    
+    enJsmnInit(&parser);
     manifestParseResult = enJsmnParse(&parser, manifestFileBuffer, manifestFileSize, manifestTokens, manifestParseResult);
     if (manifestParseResult < 1)
     {
@@ -137,6 +138,12 @@ int main(int argc, char** argv)
         enFree(manifestFileBuffer);
         enFileClose(manifestFile);
         return -1;
+    }
+
+    for (uint32 tokenIndex = 0; tokenIndex < manifestParseResult; tokenIndex++)
+    {
+        enJsmnToken* token = &manifestTokens[tokenIndex];
+
     }
 
     return 0;

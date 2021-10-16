@@ -2,7 +2,7 @@
 #include "Core/enString.h"
 #include "Core/enLog.h"
 #include "Core/enArgumentParser.h"
-#include "Core/enJsonParser.h"
+#include "Core/enJsmn.h"
 
 
 #include "Resource/enPackage.h"
@@ -109,7 +109,10 @@ int main(int argc, char** argv)
     }
 
     /* Parse the manifest */
-    int32 manifestParseResult = enJsonParse(manifestFileBuffer, manifestFileSize, 0, NULL);
+    enJsmnParser parser = {0};
+    enJsmnInit(&parser);
+    
+    int32 manifestParseResult = enJsmnParse(&parser, manifestFileBuffer, manifestFileSize, NULL, 0);
     if (manifestParseResult < 1)
     {
         enLogError("Could not parse the manifest file.");
@@ -118,7 +121,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    enJsonToken* manifestTokens = enCalloc(manifestParseResult, sizeof(enJsonToken));
+    enJsmnToken* manifestTokens = enCalloc(manifestParseResult, sizeof(enJsmnToken));
     if (!manifestTokens)
     {
         enFree(manifestFileBuffer);
@@ -126,7 +129,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    manifestParseResult = enJsonParse(manifestFileBuffer, manifestFileSize, manifestParseResult, manifestTokens);
+    manifestParseResult = enJsmnParse(&parser, manifestFileBuffer, manifestFileSize, manifestTokens, manifestParseResult);
     if (manifestParseResult < 1)
     {
         enLogError("Could not parse the manifest file.");

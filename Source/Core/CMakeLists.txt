@@ -13,7 +13,7 @@ list(APPEND CoreSources
 		"Private/enHashMap.c"
 		"Private/enArgumentParser.c"
 		"Private/enConfigParser.c"
-		"Private/enJsonParser.c")
+		"Private/enJsmn.c")
 
 add_library(EnterpriseCore STATIC ${CoreSources})
 target_include_directories(EnterpriseCore PUBLIC "Public")

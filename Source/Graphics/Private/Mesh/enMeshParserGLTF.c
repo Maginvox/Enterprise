@@ -1,6 +1,6 @@
 #include "Core/enMemory.h"
 #include "Core/enLog.h"
-#include "Core/enJsonParser.h"
+#include "Core/enJsmn.h"
 
 #include "enMeshParserGLTF.h"
 
@@ -50,22 +50,29 @@ bool enMeshParserGLTF(enAsset* pAsset, enMesh* pMesh)
     const char* pJSON = pData; /* We can only read up to pJSONChunk->chunkLength */
 
     /* Parse the GLTF Json */
-    uint32 tokensCount = enJsonParse(pJSON, pJSONChunk->chunkLength, 0, NULL);
+    enJsmnParser parser;
+    enJsmnInit(&parser);
+
+    uint32 tokensCount = enJsmnParse(&parser, pJSON, pJSONChunk->chunkLength, NULL, 0);
     if (tokensCount <= 0)
     {
         return false; /* Found no JSON tokens or was invalid */
     }
 
-    enJsonToken* pTokens = enCalloc(tokensCount, sizeof(enJsonToken));
+    enJsmnToken* pTokens = enCalloc(tokensCount, sizeof(enJsmnToken));
     if (pTokens == NULL)
     {
         return false;
     }
 
-    enJsonParse(pJSON, pJSONChunk->chunkLength, tokensCount, pTokens);
+    enJsmnInit(&parser);
+    tokensCount = enJsmnParse(&parser, pJSON, pJSONChunk->chunkLength, pTokens, tokensCount);
+    if (tokensCount <= 0)
+    {
+        enFree(pTokens);
+        return false; /* Found no JSON tokens or was invalid */
+    }
 
     
-
-
 
 }

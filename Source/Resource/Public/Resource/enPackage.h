@@ -29,7 +29,7 @@ enPackage* enPackageOpen(const char* pRecordsPath, const char* pDataPath);
 void enPackageClose(enPackage* pPackage);
 bool enPackageAdd(enPackage* package, const char* name, const enAssetType type, const uint32 length, const void* data); /* Should only be used when developing or patching */
 bool enPackageAddFile(enPackage* package, const char* path, const enAssetType type); /* Should only be used when developing or patching */
-bool enPackageUpdate(enPackage* package, const enPackageRecord* record, const void* data); /* Should only be used when developing or patching */
+bool enPackageUpdate(enPackage* package, const char* name, const enAssetType type, const uint32 length, const void* data); /* Should only be used when developing or patching */
 bool enPackageUpdateFile(enPackage* package, const char* path); /* Use only in development */
 bool enPackageRemove(enPackage* package, const char* name); /* Should only be used when developing or patching */
 bool enPackageRepack(enPackage* package); /* Removes any records marked as remove. */

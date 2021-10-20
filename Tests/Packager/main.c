@@ -139,7 +139,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    for (uint32 tokenIndex = 0; tokenIndex < manifestParseResult; tokenIndex++)
+    for (int32 tokenIndex = 0; tokenIndex < manifestParseResult; tokenIndex++)
     {
         enJsmnToken* token = &manifestTokens[tokenIndex];
 
@@ -160,22 +160,25 @@ int main(int argc, char** argv)
 
                 if (enJsmnEqual(manifestJson, arrayToken, "Name"))
                 {
-                    
-                } 
-                
+                    i += 2;
+                    enStringCopy(manifestJson + arrayToken->start, arrayToken->end - arrayToken->start, message, 512);
+                    enLogInfo(message);
+                }
                 else if (enJsmnEqual(manifestJson, arrayToken, "Path"))
                 {
-
-                } 
-                
+                    arrayToken++;
+                    enStringCopy(manifestJson + arrayToken->start, arrayToken->end - arrayToken->start, message, 512);
+                    enLogInfo(message);
+                }
                 else if (enJsmnEqual(manifestJson, arrayToken, "Type"))
                 {
-
-                } 
-                
+                    arrayToken++;
+                    enStringCopy(manifestJson + arrayToken->start, arrayToken->end - arrayToken->start, message, 512);
+                    enLogInfo(message);
+                }
                 else
                 {
-
+                    enLogWarning("Malformed manifest JSON!");
                 }
 
                 /* Check if the package is the same */
@@ -183,8 +186,6 @@ int main(int argc, char** argv)
                 /* Read the asset file */
 
 
-
-                continue;
             }
 
         }

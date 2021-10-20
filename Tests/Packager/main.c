@@ -144,6 +144,7 @@ int main(int argc, char** argv)
         enJsmnToken* token = &manifestTokens[tokenIndex];
 
         if (enJsmnEqual(manifestJson, token, "Assets"))
+
         {
             tokenIndex++;
             token = &manifestTokens[tokenIndex];
@@ -156,30 +157,34 @@ int main(int argc, char** argv)
 
             for (uint32 i = 0; i < manifestTokens[tokenIndex + 1].size; i++)
             {
-                enJsmnToken* arrayToken = &manifestTokens[tokenIndex + i + 2];
+                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Name"))
+                {
+                    tokenIndex++;
+                    enJsmnToken* t = &manifestTokens[tokenIndex + i + 2];
+                    tokenIndex++;
+                    
+                    enStringCopy(manifestJson + t->start, t->end - t->start, message, 512);
+                    enLog("ASSET", "Name", message);
+                }
+                
+                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Path"))
+                {
+                    enJsmnToken* t = &manifestTokens[tokenIndex + i + 2];
 
-                if (enJsmnEqual(manifestJson, arrayToken, "Name"))
-                {
-                    i += 2;
-                    enStringCopy(manifestJson + arrayToken->start, arrayToken->end - arrayToken->start, message, 512);
-                    enLogInfo(message);
+                    tokenIndex += 2;
+                    enStringCopy(manifestJson + t->start, t->end - t->start, message, 512);
+                    enLog("ASSET", "Path", message);
                 }
-                else if (enJsmnEqual(manifestJson, arrayToken, "Path"))
+                
+                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Type"))
                 {
-                    arrayToken++;
-                    enStringCopy(manifestJson + arrayToken->start, arrayToken->end - arrayToken->start, message, 512);
-                    enLogInfo(message);
+                    enJsmnToken* t = &manifestTokens[tokenIndex + i + 2];
+                    
+                    tokenIndex += 2;
+                    enStringCopy(manifestJson + t->start, t->end - t->start, message, 512);
+                    enLog("ASSET", "Type", message);
                 }
-                else if (enJsmnEqual(manifestJson, arrayToken, "Type"))
-                {
-                    arrayToken++;
-                    enStringCopy(manifestJson + arrayToken->start, arrayToken->end - arrayToken->start, message, 512);
-                    enLogInfo(message);
-                }
-                else
-                {
-                    enLogWarning("Malformed manifest JSON!");
-                }
+
 
                 /* Check if the package is the same */
 

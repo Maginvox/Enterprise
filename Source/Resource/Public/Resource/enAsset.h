@@ -4,7 +4,7 @@
 #include "Core/enTypes.h"
 
 #define PACKAGE_MAGIC_NUMBER 0x454e5452
-#define PACKAGE_VERSION_NUMBER 0x0002
+#define PACKAGE_VERSION_NUMBER 0x0003
 #define PACKAGE_ASSET_MAX_COUNT 8192
 #define PACKAGE_ASSET_MAX_SIZE (FInt64)ENTERPRISE_MB(100)
 
@@ -27,6 +27,7 @@ typedef struct enPackageHeader
 typedef struct enPackageRecord
 {
     uint32 hash; /* A hash asset name */
+    char md5[16]; /* Data md5 hash */
     uint32 type;
     uint32 length; /* If compressed or not compressed this is the actual length */
     uint32 uncompressedLength; /* If compressed this is length before compression */

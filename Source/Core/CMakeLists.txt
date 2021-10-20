@@ -11,6 +11,7 @@ list(APPEND CoreSources
 		"Private/enThread.c"
 		"Private/enHash.c"
 		"Private/enHashMap.c"
+		"Private/enMD5.c"
 		"Private/enArgumentParser.c"
 		"Private/enConfigParser.c"
 		"Private/enJsmn.c")

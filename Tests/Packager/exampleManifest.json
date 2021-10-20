@@ -1,9 +1,10 @@
 {
+    "Name": "Maginvox",
     "Assets": [
         {
             "Name": "MyFile.txt",
             "Path": "Resources/MyFile.txt",
-            "Type": "Undefined"
+            "Type": "Text"
         }
     ]
 }

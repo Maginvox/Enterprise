@@ -311,3 +311,16 @@ void enJsmnInit(enJsmnParser *parser) {
 	parser->toknext = 0;
 	parser->toksuper = -1;
 }
+
+#include "Core/enString.h"
+
+bool enJsmnEqual(const char* js, enJsmnToken* token, const char* str)
+{
+	if (token->type == enJsmnType_String && (int)enStringLength(str, 256) == token->end - token->start &&
+      	enStringCompare(js + token->start, token->end - token->start, str, token->end - token->start) == 0) 
+	{
+    	return true;
+  	}
+
+ 	return false;
+}

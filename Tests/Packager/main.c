@@ -93,50 +93,49 @@ int main(int argc, char** argv)
     uint32 manifestFileSize = (uint32)enFileTell(manifestFile);
     enFileSeek(manifestFile, 0, enSeek_Begin);
 
-    uint8* manifestFileBuffer = enCalloc(1, manifestFileSize);
-    if (!manifestFileBuffer)
+    uint8* manifestJson = enCalloc(1, manifestFileSize);
+    if (!manifestJson)
     {
         enFileClose(manifestFile);
         return -1;
     }
 
-    if (enFileRead(manifestFile, manifestFileBuffer, manifestFileSize, 1) != 1)
+    if (enFileRead(manifestFile, manifestJson, manifestFileSize, 1) != 1)
     {
         enLogError("Could not read the manifest file!");
-        enFree(manifestFileBuffer);
+        enFree(manifestJson);
         enFileClose(manifestFile);
         return -1;
     }
+
+    enFileClose(manifestFile);
 
     /* Parse the manifest */
     enJsmnParser parser = {0};
     enJsmnInit(&parser);
     
-    int32 manifestParseResult = enJsmnParse(&parser, manifestFileBuffer, manifestFileSize, NULL, 0);
+    int32 manifestParseResult = enJsmnParse(&parser, manifestJson, manifestFileSize, NULL, 0);
     if (manifestParseResult < 1)
     {
         enLogError("Could not parse the manifest file.");
-        enFree(manifestFileBuffer);
-        enFileClose(manifestFile);
+        enFree(manifestJson);
         return -1;
     }
 
     enJsmnToken* manifestTokens = enCalloc(manifestParseResult, sizeof(enJsmnToken));
     if (!manifestTokens)
     {
-        enFree(manifestFileBuffer);
-        enFileClose(manifestFile);
+        enFree(manifestJson);
         return -1;
     }
     
     enJsmnInit(&parser);
-    manifestParseResult = enJsmnParse(&parser, manifestFileBuffer, manifestFileSize, manifestTokens, manifestParseResult);
+    manifestParseResult = enJsmnParse(&parser, manifestJson, manifestFileSize, manifestTokens, manifestParseResult);
     if (manifestParseResult < 1)
     {
         enLogError("Could not parse the manifest file.");
         enFree(manifestTokens);
-        enFree(manifestFileBuffer);
-        enFileClose(manifestFile);
+        enFree(manifestJson);
         return -1;
     }
 
@@ -144,7 +143,56 @@ int main(int argc, char** argv)
     {
         enJsmnToken* token = &manifestTokens[tokenIndex];
 
+        if (enJsmnEqual(manifestJson, token, "Assets"))
+        {
+            tokenIndex++;
+            token = &manifestTokens[tokenIndex];
+            
+            if (token->type != enJsmnType_Array)
+            {
+                enLogWarning("Malformed manifest JSON!");
+                continue;
+            }
+
+            for (uint32 i = 0; i < manifestTokens[tokenIndex + 1].size; i++)
+            {
+                enJsmnToken* arrayToken = &manifestTokens[tokenIndex + i + 2];
+
+                if (enJsmnEqual(manifestJson, arrayToken, "Name"))
+                {
+                    
+                } 
+                
+                else if (enJsmnEqual(manifestJson, arrayToken, "Path"))
+                {
+
+                } 
+                
+                else if (enJsmnEqual(manifestJson, arrayToken, "Type"))
+                {
+
+                } 
+                
+                else
+                {
+
+                }
+
+                /* Check if the package is the same */
+
+                /* Read the asset file */
+
+
+
+                continue;
+            }
+
+        }
+
     }
+
+    enFree(manifestTokens);
+    enFree(manifestJson);
 
     return 0;
 }

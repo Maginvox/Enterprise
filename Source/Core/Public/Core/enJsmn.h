@@ -52,11 +52,12 @@ typedef struct enJsmnTok {
 
 typedef struct enJsmnParser {
   uint32 pos;     /* offset in the JSON string */
-  uint32 toknext; /* next token to allocate */
-  int32 toksuper;         /* superior token node, e.g. parent object or array */
+  uint32 toknext; /* next token to asllocate */
+  int32 toksuper; /* superior token node, e.g. parent object or array */
 } enJsmnParser;
 
 void enJsmnInit(enJsmnParser* parser);
-int32 enJsmnParse(enJsmnParser *parser, const char *js, const uint32 len, enJsmnToken *tokens, const int32 num_tokens);
+int32 enJsmnParse(enJsmnParser* parser, const char *js, const uint32 len, enJsmnToken *tokens, const int32 num_tokens);
+bool enJsmnEqual(const char* js, enJsmnToken* token, const char* name);
 
 #endif

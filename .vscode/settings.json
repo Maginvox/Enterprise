@@ -118,7 +118,9 @@
         "unordered_set": "c",
         "string_view": "c",
         "initializer_list": "c",
-        "enjsmn.h": "c"
+        "enjsmn.h": "c",
+        "typeindex": "c",
+        "typeinfo": "c"
     },
     "cmake.configureOnOpen": true
 }

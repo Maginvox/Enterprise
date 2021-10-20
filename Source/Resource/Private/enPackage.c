@@ -5,6 +5,7 @@
 #include "Core/enMemory.h"
 #include "Core/enMath.h"
 #include "Core/enHash.h"
+#include "Core/enMD5.h"
 #include "Core/enLog.h"
 #include "Core/enFile.h"
 
@@ -191,6 +192,7 @@ void enPackageClose(enPackage* package)
     {
         enFree(package->records);
     }
+
     enFree(package);
 }
 
@@ -243,15 +245,20 @@ bool enPackageAdd(enPackage* package, const char* name, const enAssetType type, 
         return false;
     }
 
+    uint8 compressedMD5[16];
+    enMD5String(compressedBytes, compressedSize, compressedMD5);
+
     enFree(compressedBytes);
 
-    const enPackageRecord record = {
+    enPackageRecord record = {
         .hash = hash,
         .type = type,
         .length = (compressed ? compressedSize : length),
         .uncompressedLength = length,
         .offset = offset
     };
+
+    enMemoryCopy(record.md5, compressedMD5, 16);
 
     /* Add the record to the package */
     package->recordsCount++;
@@ -525,4 +532,79 @@ void enPackageUnLoadAsset(enPackage* pPackage, const char* name)
     enFree(pPackage->assets[hash]->data);
     enFree(pPackage->assets[hash]);
     pPackage->assets[hash] = NULL;
+}
+
+bool enPackageUpdate(enPackage* package, const char* name, const enAssetType type, const uint32 length, const void* data)
+{
+    if (package == NULL || name == NULL || !enMathIsBetween(type, 0, enAssetType_Max) || data == NULL)
+    {
+        return false;
+    }
+
+    uint32 hash = enHashMultiplicationMethod(name);
+    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
+
+    /* Make sure that the record does exist */
+    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || package->hashToRecordMap[hash] == -1)
+    {
+        return false;
+    }
+
+    enPackageRecord* record = &package->records[package->hashToRecordMap[hash]];
+
+    /* Compress the data if possible */
+    uint32 compressedSize = LZ4_compressBound(length);
+    uint8* compressedBytes = enMalloc(compressedSize);
+    if (!compressedBytes)
+    {
+        return false;
+    }
+
+    bool compressed = true;
+    compressedSize = LZ4_compress_default(data, compressedBytes, length, compressedSize);
+    if (compressedSize <= 0)
+    {
+        enFree(compressedBytes);
+        enLogError("Could not compress an asset!");
+        return false;
+    }
+
+    if (compressedSize >= length)
+    {
+        enLogInfo("Could not compress an asset, its size is greater than when not compressed!");
+        compressed = false;
+    }
+
+    char compressedMD5[16];
+    enMD5String(compressedBytes, compressedSize, compressedMD5);
+
+    /* Compare MD5 values */
+    if (!enStringCompare(compressedMD5, 16, record->md5, 16) && record->type == type)
+    {
+        enFree(compressedBytes);
+        return true; /* We already have this record so its success */
+    }
+
+    /* The values are different so we must upload new data to the package */
+    int32 offset = enPackageDataAppend(package, compressedSize, compressedBytes);
+    if (offset < 0)
+    {
+        enFree(compressedBytes);
+        enLogError("Could not append data to package!");
+        return false;
+    }
+
+    /* Set the new record data */
+    *record = (enPackageRecord){
+        .hash = hash,
+        .type = type,
+        .length = (compressed ? compressedSize : length),
+        .uncompressedLength = length,
+        .offset = offset
+    };
+
+    enMemoryCopy(record->md5, compressedMD5, 16);
+
+    /* Update the records */
+    return enPackageRewrite(package);
 }

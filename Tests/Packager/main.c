@@ -15,6 +15,8 @@ void pkShowHelp()
     enLogInfo("Optional Options: Repack:Bool");
 }
 
+
+
 int main(int argc, char** argv)
 {
     char manifestPath[256] = {0};
@@ -71,6 +73,15 @@ int main(int argc, char** argv)
     }
 
     enArgumentParserDestroy(argsParser);
+
+    /* Open the package */
+    enPackage* package = enPackageOpen(outputRecordsPath, outputDataPath);
+    if (!package)
+    {
+        enLogError("Could not open package.");
+        enArgumentParserDestroy(argsParser);
+        return -1;
+    }
 
     if (manifestOption.type != enArgumentType_String)
     {
@@ -144,7 +155,6 @@ int main(int argc, char** argv)
         enJsmnToken* token = &manifestTokens[tokenIndex];
 
         if (enJsmnEqual(manifestJson, token, "Assets"))
-
         {
             tokenIndex++;
             token = &manifestTokens[tokenIndex];
@@ -157,44 +167,118 @@ int main(int argc, char** argv)
 
             for (uint32 i = 0; i < manifestTokens[tokenIndex + 1].size; i++)
             {
+                char name[256] = {0};
+                char path[256] = {0};
+                char type[256] = {0};
+
                 if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Name"))
                 {
                     tokenIndex++;
-                    enJsmnToken* t = &manifestTokens[tokenIndex + i + 2];
+                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, name, 256);
                     tokenIndex++;
-                    
-                    enStringCopy(manifestJson + t->start, t->end - t->start, message, 512);
-                    enLog("ASSET", "Name", message);
                 }
                 
                 if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Path"))
                 {
-                    enJsmnToken* t = &manifestTokens[tokenIndex + i + 2];
-
-                    tokenIndex += 2;
-                    enStringCopy(manifestJson + t->start, t->end - t->start, message, 512);
-                    enLog("ASSET", "Path", message);
+                    tokenIndex++;
+                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, path, 256);
+                    tokenIndex++;
                 }
                 
                 if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Type"))
                 {
-                    enJsmnToken* t = &manifestTokens[tokenIndex + i + 2];
-                    
-                    tokenIndex += 2;
-                    enStringCopy(manifestJson + t->start, t->end - t->start, message, 512);
-                    enLog("ASSET", "Type", message);
+                    tokenIndex++;
+                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, type, 256);
+                    tokenIndex++;
                 }
 
+                /* Check if there are any same assets */
+                if (enPackageExists(package, name))
+                {
+                    enLog("SKIP", name, "Already found.");
+                    continue;
+                }
+                
+                /* Log the information we gotten */
+                enStringFormatArgument assetLogFmtArgs[] = 
+                {
+                    {
+                        .type = enStringFormatType_String,
+                        .value.String = name
+                    },
+                    {
+                        .type = enStringFormatType_String,
+                        .value.String = path
+                    },
+                    {
+                        .type = enStringFormatType_String,
+                        .value.String = type
+                    }
+                };
+                char assetLogFormat[] = "NEW ASSET\n\tName: %s\n\tPath: %s\n\tType: %s";
+                char assetLogMessage[512] = {0};
+                enStringFormat(assetLogMessage, sizeof(assetLogMessage), assetLogFormat, assetLogFmtArgs, COUNT_OF(assetLogFmtArgs));
+                enLogInfo(assetLogMessage);
 
-                /* Check if the package is the same */
+
+                /* Get the proper type */
+                enAssetType assetType = enAssetType_None;
+                if (enStringCompare(type, "None", sizeof("None")) == 0)
+                {
+                    assetType = enAssetType_None;
+                } else if (enStringCompare(type, "Texture", sizeof("Texture")) == 0)
+                {
+                    assetType = enAssetType_Texture;
+                } else if (enStringCompare(type, "Model", sizeof("Model")) == 0)
+                {
+                    assetType = enAssetType_Model;
+                } else if (enStringCompare(type, "Audio", sizeof("Audio")) == 0)
+                {
+                    assetType = enAssetType_Audio;
+                }
+                else
+                {
+                    enLogWarning("Unknown asset type!");
+                }
 
                 /* Read the asset file */
+                enFile* assetFile = enFileOpen(path, "rb");
+                if (!assetFile)
+                {
+                    enLogError("Asset file path invalid.");
+                    continue;
+                }
 
+                enFileSeek(assetFile, 0, enSeek_End);
+                uint32 assetFileSize = (uint32)enFileTell(assetFile);
+                enFileSeek(assetFile, 0, enSeek_Begin);
 
+                uint8* assetData = enCalloc(1, assetFileSize);
+                if (!assetData)
+                {
+                    enFileClose(assetFile);
+                    continue;
+                }
+
+                if (enFileRead(assetFile, assetData, assetFileSize, 1) != 1)
+                {
+                    enLogError("Could not read the asset file!");
+                    enFree(assetData);
+                    enFileClose(assetFile);
+                    continue;
+                }
+
+                enFileClose(assetFile);
+
+                /* Create the asset */
+                if (!enPackageAdd(package, name, assetType, assetFileSize, assetFile))
+                {
+                    enLogError("Could not add the asset to the package!");
+                    enFree(assetData);
+                    continue;
+                }
             }
-
         }
-
     }
 
     enFree(manifestTokens);

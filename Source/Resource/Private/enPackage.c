@@ -443,6 +443,24 @@ bool enPackageRepack(enPackage* package)
     return true;
 }
 
+bool enPackageExists(enPackage* package, const char* name)
+{
+    if (package == NULL || name == NULL)
+    {
+        return false;
+    }
+
+    uint32 hash = enHashMultiplicationMethod(name);
+    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
+
+    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || package->hashToRecordMap[hash] == -1)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 const enAsset* enPackageLoadAsset(enPackage* package, const char* name)
 {
     if (package == NULL || name == NULL)
@@ -579,7 +597,7 @@ bool enPackageUpdate(enPackage* package, const char* name, const enAssetType typ
     enMD5String(compressedBytes, compressedSize, compressedMD5);
 
     /* Compare MD5 values */
-    if (!enStringCompare(compressedMD5, 16, record->md5, 16) && record->type == type)
+    if (!enStringCompare(compressedMD5, record->md5, 16) && record->type == type)
     {
         enFree(compressedBytes);
         return true; /* We already have this record so its success */

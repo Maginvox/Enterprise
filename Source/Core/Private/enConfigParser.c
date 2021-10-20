@@ -199,7 +199,7 @@ bool enConfigParserParse(enConfigParser* pConfigParser, const char* pConfigFilen
         for (int64 i = 0; i < pConfigParser->optionsCount; i++)
         {
             if (parsedOption.type == pConfigParser->pOptions[i].type &&
-                enStringCompare(pName, nameLength, pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+                enStringCompare(pName, pConfigParser->pOptions[i].name, enStringLength(pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH)) == 0)
             {
                 pOption = &pConfigParser->pOptions[i];
                 break;
@@ -258,7 +258,7 @@ bool enConfigParserGetOption(enConfigParser* pConfigParser, const char* pOptionN
     /* Check if the option exists */
     for (int64 i = 0; i < pConfigParser->parsedOptionsCount; i++)
     {
-        if (enStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+        if (enStringCompare(pOptionName, pConfigParser->pParsedOptions[i].name, enStringLength(pConfigParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH)) == 0)
         {
             /* Copy the parsed option */
             enMemoryCopy(pParsedOption, &pConfigParser->pParsedOptions[i], sizeof(enConfigParsedOption));
@@ -315,7 +315,7 @@ void enConfigParserResetOption(enConfigParser* pConfigParser, const char* pConfi
     const char* pDefaultValue = NULL;
     for (int64 i = 0; i < pConfigParser->optionsCount; i++)
     {
-        if (enStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+        if (enStringCompare(pOptionName, pConfigParser->pOptions[i].name, enStringLength(pConfigParser->pOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH)) == 0)
         {
             /* Get the default value */
             pDefaultValue = pConfigParser->pOptions[i].defaultValue;
@@ -360,7 +360,7 @@ void enConfigParserResetOption(enConfigParser* pConfigParser, const char* pConfi
         int64 valueOffset = (int32)(enFileTell(pFile) - bufferSize) + (pValue - pBuffer);
 
         /* Check if the option name matches */
-        if (enStringCompare(pOptionName, ENTERPRISE_NAME_MAX_LENGTH, pBuffer, nameLength) == 0)
+        if (enStringCompare(pOptionName, pBuffer, nameLength) == 0)
         {
             /* Set the values to the default value */
             char pTemporaryFilePath[ENTERPRISE_PATH_MAX_LENGTH] = {0};

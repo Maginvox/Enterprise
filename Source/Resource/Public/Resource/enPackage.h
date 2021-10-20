@@ -33,6 +33,7 @@ bool enPackageUpdate(enPackage* package, const char* name, const enAssetType typ
 bool enPackageUpdateFile(enPackage* package, const char* path); /* Use only in development */
 bool enPackageRemove(enPackage* package, const char* name); /* Should only be used when developing or patching */
 bool enPackageRepack(enPackage* package); /* Removes any records marked as remove. */
+bool enPackageExists(enPackage* package, const char* name);
 const enAsset* enPackageLoadAsset(enPackage* pPackage, const char* name);
 void enPackageUnLoadAsset(enPackage* pPackage, const char* name);
 bool enPackagePatch(enPackage* package, const char* patchRecordsPath, const char* patchDataPath);

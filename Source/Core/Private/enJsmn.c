@@ -317,7 +317,7 @@ void enJsmnInit(enJsmnParser *parser) {
 bool enJsmnEqual(const char* js, enJsmnToken* token, const char* str)
 {
 	if (token->type == enJsmnType_String && (int)enStringLength(str, 256) == token->end - token->start &&
-      	enStringCompare(js + token->start, token->end - token->start, str, token->end - token->start) == 0) 
+      	enStringCompare(js + token->start, str, token->end - token->start) == 0) 
 	{
     	return true;
   	}

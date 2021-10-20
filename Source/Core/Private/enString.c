@@ -108,15 +108,15 @@ bool enStringConcatenate(const char* pSource, uint32 sourceMaxLength, char* pDes
 }
 
 /* ====================================================== */
-uint32 enStringCompare(const char* pSource, uint32 sourceMaxLength, const char* pCompare, uint32 compareMaxLength)
+uint32 enStringCompare(const char* pSource, const char* pCompare, uint32 comparisonLength)
 {
-    if (pSource == NULL || sourceMaxLength <= 0 || pCompare == NULL || compareMaxLength <= 0)
+    if (pSource == NULL || pCompare == NULL || comparisonLength <= 0)
     {
         return -1;
     }
 
-    uint32 sourceLength = enStringLength(pSource, sourceMaxLength);
-    uint32 compareLength = enStringLength(pCompare, compareMaxLength);
+    uint32 sourceLength = enStringLength(pSource, comparisonLength);
+    uint32 compareLength = enStringLength(pCompare, comparisonLength);
 
     char* pSourceTemporary = (char*)pSource;
     char* pCompareTemporary = (char*)pCompare;
@@ -131,6 +131,15 @@ uint32 enStringCompare(const char* pSource, uint32 sourceMaxLength, const char* 
         pCompareTemporary++;
         sourceLength--;
         compareLength--;
+    }
+    
+    if (sourceLength > 0)
+    {
+        differences += sourceLength;
+    }
+    else if (compareLength > 0)
+    {
+        differences += compareLength;
     }
 
     return differences;
@@ -701,11 +710,11 @@ bool enStringConvertToBool(const char* pSource, uint32 sourceMaxLength, bool* pV
         return false;
     }
 
-    if (enStringCompare(pSource, sourceMaxLength, "True", sizeof("True")) == 0)
+    if (enStringCompare(pSource, "True", sizeof("True")) == 0)
     {
         *pValue = true;
     }
-    else if (enStringCompare(pSource, sourceMaxLength, "False", sizeof("False")) == 0)
+    else if (enStringCompare(pSource, "False", sizeof("False")) == 0)
     {
         *pValue = false;
     }

@@ -37,7 +37,7 @@ bool enCharacterIsAlphaNumeric(char Character);
 uint32 enStringLength(const char* pString, uint32 maxLength);
 char* enStringSeperate(const char* pSource, uint32 sourceMaxLength, const char* pSeparators, uint32 separatorsLength);
 bool enStringConcatenate(const char* pSource, uint32 sourceMaxLength, char* pDestination, uint32 destinationMaxLength);
-uint32 enStringCompare(const char* pSource, uint32 sourceMaxLength, const char* pCompare, uint32 compareMaxLength);
+uint32 enStringCompare(const char* pSource, const char* pCompare, uint32 maxLength);
 bool enStringCopy(const char* pSource, uint32 sourceMaxLength, char* pDestination, uint32 destinationMaxLength);
 bool enStringReverse(char* pString, uint32 maxLength);
 void enStringRemoveSpaces(char* pString);

@@ -79,7 +79,7 @@ const char* const* enVulkanValidationLayers(uint32* pCount)
 
         for (uint32 j = 0; j < propertiesCount; j++)
         {
-            if (enStringCompare(pProperties[j].layerName, VK_MAX_EXTENSION_NAME_SIZE, ppValidationLayers[i], VK_MAX_EXTENSION_NAME_SIZE) == 0)
+            if (enStringCompare(pProperties[j].layerName, ppValidationLayers[i], VK_MAX_EXTENSION_NAME_SIZE) == 0)
             {
                 found = true;
                 break;
@@ -132,7 +132,7 @@ const char* const* enVulkanInstanceExtensions(uint32* pCount)
 
         for (uint32_t j = 0; j < propertiesCount; j++)
         {
-            if (enStringCompare(ppInstanceExtensions[i], VK_MAX_EXTENSION_NAME_SIZE, pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
+            if (enStringCompare(ppInstanceExtensions[i], pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
             {
                 found = true;
                 break;
@@ -184,7 +184,7 @@ const char* const* enVulkanDeviceExtensions(VkPhysicalDevice physicalDevice, uin
 
         for (uint32_t j = 0; j < propertiesCount; j++)
         {
-            if (enStringCompare(ppDeviceExtensions[i], VK_MAX_EXTENSION_NAME_SIZE, pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
+            if (enStringCompare(ppDeviceExtensions[i], pProperties[j].extensionName, VK_MAX_EXTENSION_NAME_SIZE) == 0)
             {
                 found = true;
                 break;

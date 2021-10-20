@@ -115,7 +115,7 @@ bool enArgumentParserParse(enArgumentParser* pArgsParser, const int argc, char**
         enArgumentOption* pOption = NULL;
         for (int j = 0; j < pArgsParser->optionsCount; j++)
         {
-            if (enStringCompare(pName, ENTERPRISE_NAME_MAX_LENGTH, pArgsParser->pOptions[j].name, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+            if (enStringCompare(pName, pArgsParser->pOptions[j].name, enStringLength(pArgsParser->pOptions[j].name, ENTERPRISE_NAME_MAX_LENGTH)) == 0)
             {   
                 pOption = &pArgsParser->pOptions[j];
                 break;
@@ -192,7 +192,7 @@ bool enArgumentParserGetOption(enArgumentParser* pArgsParser, const char* pName,
 
     for (int64 i = 0; i < pArgsParser->parsedOptionsCount; i++)
     {
-        if (enStringCompare(pArgsParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH, pName, ENTERPRISE_NAME_MAX_LENGTH) == 0)
+        if (enStringCompare(pName, pArgsParser->pParsedOptions[i].name, enStringLength(pArgsParser->pParsedOptions[i].name, ENTERPRISE_NAME_MAX_LENGTH)) == 0)
         {
             enMemoryCopy(pParsedOption, &pArgsParser->pParsedOptions[i], sizeof(enArgumentParsedOption));
             return true;

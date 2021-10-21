@@ -19,6 +19,8 @@ void pkShowHelp()
 
 int main(int argc, char** argv)
 {
+
+    char relativePath[256] = {0};
     char manifestPath[256] = {0};
     char outputRecordsPath[256] = {0};
     char outputDataPath[256] = {0};
@@ -74,6 +76,20 @@ int main(int argc, char** argv)
 
     enArgumentParserDestroy(argsParser);
 
+    /* Get the relative path */
+    enStringCopy(manifestPath, 256, relativePath, 256);
+    enStringReverse(relativePath, 256);
+
+    char* lastDot = enStringSeperate(relativePath, 256, "/\\", 2);
+    if (lastDot == NULL)
+    {
+        enLogError("Could not find relative path.");
+        return -1;
+    }
+    uint64 distanceFromLast = lastDot - relativePath;
+    enStringReverse(relativePath, 256);
+    enStringCopy(relativePath, enStringLength(relativePath, 256) - (uint32)distanceFromLast, relativePath, 256);
+    
     /* Open the package */
     enPackage* package = enPackageOpen(outputRecordsPath, outputDataPath);
     if (!package)
@@ -165,31 +181,41 @@ int main(int argc, char** argv)
                 continue;
             }
 
-            for (uint32 i = 0; i < manifestTokens[tokenIndex + 1].size; i++)
+            for (uint32 i = 0; i < manifestTokens[tokenIndex].size; i++)
             {
                 char name[256] = {0};
                 char path[256] = {0};
                 char type[256] = {0};
 
-                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Name"))
+                tokenIndex++;
+                for (uint32 j = 0; j < manifestTokens[tokenIndex].size; j++)
                 {
-                    tokenIndex++;
-                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, name, 256);
-                    tokenIndex++;
-                }
-                
-                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Path"))
-                {
-                    tokenIndex++;
-                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, path, 256);
-                    tokenIndex++;
-                }
-                
-                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Type"))
-                {
-                    tokenIndex++;
-                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, type, 256);
-                    tokenIndex++;
+                    //tokenIndex++;
+                    if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Name"))
+                    {
+                        tokenIndex++;
+                        enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, name, 256);
+                        tokenIndex++;
+                    }
+                    
+                    else if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Path"))
+                    {
+                        tokenIndex++;
+                        enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, path, 256);
+                        tokenIndex++;
+                    }
+                    
+                    else if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Type"))
+                    {
+                        tokenIndex++;
+                        enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, type, 256);
+                        tokenIndex++;
+                    }
+                    else
+                    {
+                        enLogWarning("Malformed manifest JSON!");
+                        continue;
+                    }
                 }
 
                 /* Check if there are any same assets */
@@ -242,6 +268,10 @@ int main(int argc, char** argv)
                 }
 
                 /* Read the asset file */
+                char assetPath[256] = {0};
+                enStringCopy(relativePath, enStringLength(relativePath, 256), assetPath, 256);
+                enStringConcatenate(path, 256, assetPath, 256);
+
                 enFile* assetFile = enFileOpen(path, "rb");
                 if (!assetFile)
                 {
@@ -277,6 +307,7 @@ int main(int argc, char** argv)
                     enFree(assetData);
                     continue;
                 }
+                
             }
         }
     }

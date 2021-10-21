@@ -5,6 +5,11 @@
             "Name": "MyFile.txt",
             "Path": "Resources/MyFile.txt",
             "Type": "Text"
+        },
+        {
+            "Name": "Song1.wav",
+            "Path": "Resources/Song1.wav",
+            "Type": "Audio"
         }
     ]
 }

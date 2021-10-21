@@ -173,19 +173,19 @@ bool enStringReverse(char* pString, uint32 maxLength)
         return false;
     }
 
-    /* Check for NULL termination. */
-    if (pString[maxLength - 1] != '\0')
-    {
-        return false;
+    // declare variable  
+    int i, len, temp;  
+    len = enStringLength(pString, maxLength); // use strlen() to get the length of str string  
+      
+    // use for loop to iterate the string   
+    for (i = 0; i < len/2; i++)  
+    {  
+        // temp variable use to temporary hold the string  
+        temp = pString[i];  
+        pString[i] = pString[len - i - 1];  
+        pString[len - i - 1] = temp;  
     }
 
-    char* pTemporary = pString;
-    uint32 length = maxLength;
-    while (length > 0)
-    {
-        length--;
-        pTemporary[length] = pString[length];
-    }
     return true;
 }
 

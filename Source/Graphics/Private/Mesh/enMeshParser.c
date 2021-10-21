@@ -12,7 +12,7 @@ enMesh* enMeshParse(enAsset* pAsset)
 
     switch (pAsset->type)
     {
-        case enAssetType_GltfBinary:
+        case enAssetType_Model:
             if (!enMeshParserGLTF(pAsset, pMesh))
             {
                 return NULL;

@@ -166,57 +166,66 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    for (int32 tokenIndex = 0; tokenIndex < manifestParseResult; tokenIndex++)
+    if (manifestParseResult < 1 || manifestTokens[0].type != enJsmnType_Object)
     {
-        enJsmnToken* token = &manifestTokens[tokenIndex];
+        enLogError("No root object found in manifest json.");
+        return -1;
+    }
 
-        if (enJsmnEqual(manifestJson, token, "Assets"))
-        {
-            tokenIndex++;
-            token = &manifestTokens[tokenIndex];
-            
-            if (token->type != enJsmnType_Array)
+    for (uint32 i = 1; i < (uint32)manifestParseResult; i++)
+    {
+        if (enJsmnEqual(manifestJson, &manifestTokens[i], "Assets"))
+        {            
+            if (manifestTokens[i + 1].type != enJsmnType_Array)
             {
                 enLogWarning("Malformed manifest JSON!");
                 continue;
             }
 
-            for (uint32 i = 0; i < manifestTokens[tokenIndex].size; i++)
+            for (uint32 j = 0; j < manifestTokens[i + 1].size; j++)
             {
                 char name[256] = {0};
                 char path[256] = {0};
                 char type[256] = {0};
 
-                tokenIndex++;
-                for (uint32 j = 0; j < manifestTokens[tokenIndex].size; j++)
+                for (uint32 k = 0; k < manifestTokens[i + j + 1]; k++)
                 {
-                    //tokenIndex++;
-                    if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Name"))
+                    if (enJsmnEqual(manifestJson, &manifestTokens[i + j + k + 2]))
                     {
-                        tokenIndex++;
-                        enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, name, 256);
-                        tokenIndex++;
-                    }
-                    
-                    else if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Path"))
-                    {
-                        tokenIndex++;
-                        enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, path, 256);
-                        tokenIndex++;
-                    }
-                    
-                    else if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Type"))
-                    {
-                        tokenIndex++;
-                        enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, type, 256);
-                        tokenIndex++;
-                    }
-                    else
-                    {
-                        enLogWarning("Malformed manifest JSON!");
-                        continue;
+                        enStringCopy()
                     }
                 }
+                //tokenIndex++;
+                if (enJsmnEqual(manifestJson, &manifestTokens[i + j + 2], "Name"))
+                {
+                    tokenIndex++;
+                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, name, 256);
+                    tokenIndex++;
+                }
+                else
+                {
+
+                }
+                
+                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Path"))
+                {
+                    tokenIndex++;
+                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, path, 256);
+                    tokenIndex++;
+                }
+                
+                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Type"))
+                {
+                    tokenIndex++;
+                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, type, 256);
+                    tokenIndex++;
+                }
+                else
+                {
+                    enLogWarning("Malformed manifest JSON!");
+                    continue;
+                }
+                
 
                 /* Check if there are any same assets */
                 if (enPackageExists(package, name))

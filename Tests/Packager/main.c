@@ -149,142 +149,143 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    enJsmnToken* manifestTokens = enCalloc(manifestParseResult, sizeof(enJsmnToken));
-    if (!manifestTokens)
+    enJsmnToken* t = enCalloc(manifestParseResult, sizeof(enJsmnToken));
+    if (!t)
     {
         enFree(manifestJson);
         return -1;
     }
     
     enJsmnInit(&parser);
-    manifestParseResult = enJsmnParse(&parser, manifestJson, manifestFileSize, manifestTokens, manifestParseResult);
+    manifestParseResult = enJsmnParse(&parser, manifestJson, manifestFileSize, t, manifestParseResult);
     if (manifestParseResult < 1)
     {
         enLogError("Could not parse the manifest file.");
-        enFree(manifestTokens);
+        enFree(t);
         enFree(manifestJson);
         return -1;
     }
 
-    if (manifestParseResult < 1 || manifestTokens[0].type != enJsmnType_Object)
+    if (manifestParseResult < 1 || t[0].type != enJsmnType_Object)
     {
         enLogError("No root object found in manifest json.");
         return -1;
     }
 
+    /* Find the childeren of the root object */
     for (uint32 i = 1; i < (uint32)manifestParseResult; i++)
     {
-        if (enJsmnEqual(manifestJson, &manifestTokens[i], "Assets"))
-        {            
-            if (manifestTokens[i + 1].type != enJsmnType_Array)
+
+        /* Check the different keys in root */
+        if (enJsmnEqual(manifestJson, &t[i], "Assets"))
+        {
+            
+            /* Assert asset type */
+            if (t[i + 1].type != enJsmnType_Array)
             {
-                enLogWarning("Malformed manifest JSON!");
-                continue;
+                enLogError("Assets is not an array.");
+                return -1;
             }
 
-            for (uint32 j = 0; j < manifestTokens[i + 1].size; j++)
+            /* Iterate over the asset objects */
+            enJsmnToken* assets = &t[i + 1];
+            for (uint32 j = 0; j < (uint32)assets->size; j++)
             {
+                if (t[i + j + 2].type != enJsmnType_Object)
+                {
+                    enLogError("Asset is not an object!");
+                    return -1;
+                }
+
+                /* Iterate over the objects childeren */
                 char name[256] = {0};
                 char path[256] = {0};
                 char type[256] = {0};
 
-                for (uint32 k = 0; k < manifestTokens[i + j + 1]; k++)
+                enJsmnToken* g = &t[i + j + 2];
+                for (uint32 k = 0; k < (uint32)g->size; k++)
                 {
-                    if (enJsmnEqual(manifestJson, &manifestTokens[i + j + k + 2]))
+
+                    if (enJsmnEqual(manifestJson, &t[i + j + k + 3], "Name"))
                     {
-                        enStringCopy()
+                        i++;
+                        enStringCopy(manifestJson + t[i + j + k + 3].start, t[i + j + k + 3].end - t[i + j + k + 3].start, name, 256);
+                    }
+                    else if (enJsmnEqual(manifestJson, &t[i + j + k + 3], "Path"))
+                    {
+                        i++;
+                        enStringCopy(manifestJson + t[i + j + k + 3].start, t[i + j + k + 3].end - t[i + j + k + 3].start, path, 256);
+                    }
+                    else if (enJsmnEqual(manifestJson, &t[i + j + k + 3], "Type"))
+                    {
+                        i++;
+                        enStringCopy(manifestJson + t[i + j + k + 3].start, t[i + j + k + 3].end - t[i + j + k + 3].start, type, 256);
+                    }
+                    else
+                    {
+                        i++;
+                        enLogError("Unknown key in asset object.");
+                        return -1;
                     }
                 }
-                //tokenIndex++;
-                if (enJsmnEqual(manifestJson, &manifestTokens[i + j + 2], "Name"))
-                {
-                    tokenIndex++;
-                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, name, 256);
-                    tokenIndex++;
-                }
-                else
-                {
 
-                }
-                
-                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Path"))
-                {
-                    tokenIndex++;
-                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, path, 256);
-                    tokenIndex++;
-                }
-                
-                if (enJsmnEqual(manifestJson, &manifestTokens[tokenIndex + i + 2], "Type"))
-                {
-                    tokenIndex++;
-                    enStringCopy(manifestJson + manifestTokens[tokenIndex + i + 2].start, manifestTokens[tokenIndex + i + 2].end - manifestTokens[tokenIndex + i + 2].start, type, 256);
-                    tokenIndex++;
-                }
-                else
-                {
-                    enLogWarning("Malformed manifest JSON!");
-                    continue;
-                }
-                
+                i += g->size;
 
-                /* Check if there are any same assets */
+                /* Make sure that the asset does not already exist */
                 if (enPackageExists(package, name))
                 {
-                    enLog("SKIP", name, "Already found.");
+                    enLogInfo("Skipping found asset.");
                     continue;
                 }
-                
-                /* Log the information we gotten */
-                enStringFormatArgument assetLogFmtArgs[] = 
-                {
-                    {
-                        .type = enStringFormatType_String,
-                        .value.String = name
-                    },
-                    {
-                        .type = enStringFormatType_String,
-                        .value.String = path
-                    },
-                    {
-                        .type = enStringFormatType_String,
-                        .value.String = type
-                    }
+
+                /* Log the info */
+                char message[1024] = {0};
+                const char format[] = "\nNEW ASSET\n\tNAME: %s\n\tPATH: %s\n\tTYPE: %s";
+                enStringFormatArgument arguments[3] = {
+                    {.type = enStringFormatType_String, .value.String = name},
+                    {.type = enStringFormatType_String, .value.String = path},
+                    {.type = enStringFormatType_String, .value.String = type}
                 };
-                char assetLogFormat[] = "NEW ASSET\n\tName: %s\n\tPath: %s\n\tType: %s";
-                char assetLogMessage[512] = {0};
-                enStringFormat(assetLogMessage, sizeof(assetLogMessage), assetLogFormat, assetLogFmtArgs, COUNT_OF(assetLogFmtArgs));
-                enLogInfo(assetLogMessage);
+                enStringFormat(message, sizeof(message), format, arguments, COUNT_OF(arguments));
+                enLogInfo(message);
 
-
-                /* Get the proper type */
+                /* Get the assets formal type */
                 enAssetType assetType = enAssetType_None;
-                if (enStringCompare(type, "None", sizeof("None")) == 0)
+                if (enStringCompare(name, "None", sizeof("None")))
                 {
-                    assetType = enAssetType_None;
-                } else if (enStringCompare(type, "Texture", sizeof("Texture")) == 0)
+                    assetType = enAssetType_None;                    
+                }
+                else if (enStringCompare(name, "Texture", sizeof("Texture")))
                 {
                     assetType = enAssetType_Texture;
-                } else if (enStringCompare(type, "Model", sizeof("Model")) == 0)
+                }
+                else if (enStringCompare(name, "Shader", sizeof("Shader")))
+                {
+                    assetType = enAssetType_Shader;
+                }
+                else if (enStringCompare(name, "Model", sizeof("Model")))
                 {
                     assetType = enAssetType_Model;
-                } else if (enStringCompare(type, "Audio", sizeof("Audio")) == 0)
+                }
+                else if (enStringCompare(name, "Audio", sizeof("Audio")))
                 {
                     assetType = enAssetType_Audio;
                 }
                 else
                 {
-                    enLogWarning("Unknown asset type!");
+                    enLogWarning("Unknown asset type.");
                 }
 
-                /* Read the asset file */
-                char assetPath[256] = {0};
-                enStringCopy(relativePath, enStringLength(relativePath, 256), assetPath, 256);
-                enStringConcatenate(path, 256, assetPath, 256);
+                /* Get the assets path */
+                char actualPath[256] = {0};
+                enStringCopy(relativePath, enStringLength(relativePath, sizeof(relativePath)), actualPath, sizeof(actualPath));
+                enStringConcatenate(path, enStringLength(path, sizeof(path)), actualPath, sizeof(actualPath));
 
-                enFile* assetFile = enFileOpen(path, "rb");
+                /* Read the asset data */
+                enFile* assetFile = enFileOpen(actualPath, "rb");
                 if (!assetFile)
                 {
-                    enLogError("Asset file path invalid.");
+                    enLogError("Could not open asset file!");
                     continue;
                 }
 
@@ -292,37 +293,43 @@ int main(int argc, char** argv)
                 uint32 assetFileSize = (uint32)enFileTell(assetFile);
                 enFileSeek(assetFile, 0, enSeek_Begin);
 
-                uint8* assetData = enCalloc(1, assetFileSize);
+                uint8* assetData = enCalloc(assetFileSize, sizeof(uint8));
                 if (!assetData)
                 {
+                    enLogError("Could not allocate memory for asset data!");
                     enFileClose(assetFile);
                     continue;
                 }
 
-                if (enFileRead(assetFile, assetData, assetFileSize, 1) != 1)
+                if (!enFileRead(assetFile, assetData, assetFileSize, 1))
                 {
-                    enLogError("Could not read the asset file!");
-                    enFree(assetData);
+                    enLogError("Could not read asset data!");
                     enFileClose(assetFile);
+                    enFree(assetData);
                     continue;
                 }
 
                 enFileClose(assetFile);
 
-                /* Create the asset */
-                if (!enPackageAdd(package, name, assetType, assetFileSize, assetFile))
+                /* Add the asset to the package */
+                if (!enPackageAdd(package, name, assetType, assetFileSize, assetData))
                 {
-                    enLogError("Could not add the asset to the package!");
                     enFree(assetData);
+                    enLogError("Could not add asset to package!");
                     continue;
                 }
-                
+
+                enFree(assetData);
             }
+
+            i += t[i + 1].size + 1;
         }
     }
 
-    enFree(manifestTokens);
+    enFree(t);
     enFree(manifestJson);
+
+    enPackageClose(package);
 
     return 0;
 }

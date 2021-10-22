@@ -13,8 +13,10 @@ typedef enum enAssetType
     enAssetType_Remove = 0,
     enAssetType_None,
     enAssetType_Texture, /* .png */
+    enAssetType_Shader, /* .glsl, .vert, .frag, .spv, .hlsl */
     enAssetType_Model, /* .glb */
     enAssetType_Audio, /* .wav */
+    enAssetType_Font, /* .ttf */
     enAssetType_Max = enAssetType_Audio
 } enAssetType;
 

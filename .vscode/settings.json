@@ -120,7 +120,13 @@
         "initializer_list": "c",
         "enjsmn.h": "c",
         "typeindex": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "ratio": "c",
+        "tuple": "c",
+        "utility": "c",
+        "xmemory": "c",
+        "xstring": "c",
+        "xtr1common": "c"
     },
     "cmake.configureOnOpen": true
 }

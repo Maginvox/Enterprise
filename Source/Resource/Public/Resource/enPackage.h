@@ -16,26 +16,20 @@
 
 typedef struct enPackage
 {
-    char recordsPath[FPATH_MAX];
+    char recordPath[FPATH_MAX];
     char dataPath[FPATH_MAX]; 
 
-    uint32 recordsCount;
-    enPackageRecord* records;
-    int32 hashToRecordMap[ENTERPRISE_PACKAGE_MAX_RECORDS];
-    enAsset* assets[ENTERPRISE_PACKAGE_MAX_RECORDS];
+    uint32 count;
+    enPackageRecord* pRecords;
+    int32 hashToRecord[ENTERPRISE_PACKAGE_MAX_RECORDS];
 } enPackage;
 
 enPackage* enPackageOpen(const char* pRecordsPath, const char* pDataPath);
 void enPackageClose(enPackage* pPackage);
-bool enPackageAdd(enPackage* package, const char* name, const enAssetType type, const uint32 length, const void* data); /* Should only be used when developing or patching */
-bool enPackageAddFile(enPackage* package, const char* path, const enAssetType type); /* Should only be used when developing or patching */
-bool enPackageUpdate(enPackage* package, const char* name, const enAssetType type, const uint32 length, const void* data); /* Should only be used when developing or patching */
-bool enPackageUpdateFile(enPackage* package, const char* path); /* Use only in development */
-bool enPackageRemove(enPackage* package, const char* name); /* Should only be used when developing or patching */
-bool enPackageRepack(enPackage* package); /* Removes any records marked as remove. */
-bool enPackageExists(enPackage* package, const char* name);
-const enAsset* enPackageLoadAsset(enPackage* pPackage, const char* name);
-void enPackageUnLoadAsset(enPackage* pPackage, const char* name);
-bool enPackagePatch(enPackage* package, const char* patchRecordsPath, const char* patchDataPath);
+bool enPackageAddData(enPackage* pPackage, const char* pName, const enAssetType type, const uint32 length, const uint8* pData); /* Should only be used when developing or patching */
+bool enPackageUpdateData(enPackage* pPackage, const char* pName, const enAssetType type, bool updateData, const uint32 length, const uint8* pData); /* Should only be used when patching */
+void enPackageRepack(enPackage* pPackage); /* Removes records that are marked remove */
+bool enPackagePatch(enPackage* pPackage, const char* pRecordPath, const char* pDataPath); /* Adds new and updates existing records/data */
+uint8* enPackageLoad(enPackage* pPackage, const char* pName);
 
 #endif

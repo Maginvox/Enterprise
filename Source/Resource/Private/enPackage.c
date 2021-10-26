@@ -176,6 +176,17 @@ void enPackageClose(enPackage* package)
     enFree(package);
 }
 
+bool enPackageRecordExists(enPackage* pPackage, const char* pName)
+{
+    if (!pPackage || !pName)
+    {
+        return false;
+    }
+
+    uint32 hash = enPackageHash(pName);
+    return pPackage->hashToRecord[hash] != -1;
+}
+
 bool enPackageAddData(enPackage* pPackage, const char* pName, const enAssetType type, const uint32 length, const uint8* pData)
 {
 
@@ -272,7 +283,7 @@ void enPackageRepack(enPackage* package)
     enPackageRecord* newRecords = enMalloc(sizeof(enPackageRecord) * recordsLeft);
     if (newRecords == NULL)
     {
-        return false;
+        return;
     }
 
     /* Copy the records */
@@ -294,7 +305,7 @@ void enPackageRepack(enPackage* package)
     enFile* dataFile = enFileOpen(package->dataPath, "r+");
     if (dataFile == NULL)
     {
-        return false;
+        return;
     }
 
     /* Create a copy of the data file */
@@ -306,12 +317,12 @@ void enPackageRepack(enPackage* package)
     if (copyFile == NULL)
     {
         enFileClose(dataFile);
-        return false;
+        return;
     }
     
-    for (uint32 i = 0; i < package->recordsCount; i++)
+    for (uint32 i = 0; i < package->count; i++)
     {
-        enPackageRecord* record = &package->records[i];
+        enPackageRecord* record = &package->pRecords[i];
 
         if (record->type != enAssetType_Remove)
         {
@@ -328,7 +339,7 @@ void enPackageRepack(enPackage* package)
                 {
                     enFileClose(dataFile);
                     enFileClose(copyFile);
-                    return false;
+                    return;
                 }
 
                 enFileWriteChar(copyFile, c);
@@ -341,7 +352,7 @@ void enPackageRepack(enPackage* package)
     {
         enFileClose(dataFile);
         enFileClose(copyFile);
-        return false;
+        return;
     }
 
     enFileClose(dataFile);
@@ -351,135 +362,77 @@ void enPackageRepack(enPackage* package)
     enFileRemove(package->dataPath);
     enFileRename(copyPath, package->dataPath);
     
-    return true;
+    return;
 }
 
-bool enPackageExists(enPackage* package, const char* name)
+bool enPackageLoad(enPackage* package, const char* pName, enAsset* pAsset)
 {
-    if (package == NULL || name == NULL)
+    if (!package || !pName || !pAsset)
     {
         return false;
     }
 
-    uint32 hash = enHashMultiplicationMethod(name);
-    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
-
-    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || package->hashToRecordMap[hash] == -1)
+    /* Check if the record exists */
+    uint32 hash = enPackageHash(pName);
+    if (package->hashToRecord[hash] == -1)
     {
-        return false;
+        return false; /* This record does not exist */
     }
 
-    return true;
-}
-
-const enAsset* enPackageLoadAsset(enPackage* package, const char* name)
-{
-    if (package == NULL || name == NULL)
-    {
-        return NULL;
-    }
-
-    uint32 hash = enHashMultiplicationMethod(name);
-    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
-
-    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || package->hashToRecordMap[hash] == -1)
-    {
-        return NULL;
-    }
-
-    if (package->assets[hash] != NULL) /* Check if the data is already loaded */
-    {
-        return package->assets[hash];
-    }
-
-    enPackageRecord* record = &package->records[package->hashToRecordMap[hash]];
-
+    /* Check if the record is to be removed */
+    enPackageRecord* record = &package->pRecords[package->hashToRecord[hash]];
     if (record->type == enAssetType_Remove)
     {
-        return NULL;
+        return false; /* Record will not be loaded since it will be deleted soon */
     }
 
-    enFile* dataFile = enFileOpen(package->dataPath, "rb");
-    if (dataFile == NULL)
-    {
-        return NULL;
-    }
-
-    enFileSeek(dataFile, record->offset, enSeek_Set);
-
-    enAsset* asset = enMalloc(sizeof(enAsset));
-    if (asset == NULL)
-    {
-        enFileClose(dataFile);
-        return NULL;
-    }
-
-    asset->type = record->type;
-    asset->size = record->length;
-    asset->data = enMalloc(record->length);
-    if (asset->data == NULL)
-    {
-        enFileClose(dataFile);
-        enFree(asset);
-        return NULL;
-    }
-
-    if (enFileRead(dataFile, asset->data, record->length, 1) != 1)
-    {
-        enFileClose(dataFile);
-        enFree(asset->data);
-        enFree(asset);
-        return NULL;
-    }
-
-    enFileClose(dataFile);
-
-    package->assets[hash] = asset;
-    return asset;
-}
-
-void enPackageUnLoadAsset(enPackage* pPackage, const char* name)
-{
-    if (pPackage == NULL || name == NULL)
-    {
-        return;
-    }
-
-    uint32 hash = enHashMultiplicationMethod(name);
-    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
-
-    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || pPackage->hashToRecordMap[hash] == -1)
-    {
-        return;
-    }
-
-    if (pPackage->assets[hash] == NULL)
-    {
-        return;
-    }
-
-    enFree(pPackage->assets[hash]->data);
-    enFree(pPackage->assets[hash]);
-    pPackage->assets[hash] = NULL;
-}
-
-bool enPackageUpdate(enPackage* package, const char* name, const enAssetType type, const uint32 length, const void* data)
-{
-    if (package == NULL || name == NULL || !enMathIsBetween(type, 0, enAssetType_Max) || data == NULL)
+    /* Open the data file */
+    enFile* pDataFile = enFileOpen(package->dataPath, "rb");
+    if (pDataFile == NULL)
     {
         return false;
     }
 
-    uint32 hash = enHashMultiplicationMethod(name);
-    hash %= ENTERPRISE_PACKAGE_MAX_RECORDS;
+    enFileSeek(pDataFile, record->offset, enSeek_Set);
+
+    /* Load the asset data */
+    pAsset->pData = enMalloc(record->length);
+    pAsset->type = record->type;
+    pAsset->size = record->length;
+
+    if (!pAsset->pData)
+    {
+        enFileClose(pDataFile);
+        return false;
+    }
+
+    if (enFileRead(pDataFile, pAsset->pData, record->length, 1) != 1)
+    {
+        enFileClose(pDataFile);
+        enFree(pAsset->pData);
+        return false;
+    }
+
+    enFileClose(pDataFile);
+    return true;
+}
+
+bool enPackageUpdate(enPackage* package, const char* pName, const enAssetType type, bool updateData, const uint32 length, const void* pData)
+{
+    if (package == NULL || pName == NULL || !enMathIsBetween(type, 0, enAssetType_Max) || pData == NULL)
+    {
+        return false;
+    }
 
     /* Make sure that the record does exist */
-    if (hash > ENTERPRISE_PACKAGE_MAX_RECORDS || package->hashToRecordMap[hash] == -1)
+    uint32 hash = enPackageHash(pName);
+
+    if (package->hashToRecord[hash] == -1)
     {
         return false;
     }
 
-    enPackageRecord* record = &package->records[package->hashToRecordMap[hash]];
+    enPackageRecord* record = &package->pRecords[package->hashToRecord[hash]];
 
     /* Compress the data if possible */
     uint32 compressedSize = LZ4_compressBound(length);
@@ -490,14 +443,15 @@ bool enPackageUpdate(enPackage* package, const char* name, const enAssetType typ
     }
 
     bool compressed = true;
-    compressedSize = LZ4_compress_default(data, compressedBytes, length, compressedSize);
+    compressedSize = LZ4_compress_default(pData, compressedBytes, length, compressedSize);
     if (compressedSize <= 0)
     {
         enFree(compressedBytes);
         enLogError("Could not compress an asset!");
         return false;
     }
-
+    
+    /* If the compressed length larger, then we should just use the normal data */
     if (compressedSize >= length)
     {
         enLogInfo("Could not compress an asset, its size is greater than when not compressed!");
@@ -508,7 +462,7 @@ bool enPackageUpdate(enPackage* package, const char* name, const enAssetType typ
     enMD5String(compressedBytes, compressedSize, compressedMD5);
 
     /* Compare MD5 values */
-    if (!enStringCompare(compressedMD5, record->md5, 16) && record->type == type)
+    if (enStringCompare(compressedMD5, record->md5, 16) == 0 && record->type == type)
     {
         enFree(compressedBytes);
         return true; /* We already have this record so its success */

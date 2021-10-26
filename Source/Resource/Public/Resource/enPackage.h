@@ -26,10 +26,11 @@ typedef struct enPackage
 
 enPackage* enPackageOpen(const char* pRecordsPath, const char* pDataPath);
 void enPackageClose(enPackage* pPackage);
+bool enPackageRecordExists(enPackage* pPackage, const char* pName);
 bool enPackageAddData(enPackage* pPackage, const char* pName, const enAssetType type, const uint32 length, const uint8* pData); /* Should only be used when developing or patching */
 bool enPackageUpdateData(enPackage* pPackage, const char* pName, const enAssetType type, bool updateData, const uint32 length, const uint8* pData); /* Should only be used when patching */
 void enPackageRepack(enPackage* pPackage); /* Removes records that are marked remove */
 bool enPackagePatch(enPackage* pPackage, const char* pRecordPath, const char* pDataPath); /* Adds new and updates existing records/data */
-uint8* enPackageLoad(enPackage* pPackage, const char* pName);
+bool enPackageLoad(enPackage* pPackage, const char* pName, enAsset* pAsset);
 
 #endif

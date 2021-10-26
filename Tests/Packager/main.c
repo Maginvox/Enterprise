@@ -61,14 +61,6 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    /* Create our paths */
-    enStringCopy(manifestOption.value.String, 256, manifestPath, 256);
-    enStringCopy(outputNameOption.value.String, 256, outputRecordsPath, 256);
-    enStringCopy(outputNameOption.value.String, 256, outputDataPath, 256);
-
-    enStringConcatenate(".recpak", sizeof(".recpak"), outputRecordsPath, 256);
-    enStringConcatenate(".datpak", sizeof(".datpak"), outputDataPath, 256);
-
     if (enArgumentParserGetOption(argsParser, "Repack", &repackOption))
     {
         repack = repackOption.value.Bool;
@@ -76,7 +68,10 @@ int main(int argc, char** argv)
 
     enArgumentParserDestroy(argsParser);
 
+
+
     /* Get the relative path */
+    enStringCopy(manifestOption.value.String, sizeof(manifestOption.value.String), manifestPath, sizeof(manifestPath));
     enStringCopy(manifestPath, 256, relativePath, 256);
     enStringReverse(relativePath, 256);
 
@@ -90,6 +85,17 @@ int main(int argc, char** argv)
     enStringReverse(relativePath, 256);
     enStringCopy(relativePath, enStringLength(relativePath, 256) - (uint32)distanceFromLast, relativePath, 256);
     
+    /* Create our paths */
+    enStringCopy(relativePath, sizeof(relativePath), outputRecordsPath, sizeof(outputRecordsPath));
+    enStringConcatenate(outputNameOption.value.String, sizeof(outputNameOption.value.String), outputRecordsPath, sizeof(outputRecordsPath));
+    enStringConcatenate(".recpak", sizeof("recpak"), outputRecordsPath, sizeof(outputRecordsPath));
+
+    enStringCopy(relativePath, sizeof(relativePath), outputDataPath, sizeof(outputDataPath));
+    enStringConcatenate(outputNameOption.value.String, sizeof(outputNameOption.value.String), outputDataPath, sizeof(outputDataPath));
+    enStringConcatenate(".datpak", sizeof("datpak"), outputDataPath, sizeof(outputDataPath));
+
+
+
     /* Open the package */
     enPackage* package = enPackageOpen(outputRecordsPath, outputDataPath);
     if (!package)
@@ -232,7 +238,7 @@ int main(int argc, char** argv)
                 i += g->size;
 
                 /* Make sure that the asset does not already exist */
-                if (enPackageExists(package, name))
+                if (enPackageRecordExists(package, name))
                 {
                     enLogInfo("Skipping found asset.");
                     continue;
@@ -251,23 +257,23 @@ int main(int argc, char** argv)
 
                 /* Get the assets formal type */
                 enAssetType assetType = enAssetType_None;
-                if (enStringCompare(name, "None", sizeof("None")))
+                if (enStringCompare(type, "None", sizeof("None")) == 0)
                 {
                     assetType = enAssetType_None;                    
                 }
-                else if (enStringCompare(name, "Texture", sizeof("Texture")))
+                else if (enStringCompare(type, "Texture", sizeof("Texture")) == 0)
                 {
                     assetType = enAssetType_Texture;
                 }
-                else if (enStringCompare(name, "Shader", sizeof("Shader")))
+                else if (enStringCompare(type, "Shader", sizeof("Shader")) == 0)
                 {
                     assetType = enAssetType_Shader;
                 }
-                else if (enStringCompare(name, "Model", sizeof("Model")))
+                else if (enStringCompare(type, "Model", sizeof("Model")) == 0)
                 {
                     assetType = enAssetType_Model;
                 }
-                else if (enStringCompare(name, "Audio", sizeof("Audio")))
+                else if (enStringCompare(type, "Audio", sizeof("Audio")) == 0)
                 {
                     assetType = enAssetType_Audio;
                 }
@@ -312,7 +318,7 @@ int main(int argc, char** argv)
                 enFileClose(assetFile);
 
                 /* Add the asset to the package */
-                if (!enPackageAdd(package, name, assetType, assetFileSize, assetData))
+                if (!enPackageAddData(package, name, assetType, assetFileSize, assetData))
                 {
                     enFree(assetData);
                     enLogError("Could not add asset to package!");
@@ -330,6 +336,8 @@ int main(int argc, char** argv)
     enFree(manifestJson);
 
     enPackageClose(package);
+
+    enLogInfo("Done!");
 
     return 0;
 }

@@ -45,7 +45,7 @@ typedef struct enPackageFooter
 
 typedef struct enAsset
 {
-    void* data; /* A running program should never change this data only read */
+    uint8* pData; /* A running program should never change this data only read */
     uint64 size;
     enAssetType type;
 } enAsset;

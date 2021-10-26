@@ -116,6 +116,7 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
     {
         enFileClose(recordFile);
         enPackageClose(pPackage);
+        enLogError("Could not read package magic and version properly!");
         return NULL;
     }
 
@@ -187,7 +188,7 @@ bool enPackageRecordExists(enPackage* pPackage, const char* pName)
     return pPackage->hashToRecord[hash] != -1;
 }
 
-bool enPackageAddData(enPackage* pPackage, const char* pName, const enAssetType type, const uint32 length, const uint8* pData)
+bool enPackageDataAdd(enPackage* pPackage, const char* pName, const enAssetType type, const uint32 length, const uint8* pData)
 {
 
     if (pPackage == NULL || !enMathIsBetween(type, 0, enAssetType_Max) || length == 0 || pData == NULL)

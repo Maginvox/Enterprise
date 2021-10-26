@@ -78,13 +78,15 @@ int main(int argc, char** argv)
     char* lastDot = enStringSeperate(relativePath, 256, "/\\", 2);
     if (lastDot == NULL)
     {
-        enLogError("Could not find relative path.");
-        return -1;
+        enMemorySet(relativePath, sizeof(relativePath), 0); 
     }
-    uint64 distanceFromLast = lastDot - relativePath;
-    enStringReverse(relativePath, 256);
-    enStringCopy(relativePath, enStringLength(relativePath, 256) - (uint32)distanceFromLast, relativePath, 256);
-    
+    else
+    {
+        uint64 distanceFromLast = lastDot - relativePath;
+        enStringReverse(relativePath, 256);
+        enStringCopy(relativePath, enStringLength(relativePath, 256) - (uint32)distanceFromLast, relativePath, 256);
+    }
+
     /* Create our paths */
     enStringCopy(relativePath, sizeof(relativePath), outputRecordsPath, sizeof(outputRecordsPath));
     enStringConcatenate(outputNameOption.value.String, sizeof(outputNameOption.value.String), outputRecordsPath, sizeof(outputRecordsPath));
@@ -318,7 +320,7 @@ int main(int argc, char** argv)
                 enFileClose(assetFile);
 
                 /* Add the asset to the package */
-                if (!enPackageAddData(package, name, assetType, assetFileSize, assetData))
+                if (!enPackageDataAdd(package, name, assetType, assetFileSize, assetData))
                 {
                     enFree(assetData);
                     enLogError("Could not add asset to package!");

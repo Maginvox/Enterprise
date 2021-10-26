@@ -10,6 +10,11 @@
             "Name": "Song1.wav",
             "Path": "Resources/Song1.wav",
             "Type": "Audio"
+        },
+        {
+            "Name": "ice.jpg",
+            "Path": "Resources/ice.jpg",
+            "Type": "Texture"
         }
     ]
 }

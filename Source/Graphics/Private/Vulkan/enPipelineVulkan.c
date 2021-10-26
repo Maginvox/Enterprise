@@ -53,14 +53,14 @@ enPipeline enPipelineCreate(enPipelinePass pass, enAsset* pVertex, enAsset* pFra
             .pNext = NULL,
             .flags = 0,
             .codeSize = pVertex->size,
-            .pCode = (const uint32_t*)pVertex->data
+            .pCode = (const uint32_t*)pVertex->pData
         },
         {
             .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
             .pNext = NULL,
             .flags = 0,
             .codeSize = pFragment->size,
-            .pCode = (const uint32_t*)pFragment->data
+            .pCode = (const uint32_t*)pFragment->pData
         }
     };
 

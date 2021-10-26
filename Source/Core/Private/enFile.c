@@ -140,7 +140,7 @@ int64 enFileRead(enFile* pFile, void* pBuffer, const int64 elementSize, const in
         return 0;
     }
 
-    return fread(pBuffer, elementSize, elementCount, (FILE*)pFile);
+    return fread(pBuffer, (size_t)elementSize, (size_t)elementCount, (FILE*)pFile);
 }
 
 /* ====================================================== */

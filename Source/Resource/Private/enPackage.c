@@ -76,7 +76,7 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
     }
 
     /* Create or open the files */
-    enFile* recordFile = enFileOpenOrCreate(recordPath, "r+");
+    enFile* recordFile = enFileOpenOrCreate(recordPath, "rb+");
     if (!recordFile)
     {
         return NULL;
@@ -137,10 +137,10 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
         {
             enFileClose(recordFile);
             enPackageClose(pPackage);
-            enLogError("Could not read package records!");
+            enLogError("Could not read package records properly!");
             return NULL;
         }
-   }
+    }
 
     enFileClose(recordFile);
 

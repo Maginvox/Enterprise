@@ -50,7 +50,6 @@ void enArgumentParserDestroy(enArgumentParser* pArgumentParser)
     if (pArgumentParser->pOptions != NULL)
     {
         enFree(pArgumentParser->pOptions);
-        pArgumentParser->pOptions = NULL;
     }
 
     enFree(pArgumentParser);

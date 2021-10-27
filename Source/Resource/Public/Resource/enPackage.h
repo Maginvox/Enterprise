@@ -24,7 +24,7 @@ typedef struct enPackage
     int32 hashToRecord[ENTERPRISE_PACKAGE_MAX_RECORDS];
 } enPackage;
 
-enPackage* enPackageOpen(const char* pRecordsPath, const char* pDataPath);
+enPackage* enPackageOpen(const char* pRecordsPath, const char* pDataPath, bool truncate);
 void enPackageClose(enPackage* pPackage);
 bool enPackageRecordExists(enPackage* pPackage, const char* pName);
 bool enPackageDataAdd(enPackage* pPackage, const char* pName, const enAssetType type, const uint32 length, const uint8* pData); /* Should only be used when developing or patching */

@@ -68,16 +68,33 @@ int32 enPackageDataAppend(enPackage* package, uint32 length, void* data) /* Retu
     return offset;
 }
 
-enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
+enPackage* enPackageOpen(const char* recordPath, const char* packagePath, bool truncate)
 {
     if (recordPath == NULL || packagePath == NULL)
     {
         return NULL;
     }
 
+    enFile* pRecordFile = NULL;
+
     /* Create or open the files */
-    enFile* recordFile = enFileOpenOrCreate(recordPath, "r+");
-    if (!recordFile)
+    if (truncate)
+    {
+        pRecordFile = enFileOpen(recordPath, "w");
+
+        /* Truncate the data file too */
+        enFile* pDataFile = enFileOpen(packagePath, "w");
+        if (pDataFile)
+        {
+            enFileClose(pDataFile);
+        }
+    }
+    else
+    {
+        pRecordFile = enFileOpenOrCreate(recordPath, "rb+");
+    }
+
+    if (!pRecordFile)
     {
         return NULL;
     }
@@ -95,9 +112,9 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
 
     /* Read the record header */
     enPackageHeader header = {0};
-    if (!enFileRead(recordFile, &header, sizeof(enPackageHeader), 1))
+    if (!enFileRead(pRecordFile, &header, sizeof(enPackageHeader), 1))
     {
-        enFileClose(recordFile); /* enPackageRewrite opens the record file again so we must close it here */
+        enFileClose(pRecordFile); /* enPackageRewrite opens the record file again so we must close it here */
 
         if (!enPackageRewrite(pPackage))
         {
@@ -114,7 +131,7 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
     /* Check the magic and version */
     if (header.magic != ENTERPRISE_PACKAGE_MAGIC_NUMBER || header.version != ENTERPRISE_PACKAGE_LATEST_VERSION || !enMathIsBetween(header.count, 0, ENTERPRISE_PACKAGE_MAX_RECORDS))
     {
-        enFileClose(recordFile);
+        enFileClose(pRecordFile);
         enPackageClose(pPackage);
         enLogError("Could not read package magic and version properly!");
         return NULL;
@@ -128,21 +145,21 @@ enPackage* enPackageOpen(const char* recordPath, const char* packagePath)
         pPackage->pRecords = enCalloc(pPackage->count, sizeof(enPackageRecord));
         if (!pPackage->pRecords)
         {
-            enFileClose(recordFile);
+            enFileClose(pRecordFile);
             enPackageClose(pPackage);
             return NULL;
         }
 
-        if (enFileRead(recordFile, pPackage->pRecords, sizeof(enPackageRecord), pPackage->count) != pPackage->count)
+        if (enFileRead(pRecordFile, pPackage->pRecords, sizeof(enPackageRecord), pPackage->count) != pPackage->count)
         {
-            enFileClose(recordFile);
+            enFileClose(pRecordFile);
             enPackageClose(pPackage);
-            enLogError("Could not read package records!");
+            enLogError("Could not read package records properly!");
             return NULL;
         }
-   }
+    }
 
-    enFileClose(recordFile);
+    enFileClose(pRecordFile);
 
     /* Map the record hashes to indices */
     for (uint32 i = 0; i < pPackage->count; i++)
@@ -303,7 +320,7 @@ void enPackageRepack(enPackage* package)
     package->count = recordsLeft;
 
     /* Open the data file */
-    enFile* dataFile = enFileOpen(package->dataPath, "r+");
+    enFile* dataFile = enFileOpen(package->dataPath, "rb+");
     if (dataFile == NULL)
     {
         return;

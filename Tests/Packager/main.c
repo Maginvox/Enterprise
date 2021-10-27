@@ -15,8 +15,6 @@ void pkShowHelp()
     enLogInfo("Optional Options: Repack:Bool");
 }
 
-
-
 int main(int argc, char** argv)
 {
 
@@ -68,8 +66,6 @@ int main(int argc, char** argv)
 
     enArgumentParserDestroy(argsParser);
 
-
-
     /* Get the relative path */
     enStringCopy(manifestOption.value.String, sizeof(manifestOption.value.String), manifestPath, sizeof(manifestPath));
     enStringCopy(manifestPath, 256, relativePath, 256);
@@ -96,14 +92,11 @@ int main(int argc, char** argv)
     enStringConcatenate(outputNameOption.value.String, sizeof(outputNameOption.value.String), outputDataPath, sizeof(outputDataPath));
     enStringConcatenate(".datpak", sizeof("datpak"), outputDataPath, sizeof(outputDataPath));
 
-
-
     /* Open the package */
-    enPackage* package = enPackageOpen(outputRecordsPath, outputDataPath);
+    enPackage* package = enPackageOpen(outputRecordsPath, outputDataPath, true);
     if (!package)
     {
         enLogError("Could not open package.");
-        enArgumentParserDestroy(argsParser);
         return -1;
     }
 

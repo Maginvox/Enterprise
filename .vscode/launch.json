@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/Tests/Packager/Debug/EnterprisePackager.exe",
             "args": [
-                "--ManifestPath=${workspaceFolder}/Tests/Packager/exampleManifest.json",
+                "--ManifestPath=C:\\Users\\cullvox\\Projects\\MaginvoxResources\\manifest.json",
                 "--OutputName=maginvox",
                 "--Repack=True"
             ],

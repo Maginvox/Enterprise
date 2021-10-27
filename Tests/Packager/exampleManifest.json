@@ -1,0 +1,20 @@
+{
+    "Name": "Maginvox",
+    "Assets": [
+        {
+            "Name": "MyFile.txt",
+            "Path": "Resources/MyFile.txt",
+            "Type": "Text"
+        },
+        {
+            "Name": "Song1.wav",
+            "Path": "Resources/Song1.wav",
+            "Type": "Audio"
+        },
+        {
+            "Name": "ice.jpg",
+            "Path": "Resources/ice.jpg",
+            "Type": "Texture"
+        }
+    ]
+}

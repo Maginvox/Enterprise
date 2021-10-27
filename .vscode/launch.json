@@ -5,7 +5,45 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Windows CPPDBG Launch",
+            "name": "Packager Windows Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Tests/Packager/Debug/EnterprisePackager.exe",
+            "args": [
+                "--ManifestPath=C:\\Users\\cullvox\\Projects\\MaginvoxResources\\manifest.json",
+                "--OutputName=maginvox",
+                "--Repack=True"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "console": "externalTerminal"
+        },
+        {
+            "name": "Packager Linux Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Tests/Packager/EnterprisePackager",
+            "args": [
+                "--ManifestPath=${workspaceFolder}/Tests/Packager/exampleManifest.json",
+                "--OutputName=maginvox",
+                "--Repack=True"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "Sandbox Launch Windows",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/Tests/Example/Debug/EnterpriseExample.exe",
@@ -16,10 +54,10 @@
             "console": "externalTerminal"
         },
         {
-            "name": "Linux GDB Launch",
+            "name": "Sandbox Launch Linux",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Tests/Example/EnterpriseExample",
+            "program": "${workspaceFolder}/build/Tests/Sandbox/Sandbox",
             "args": [
                 "--RenderAPI=0.4232"
             ],

@@ -15,8 +15,6 @@ void pkShowHelp()
     enLogInfo("Optional Options: Repack:Bool");
 }
 
-
-
 int main(int argc, char** argv)
 {
 
@@ -95,7 +93,7 @@ int main(int argc, char** argv)
     enStringConcatenate(".datpak", sizeof("datpak"), outputDataPath, sizeof(outputDataPath));
 
     /* Open the package */
-    enPackage* package = enPackageOpen(outputRecordsPath, outputDataPath);
+    enPackage* package = enPackageOpen(outputRecordsPath, outputDataPath, true);
     if (!package)
     {
         enLogError("Could not open package.");

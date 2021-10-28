@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-    enPackage* pPackage = enPackageOpen("resources.rec", "resources.pak");
+    enPackage* pPackage = enPackageOpen("resources.rec", "resources.pak", false);
     if (pPackage == NULL)
     {
         return -1;

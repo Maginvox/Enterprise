@@ -132,9 +132,9 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
     vkEnumeratePhysicalDevices(graphics_vk.instance, &physicalDeviceCount, pPhysicalDevices);
 
     /* Check and see if the physical device option is present */
-    if (enMathIsBetween(pOptions->physicalDevice, 0, physicalDeviceCount))
+    if (enMathIsBetween(pOptions->physicalDeviceVulkan, 0, physicalDeviceCount))
     {
-        graphics_vk.physicalDevice = pPhysicalDevices[pOptions->physicalDevice];
+        graphics_vk.physicalDevice = pPhysicalDevices[pOptions->physicalDeviceVulkan];
     }
     else
     {

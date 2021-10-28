@@ -7,7 +7,7 @@
 
 typedef struct
 {
-    int32 physicalDevice; /* Cannot change while in runtime */
+    uint32 physicalDeviceVulkan;
 } enGraphicsOptions;
 
 bool enGraphicsInitialize(const enWindowInfo* pWindowInfo,  const enGraphicsOptions* pOptions); /* Will automatically register the first window */

@@ -61,13 +61,13 @@ int main(int argc, char** argv)
 
     if (enArgumentParserGetOption(argsParser, "Repack", &repackOption))
     {
-        repack = repackOption.value.Bool;
+        repack = repackOption.values.Bool;
     }
 
     enArgumentParserDestroy(argsParser);
 
     /* Get the relative path */
-    enStringCopy(manifestOption.value.String, sizeof(manifestOption.value.String), manifestPath, sizeof(manifestPath));
+    enStringCopy(manifestOption.values.String, sizeof(manifestOption.values.String), manifestPath, sizeof(manifestPath));
     enStringCopy(manifestPath, 256, relativePath, 256);
     enStringReverse(relativePath, 256);
 
@@ -85,11 +85,11 @@ int main(int argc, char** argv)
 
     /* Create our paths */
     enStringCopy(relativePath, sizeof(relativePath), outputRecordsPath, sizeof(outputRecordsPath));
-    enStringConcatenate(outputNameOption.value.String, sizeof(outputNameOption.value.String), outputRecordsPath, sizeof(outputRecordsPath));
+    enStringConcatenate(outputNameOption.values.String, sizeof(outputNameOption.values.String), outputRecordsPath, sizeof(outputRecordsPath));
     enStringConcatenate(".recpak", sizeof("recpak"), outputRecordsPath, sizeof(outputRecordsPath));
 
     enStringCopy(relativePath, sizeof(relativePath), outputDataPath, sizeof(outputDataPath));
-    enStringConcatenate(outputNameOption.value.String, sizeof(outputNameOption.value.String), outputDataPath, sizeof(outputDataPath));
+    enStringConcatenate(outputNameOption.values.String, sizeof(outputNameOption.values.String), outputDataPath, sizeof(outputDataPath));
     enStringConcatenate(".datpak", sizeof("datpak"), outputDataPath, sizeof(outputDataPath));
 
     /* Open the package */
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
     }
 
     char message[512] = "Manifest Path: ";
-    enStringConcatenate(manifestOption.value.String, 256, message, 512);
+    enStringConcatenate(manifestOption.values.String, 256, message, 512);
     enLogInfo(message);
 
     /* Read the manifest JSON */

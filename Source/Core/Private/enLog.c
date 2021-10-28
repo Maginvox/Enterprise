@@ -9,7 +9,7 @@
 
 static enFile* pLogFile;
 
-bool FLogInit()
+bool enLogInitialize()
 {
 
     char pLogFilename[ENTERPRISE_PATH_MAX_LENGTH] = {0};
@@ -39,7 +39,7 @@ bool FLogInit()
     return true;
 }
 
-void FLogShutdown()
+void enLogShutdown()
 {
     if(pLogFile != NULL)
     {

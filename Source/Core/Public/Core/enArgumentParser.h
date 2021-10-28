@@ -34,7 +34,7 @@ typedef struct enArgumentParsedOption
         float Float;
         bool Bool;
         char String[ENTERPRISE_NAME_MAX_LENGTH];
-    } value;
+    } values;
 } enArgumentParsedOption;
 
 typedef struct

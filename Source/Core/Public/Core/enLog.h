@@ -8,8 +8,8 @@
 #include "Core/enString.h"
 
 
-bool FLogInitialize(); /* Only initialize and shutdown if you want to log to file. */
-void FLogShutdown();
+bool enLogInitialize(); /* Only initialize and shutdown if you want to log to file. */
+void enLogShutdown();
 
 void enLog(const char* pBasis, const char* pContext, const char* pMessage);
 void enLogInfo(const char* message);

@@ -156,23 +156,23 @@ bool enArgumentParserParse(enArgumentParser* pArgsParser, const int argc, char**
             if (enStringConvertToInt(pValue, valueLength, &valueInteger))
             {
                 parsedOption.type = enArgumentType_Int;
-                parsedOption.value.Int = valueInteger;
+                parsedOption.values.Int = valueInteger;
             }
             else if (enStringConvertToFloat(pValue, valueLength, &valueFloat))
             {
                 parsedOption.type = enArgumentType_Float;
-                parsedOption.value.Float = valueFloat;
+                parsedOption.values.Float = valueFloat;
             }
         }
         else if (enStringConvertToBool(pValue, valueLength, &valueBool))
         {
             parsedOption.type = enArgumentType_Bool;
-            parsedOption.value.Bool = valueBool;
+            parsedOption.values.Bool = valueBool;
         }
         else
         {
             parsedOption.type = enArgumentType_String;
-            enStringCopy(pValue, valueLength, parsedOption.value.String, ENTERPRISE_NAME_MAX_LENGTH);
+            enStringCopy(pValue, valueLength, parsedOption.values.String, ENTERPRISE_NAME_MAX_LENGTH);
         }
 
         /* Copy the parsed option */

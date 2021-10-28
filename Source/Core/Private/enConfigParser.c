@@ -284,24 +284,26 @@ void enConfigParserReset(enConfigParser* pConfigParser, const char* pConfigFilen
 
     for (int64 i = 0; i < pConfigParser->optionsCount; i++)
     {
-        const char* pConfigFormat = "%s = %s";
+        const char* pConfigFormat = "%s = %s\n";
         enStringFormatArgument pConfigFormatArgument[] = 
         {
             {enStringFormatType_String, .value.String = pConfigParser->pOptions[i].name},
             {enStringFormatType_String, .value.String = pConfigParser->pOptions[i].defaultValue}
         };
 
-        char pBuffer[ENTERPRISE_NAME_MAX_LENGTH + sizeof(" = ") + ENTERPRISE_NAME_MAX_LENGTH];
+        char pBuffer[ENTERPRISE_NAME_MAX_LENGTH + sizeof(" = ") + ENTERPRISE_NAME_MAX_LENGTH] = {0};
         if (!enStringFormat(pBuffer, sizeof(pBuffer), pConfigFormat, pConfigFormatArgument, COUNT_OF(pConfigFormatArgument)))
         {
             continue; 
         }
 
-        if (!enFileWrite(pFile, pBuffer, sizeof(pBuffer), 1))
+        if (!enFileWrite(pFile, pBuffer, enStringLength(pBuffer, sizeof(pBuffer)), 1))
         {
             continue;
         }
     }
+
+    enFileClose(pFile);
 }
 
 void enConfigParserResetOption(enConfigParser* pConfigParser, const char* pConfigFilename, const char* pOptionName)

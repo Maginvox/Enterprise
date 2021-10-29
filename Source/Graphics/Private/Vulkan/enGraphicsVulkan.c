@@ -17,21 +17,28 @@
 
 enGraphicsVulkan graphics_vk;
 
-VkBool32 enVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
-
-bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptions* pOptions)
+VkBool32 enVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
 {
-    if (!enWindowInitialize(pWindowInfo))
+    switch(messageSeverity)
     {
-        return false;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+            enLogInfo(pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+            enLogWarning(pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+            enLogError(pCallbackData->pMessage);
+        break;
     }
 
-    if (pWindowInfo == NULL || pOptions == NULL)
-    {
-        return false;
-    }
+    return VK_FALSE;
+}
 
-    /* Build the info to create the Vulkan instance. */
+bool enVulkanCreateInstance(const enGraphicsOptions* pOptions)
+{
+/* Build the info to create the Vulkan instance. */
     VkApplicationInfo applicationInfo = {
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
         .pNext = NULL,
@@ -104,15 +111,25 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         return false;
     }
 #endif
+}
 
-    /* Now that the surface is created we can create the window surface */
-    if (!enWindowVulkanInitialize())
+void enVulkanDestroyInstance()
+{
+#ifdef ENTERPRISE_DEBUG
+    if (graphics_vk.debugMessenger != VK_NULL_HANDLE)
     {
-        enGraphicsShutdown();
-        enLogError("Could not initialize the vulkan window!");
-        return false;
+        graphics_vk.pDestroyDebugMessenger(graphics_vk.instance, graphics_vk.debugMessenger, NULL);
     }
+#endif
 
+    if (graphics_vk.instance != VK_NULL_HANDLE)
+    {
+        vkDestroyInstance(graphics_vk.instance, NULL);
+    }
+}
+
+bool enVulkanChoosePhysicalDevice(const enGraphicsOptions* pOptions)
+{
     /* Find the physical device */
     uint32_t physicalDeviceCount = 0;
     if (vkEnumeratePhysicalDevices(graphics_vk.instance, &physicalDeviceCount, NULL) != VK_SUCCESS)
@@ -142,9 +159,20 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
     }
     
     enFree(pPhysicalDevices);
+    return true;
+}
+
+bool enVulkanCreateDevice()
+{
+    /* Get the validation layers and instance extensions. */
+    int32 validationLayersCount = 0;
+    const char* const* ppValidationLayers = enVulkanValidationLayers(&validationLayersCount);
+
+    int32 instanceExtensionsCount = 0;
+    const char* const* ppInstanceExtension = enVulkanInstanceExtensions(&instanceExtensionsCount);
 
 
-    /* Get the physical devices queues */
+/* Get the physical devices queues */
     uint32_t queueFamilyPropertiesCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(graphics_vk.physicalDevice, &queueFamilyPropertiesCount, NULL);
 
@@ -322,39 +350,20 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
     }
 
     enFree(pQueueCreateInfos);
+    return true;
+}
 
-    /* We can now create the main windows swapchain */
-    if (!enWindowVulkanCreateSwapchain())
+void enVulkanDestroyDevice()
+{
+    if (graphics_vk.device != VK_NULL_HANDLE)
     {
-        enGraphicsShutdown();
-        return false;
+        vkDestroyDevice(graphics_vk.device, NULL);
     }
+}
 
-    /* Create the allocator */
-    VmaAllocatorCreateInfo allocatorCreateInfo = {
-        .flags = 0,
-        .physicalDevice = graphics_vk.physicalDevice,
-        .device = graphics_vk.device,
-        .preferredLargeHeapBlockSize = 0,
-        .pAllocationCallbacks = NULL,
-        .pAllocationCallbacks = NULL,
-        .pDeviceMemoryCallbacks = NULL,
-        .frameInUseCount = 0,
-        .pHeapSizeLimit = NULL,
-        .pVulkanFunctions = NULL,
-        .pRecordSettings = NULL,
-        .instance = graphics_vk.instance,
-        .vulkanApiVersion = VK_API_VERSION_1_1
-    };
-
-    if (vmaCreateAllocator(&allocatorCreateInfo, &graphics_vk.allocator) != VK_SUCCESS)
-    {
-        enGraphicsShutdown();
-        enLogError("Could not create the Vulkan allocator!");
-        return false;
-    }
-
-        /* Create the global descriptor pool */
+bool enVulkanCreateDescriptorSets()
+{
+ /* Create the global descriptor pool */
     VkDescriptorPoolSize globalPoolSizes[1] =
     {
         {
@@ -405,7 +414,6 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         enLogError("Could not create the global descriptor layout!");
         return false;
     }
-
     
     /* Create the global descriptor set */
     VkDescriptorSetAllocateInfo globalAllocInfo =
@@ -424,7 +432,25 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         return false;
     }
 
-    /*
+    return true;
+}
+
+void enVulkanDestroyDescriptorSets()
+{
+    if (graphics_vk.globalPool != VK_NULL_HANDLE)
+    {
+        vkDestroyDescriptorPool(graphics_vk.device, graphics_vk.globalPool, NULL);
+    }
+
+    if (graphics_vk.globalLayout != VK_NULL_HANDLE)
+    {
+        vkDestroyDescriptorSetLayout(graphics_vk.device, graphics_vk.globalLayout, NULL);
+    }
+}
+
+bool enVulkanRenderPassesCreate()
+{
+        /*
         Color,
         Specular,
         WorldNormal,
@@ -506,6 +532,83 @@ bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptio
         return false;
     }
 
+    return true;
+}
+
+bool enVulkanCreateSynchronization()
+{
+    VkSemaphoreCreateInfo semaphoreCreateInfo =
+    {
+        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+        .pNext = NULL,
+        .flags = 0
+    };
+
+    if (vkCreateSemaphore(graphics_vk.device, &semaphoreCreateInfo, NULL, &graphics_vk.imageAvailableSemaphore) != VK_SUCCESS)
+    {
+        enGraphicsShutdown();
+        enLogError("Could not create the image available semaphore!");
+        return false;
+    }
+
+    if (vkCreateSemaphore(graphics_vk.device, &semaphoreCreateInfo, NULL, &graphics_vk.renderFinishedSemaphore) != VK_SUCCESS)
+    {
+        enGraphicsShutdown();
+        enLogError("Could not create the render finished semaphore!");
+        return false;
+    }
+
+    return true;
+}
+
+void enVulkanDestroySynchronization()
+{
+
+}
+
+
+
+bool enGraphicsInitialize(const enWindowInfo* pWindowInfo, const enGraphicsOptions* pOptions)
+{
+    if (pWindowInfo == NULL || pOptions == NULL)
+    {
+        return false;
+    }
+
+    if (!enWindowInitialize(pWindowInfo) || 
+        !enVulkanCreateInstance(pOptions) ||
+        !enVulkanWindowInitialize() ||
+        !enVulkanChoosePhysicalDevice(pOptions) ||
+        !enVulkanCreateDevice(pOptions) ||
+        !enVulkanCreateSwapchain())
+    {
+        return false;
+    }
+
+    /* Create the allocator */
+    VmaAllocatorCreateInfo allocatorCreateInfo = {
+        .flags = 0,
+        .physicalDevice = graphics_vk.physicalDevice,
+        .device = graphics_vk.device,
+        .preferredLargeHeapBlockSize = 0,
+        .pAllocationCallbacks = NULL,
+        .pAllocationCallbacks = NULL,
+        .pDeviceMemoryCallbacks = NULL,
+        .frameInUseCount = 0,
+        .pHeapSizeLimit = NULL,
+        .pVulkanFunctions = NULL,
+        .pRecordSettings = NULL,
+        .instance = graphics_vk.instance,
+        .vulkanApiVersion = VK_API_VERSION_1_1
+    };
+
+    if (vmaCreateAllocator(&allocatorCreateInfo, &graphics_vk.allocator) != VK_SUCCESS)
+    {
+        enGraphicsShutdown();
+        enLogError("Could not create the Vulkan allocator!");
+        return false;
+    }
+
     graphics_vk.globalBuffer = enVulkanBufferCreate(sizeof(enGlobalUniform), VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
     if (graphics_vk.globalBuffer == NULL)
     {
@@ -566,43 +669,27 @@ void enGraphicsShutdown()
         vmaDestroyAllocator(graphics_vk.allocator);
     }
 
-    enWindowVulkanShutdown();
+    enVulkanWindowShutdown();
 
-    if (graphics_vk.device != VK_NULL_HANDLE)
-    {
-        vkDestroyDevice(graphics_vk.device, NULL);
-    }
 
-#ifdef ENTERPRISE_DEBUG
-    if (graphics_vk.debugMessenger != VK_NULL_HANDLE)
-    {
-        graphics_vk.pDestroyDebugMessenger(graphics_vk.instance, graphics_vk.debugMessenger, NULL);
-    }
-#endif
 
-    if (graphics_vk.instance != VK_NULL_HANDLE)
-    {
-        vkDestroyInstance(graphics_vk.instance, NULL);
-    }
 
     enWindowShutdown();
 }
 
-VkBool32 enVulkanValidationLogger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,VkDebugUtilsMessageTypeFlagsEXT messageTypes, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData)
+void enGraphicsNextFrame()
 {
-    switch(messageSeverity)
-    {
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-            enLogInfo(pCallbackData->pMessage);
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-            enLogWarning(pCallbackData->pMessage);
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-            enLogError(pCallbackData->pMessage);
-        break;
+
+    const VkPresentInfoKHR presentInfo = {
+        .sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+        .pNext = NULL,
+        .waitSemaphoreCount = 1,
+        .pWaitSemaphores = &graphics_vk.renderFinishedSemaphore,
+        .swapchainCount = 1,
+        .pSwapchains = &graphics_vk.swapchain,
+
     }
 
-    return VK_FALSE;
+    vkQueuePresentKHR(graphics_vk.presentQueue, );
+
 }

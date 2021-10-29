@@ -19,7 +19,7 @@
 
 enWindowVulkan window_vk;
 
-bool enWindowVulkanInitialize()
+bool enVulkanWindowInitialize()
 {
 
     /* Create the platform surface */
@@ -63,9 +63,9 @@ bool enWindowVulkanInitialize()
     /* Create the swapchain */
     if (graphics_vk.device != VK_NULL_HANDLE) /* In the device is not yet created we can't create the swapchain, the context will do it for us. */
     {
-        if (!enWindowVulkanCreateSwapchain())
+        if (!enVulkanCreateSwapchain())
         {
-            enWindowVulkanShutdown();
+            enVulkanWindowShutdown();
             enLogError("Could not create the vulkan surface!");
             return false;
         }
@@ -74,9 +74,9 @@ bool enWindowVulkanInitialize()
     return true;
 }
 
-void enWindowVulkanShutdown()
+void enVulkanWindowShutdown()
 {
-    enWindowVulkanDestroySwapchain();
+    enVulkanDestroySwapchain();
 
     if (window_vk.surface != VK_NULL_HANDLE)
     {
@@ -84,7 +84,7 @@ void enWindowVulkanShutdown()
     }
 }
 
-bool enWindowVulkanCreateSwapchain()
+bool enVulkanCreateSwapchain()
 {
 
     /* Get the surface information */
@@ -136,7 +136,7 @@ bool enWindowVulkanCreateSwapchain()
     return true;
 }
 
-void enWindowVulkanDestroySwapchain()
+void enVulkanDestroySwapchain()
 {
     if (window_vk.swapchain != VK_NULL_HANDLE)
     {

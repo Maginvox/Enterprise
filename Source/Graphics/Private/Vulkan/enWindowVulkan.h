@@ -16,10 +16,10 @@ typedef struct enWindowVulkan
 
 extern enWindowVulkan window_vk;
 
-bool enWindowVulkanInitialize();
-void enWindowVulkanShutdown();
+bool enVulkanWindowInitialize();
+void enVulkanWindowShutdown();
 
-bool enWindowVulkanCreateSwapchain();
-void enWindowVulkanDestroySwapchain();
+bool enVulkanCreateSwapchain();
+void enVulkanDestroySwapchain();
 
 #endif

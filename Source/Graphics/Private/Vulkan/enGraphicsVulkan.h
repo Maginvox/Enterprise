@@ -34,6 +34,8 @@ typedef struct enGraphicsVulkan
     enGlobalUniform globalData;
 
     VkRenderPass generalPass;
+
+    VkSemaphore imageAvailableSemaphore;
 } enGraphicsVulkan;
 
 extern enGraphicsVulkan graphics_vk;

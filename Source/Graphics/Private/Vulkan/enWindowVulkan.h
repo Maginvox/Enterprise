@@ -5,6 +5,9 @@
 
 #include "Core/enTypes.h"
 
+
+#define ENTERPRISE_VULKAN_MAX_FRAMES 2
+
 typedef struct enWindowVulkan
 {
     VkSurfaceKHR surface;
@@ -12,6 +15,12 @@ typedef struct enWindowVulkan
     uint32 imageCount;
     VkPresentModeKHR presentMode;
     VkSwapchainKHR swapchain;
+
+    VkSemaphore imageAvailableSemaphores[ENTERPRISE_VULKAN_MAX_FRAMES];
+    VkSemaphore renderFinishedSemaphores[ENTERPRISE_VULKAN_MAX_FRAMES];
+    VkFence inFlightFences[ENTERPRISE_VULKAN_MAX_FRAMES];
+    VkFence imagesInFlight[ENTERPRISE_VULKAN_MAX_FRAMES];
+    uint32 currentFrame;
 } enWindowVulkan;
 
 extern enWindowVulkan window_vk;

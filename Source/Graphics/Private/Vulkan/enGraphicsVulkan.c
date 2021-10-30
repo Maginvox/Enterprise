@@ -162,14 +162,17 @@ bool enVulkanChoosePhysicalDevice(const enGraphicsOptions* pOptions)
     return true;
 }
 
+void enVulkanDestroyDevice()
+{
+    if (graphics_vk.device != VK_NULL_HANDLE)
+    {
+        vkDestroyDevice(graphics_vk.device, NULL);
+    }
+}
+
 bool enVulkanCreateDevice()
 {
-    /* Get the validation layers and instance extensions. */
-    int32 validationLayersCount = 0;
-    const char* const* ppValidationLayers = enVulkanValidationLayers(&validationLayersCount);
 
-    int32 instanceExtensionsCount = 0;
-    const char* const* ppInstanceExtension = enVulkanInstanceExtensions(&instanceExtensionsCount);
 
 
 /* Get the physical devices queues */
@@ -179,7 +182,6 @@ bool enVulkanCreateDevice()
     VkQueueFamilyProperties* pQueueFamilyProperties = enCalloc(queueFamilyPropertiesCount, sizeof(VkQueueFamilyProperties));
     if (pQueueFamilyProperties == NULL)
     {
-        enGraphicsShutdown();
         return false;
     }
 
@@ -326,7 +328,12 @@ bool enVulkanCreateDevice()
     int32 deviceExtensionsCount = 0;
     const char* const* ppDeviceExtension = enVulkanDeviceExtensions(graphics_vk.physicalDevice, &deviceExtensionsCount);
 
+        /* Get the validation layers and instance extensions. */
+    int32 validationLayersCount = 0;
+    const char* const* ppValidationLayers = enVulkanValidationLayers(&validationLayersCount);
+
     const VkPhysicalDeviceFeatures deviceFeatures = {0};
+    
     const VkDeviceCreateInfo deviceCreateInfo = 
     {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
@@ -353,13 +360,7 @@ bool enVulkanCreateDevice()
     return true;
 }
 
-void enVulkanDestroyDevice()
-{
-    if (graphics_vk.device != VK_NULL_HANDLE)
-    {
-        vkDestroyDevice(graphics_vk.device, NULL);
-    }
-}
+
 
 bool enVulkanCreateDescriptorSets()
 {
@@ -535,36 +536,61 @@ bool enVulkanRenderPassesCreate()
     return true;
 }
 
+void enVulkanDestroySynchronization()
+{
+
+    for (uint32 i = 0; i < window_vk.imageCount; i++)
+    {
+        if (window_vk.imageAvailableSemaphores[i] != VK_NULL_HANDLE)
+        {
+            vkDestroySemaphore(graphics_vk.device, window_vk.imageAvailableSemaphores[i], NULL);
+        }
+
+        if (window_vk.renderFinishedSemaphores[i] != VK_NULL_HANDLE)
+        {
+            vkDestroySemaphore(graphics_vk.device, window_vk.renderFinishedSemaphores[i], NULL);
+        }
+
+        if (window_vk.inFlightFences[i] != VK_NULL_HANDLE)
+        {
+            vkDestroyFence(graphics_vk.device, window_vk.inFlightFences[i], NULL);
+        }
+    }
+}
+
 bool enVulkanCreateSynchronization()
 {
-    VkSemaphoreCreateInfo semaphoreCreateInfo =
+
+    const VkSemaphoreCreateInfo semaphoreCreateInfo =
     {
         .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
         .pNext = NULL,
         .flags = 0
     };
 
-    if (vkCreateSemaphore(graphics_vk.device, &semaphoreCreateInfo, NULL, &graphics_vk.imageAvailableSemaphore) != VK_SUCCESS)
+    const VkFenceCreateInfo fenceCreateInfo =
     {
-        enGraphicsShutdown();
-        enLogError("Could not create the image available semaphore!");
-        return false;
-    }
+        .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+        .pNext = NULL,
+        .flags = VK_FENCE_CREATE_SIGNALED_BIT
+    };
 
-    if (vkCreateSemaphore(graphics_vk.device, &semaphoreCreateInfo, NULL, &graphics_vk.renderFinishedSemaphore) != VK_SUCCESS)
+    for (uint32 i = 0; i < window_vk.imageCount; i++)
     {
-        enGraphicsShutdown();
-        enLogError("Could not create the render finished semaphore!");
-        return false;
+        if (vkCreateSemaphore(graphics_vk.device, &semaphoreCreateInfo, NULL, &window_vk.imageAvailableSemaphores[i]) != VK_SUCCESS ||
+            vkCreateSemaphore(graphics_vk.device, &semaphoreCreateInfo, NULL, &window_vk.renderFinishedSemaphores[i]) != VK_SUCCESS ||
+            vkCreateFence(graphics_vk.device, &fenceCreateInfo, NULL, &window_vk.inFlightFences[i]) != VK_SUCCESS)
+        {
+            enLogError("Could not create a semaphore or fence!");
+            enVulkanDestroySynchronization();
+            return false;
+        }
     }
 
     return true;
 }
 
-void enVulkanDestroySynchronization()
-{
 
-}
 
 
 
